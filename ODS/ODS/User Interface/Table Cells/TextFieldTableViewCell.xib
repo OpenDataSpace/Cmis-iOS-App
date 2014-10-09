@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1536" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="w1I-1p-hjC" customClass="TextFieldTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="w1I-1p-hjC" id="Kqw-Zc-3D3">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qFQ-jo-UJi">
+                        <rect key="frame" x="20" y="11" width="102" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q9o-fE-auf">
+                        <rect key="frame" x="142" y="7" width="170" height="30"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits"/>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="qFQ-jo-UJi" firstAttribute="leading" secondItem="Kqw-Zc-3D3" secondAttribute="leading" constant="20" id="GB5-SH-vxx"/>
+                    <constraint firstItem="qFQ-jo-UJi" firstAttribute="top" secondItem="Kqw-Zc-3D3" secondAttribute="top" constant="11" id="M7m-tp-Oan"/>
+                    <constraint firstAttribute="trailing" secondItem="q9o-fE-auf" secondAttribute="trailing" constant="20" id="MFo-87-6Ra"/>
+                    <constraint firstItem="q9o-fE-auf" firstAttribute="top" secondItem="Kqw-Zc-3D3" secondAttribute="top" constant="7" id="NyP-I7-Rb9"/>
+                    <constraint firstItem="q9o-fE-auf" firstAttribute="leading" secondItem="qFQ-jo-UJi" secondAttribute="trailing" constant="20" id="a0U-qn-paA"/>
+                    <constraint firstItem="q9o-fE-auf" firstAttribute="width" secondItem="qFQ-jo-UJi" secondAttribute="width" id="erg-4S-9CP"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="lblTitle" destination="qFQ-jo-UJi" id="gCT-kY-5Ya"/>
+                <outlet property="textField" destination="q9o-fE-auf" id="YDm-Hd-CTQ"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>

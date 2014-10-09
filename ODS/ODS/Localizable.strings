@@ -1,0 +1,189 @@
+/* 
+  Localizable.strings
+  ODS
+
+  Created by bdt on 8/7/14.
+  Copyright (c) 2014 OpenDataSpace. All rights reserved.
+*/
+
+/* CMIS Binding type */
+"cmis.binding.type.atompub" = "Atompub";
+"cmis.binding.type.browse" = "Browse";
+
+/* Table View Controllers */
+"documents.view.title" = "Documents";
+"downloads.view.title" = "Downloads";
+"settings.view.title" = "Settings";
+"more.view.title" = "More";
+"browse.accounts.view.title" = "Accounts";
+"manage.accounts.view.title" = "Manage Accounts";
+"manage.uploads.view.title" = "Uploads";
+"about.view.title" = "ODS";
+
+/* Placeholder view */
+"Detail" = "Detail";
+"popover.button.title" = "ODS";
+"no.document.selected.text" = "No Document Selected";
+
+/* Documents View */
+"relative.date.just-now" = "just now";
+"relative.date.less-than-a-minute-ago" = "less than a minute ago";
+"relative.date.one-minute-ago" = "1 minute ago";
+"relative.date.n-minutes-ago" = "%d minutes ago";
+"relative.date.one-hour-ago" = "1 hour ago";
+"relative.date.n-hours-ago" = "%d hours ago";
+"relative.date.one-day-ago" = "1 day ago";
+"relative.date.n-days-ago" = "%d days ago";
+
+"relative.interval.n-seconds" = "%d seconds";
+"relative.interval.one-second" = "1 second";
+"relative.interval.n-minutes" = "%d minutes";
+"relative.interval.one-minute" = "1 minute";
+"relative.interval.n-hours" = "%d hours";
+"relative.interval.one-hour" = "1 hour";
+"relative.interval.n-days" = "%d days";
+"relative.interval.one-day" = "1 day";
+
+"operation.pop.menu.title"="Operations";
+"operation.pop.menu.delete"="Delete";
+"operation.pop.menu.rename"="Rename";
+"operation.pop.menu.move"="Move";
+"operation.pop.menu.download"="Download";
+"operation.pop.menu.link" = "Link Management";
+"operation.pop.menu.createlink" = "Create Downlaod Link";
+
+"confirm.delete.prompt.title" = "Warning";
+"confirm.delete.prompt.message" = "Are you sure to delete file %@?";
+"confirm.delete.prompt.ok" = "Delete";
+"confirm.delete.prompt.cancel" = "Cancel";
+
+"confirm.rename.prompt.title" = "Rename";
+"confirm.rename.prompt.message" = "";
+"confirm.rename.prompt.ok" = "Ok";
+"confirm.rename.prompt.cancel" = "Cancel";
+
+"rename.progressbar.message" = "Renaming Item";
+"Moving Item" = "Moving Item";
+"dialog.chooser.confirm" ="Choose";
+"dialog.chooser.cancel" = "Cancel";
+"moveprogress.file-left" = "1 item remaining";
+"moveprogress.files-left" = "%d items remaining";
+
+
+"multiselect.button.delete" = "Delete";
+"multiselect.button.delete.counter" = "Delete (%u)";
+"multiselect.button.download" = "Download";
+"multiselect.button.download.counter" = "Download (%u)";
+"multiselect.button.move" = "Move";
+"multiselect.button.move.counter" = "Move (%u)";
+
+"delete.confirmation.title" = "Confirm Delete";
+"delete.confirmation.multiple.message" = "Do you want to delete %d items from the server?";
+"delete.confirmation.button" = "Delete";
+
+/* create links */
+"create-link.fields.email" = "Email";
+"create-link.fields.subject" = "Subject";
+"create-link.fields.expirationdate" = "Expiration Date";
+"create-link.fields.password" = "Password";
+"create-link.fields.message" = "Message";
+"create-link.placeholder.required" = "Required";
+"create-link.placeholder.optional" = "Optional";
+"creating.link" = "Creating link...";
+"create-link.success" = "Craete link successful.";
+"create-link.failure" = "Failed to create link.";
+
+/* Downloads View */
+
+/* Settings View */
+
+/* Manage Accounts View */
+"serverlist.cell.noaccounts" = "No Accounts";
+
+"account.awaiting.cell.subtitle" = "Awaiting Email Verification";
+"account.inactive.cell.subtitle" = "Inactive";
+"account.connection-error.cell.subtitle" = "Cannot connect to Server";
+"account.invalid-credentials.cell.subtitle" = "Incorrect user credentials";
+"account.invalid-certificate.cell.subtitle" = "Invalid client certificate";
+
+"accountdetails.fields.status" = "Account";
+"accountdetails.fields.username" = "Username";
+"accountdetails.fields.password" = "Password";
+"accountdetails.fields.confirmPassword" = "Confirm Password";
+"accountdetails.fields.hostname" = "Server Address";
+"accountdetails.fields.description" = "Description";
+"accountdetails.fields.port" = "Port";
+"accountdetails.fields.protocol" = "HTTPS";
+"accountdetails.fields.vendor" = "CMIS Provider Vendor";
+"accountdetails.fields.servicedoc" = "Service Document";
+"accountdetails.fields.serviceprotocol" = "CMIS Protocol";
+"accountdetails.buttons.browse" = "Browse Documents";
+"accountdetails.buttons.delete" = "Delete Account";
+"accountdetails.header.status" = "Status";
+"accountdetails.header.authentication" = "Account Authentication";
+"accountdetails.header.advanced" = "Advanced";
+
+"accountdetails.placeholder.required" = "required";
+"accountdetails.placeholder.optional" = "optional";
+"accountdetails.placeholder.password" = "6 characters min.";
+"accountdetails.placeholder.serverdescription" = "CMIS Provider";
+
+"account.protocol.https.on" = "On";
+"account.protocol.https.off" = "Off";
+
+/* More View */
+"more.item.account" = "Manage Accounts";
+"more.item.about" = "About";
+"more.item.upload" = "Manage Uploads";
+
+/* Actions Title */
+"add.actionsheet.create-folder" = "Create Folder";
+"add.actionsheet.upload" = "Upload";
+"add.actionsheet.take-photo-video" = "Take Photo or Video";
+"add.actionsheet.take-photo" = "Take Photo";
+"add.actionsheet.record-audio" = "Record Audio";
+"add.actionsheet.cancel" = "Cancel";
+
+"add.actionsheet.choose-photo" = "Choose Photo from Library";
+"add.actionsheet.upload-document" = "Upload Document";
+
+/* Create Folder View */
+"create-folder.header.details" = "NEW FOLDER DETAILS";
+"create-folder.fields.name" = "Name";
+"create-folder.placeholder.required" = "Required";
+"create-folder.in-progress" = "Creating folder...";
+"create-folder.success" = "Created folder";
+
+/* Upload View */
+"upload.audio.view.title" = "Upload Audio";
+"upload.video.view.title" = "Upload Video";
+"upload.photo.view.title" = "Upload Photo";
+"upload.document.view.title" = "Upload Document";
+"uploadview.required.fields.missing.dialog.title" = "";
+"uploadview.required.fields.missing.dialog.message" = "Please fill in all required fields";
+"uploadview.tablecell.photo.label" = "Photo";
+"uploadview.tablecell.audio.label" = "Audio";
+"uploadview.tablecell.video.label" = "Video";
+"uploadview.tablecell.document.label" = "Document";
+"uploadview.tablecell.library.label" = "Photo Library";
+"uploadview.tablecell.multiple.label" = "Documents";
+"uploadview.tablecell.name.label" = "Name";
+"uploadview.tablecell.name.placeholder" = "Enter a name";
+"uploadview.tablecell.media.count" = "%d medias";
+"uploadview.tablecell.document.count" = "%d documents";
+
+"audiorecord.play" = "Play";
+"audiorecord.stop" = "Stop";
+"audiorecord.record" = "Record";
+
+/* Button Captions */
+"cancelButton" = "Cancel";
+"Create" = "Create";
+"Upload" = "Upload";
+
+/* Refresh control */
+"Release to refresh..." = "Release to refresh...";
+"Pull down to refresh..." = "Pull down to refresh...";
+"Loading..." = "Loading...";
+"Last Updated: %@" = "Last Updated: %@";
+

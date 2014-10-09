@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment defaultVersion="1536" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="KGk-i7-Jjw" customClass="AudioRecorderTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2kZ-hk-ykP">
+                        <rect key="frame" x="145" y="8" width="70" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="70" id="QoQ-2W-d6f"/>
+                        </constraints>
+                        <state key="normal" title="Record">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bGx-Si-DVG">
+                        <rect key="frame" x="239" y="7" width="70" height="30.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="70" id="6mQ-dp-ggq"/>
+                        </constraints>
+                        <state key="normal" title="Play">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Id5-zZ-97S">
+                        <rect key="frame" x="20" y="12" width="111" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="2kZ-hk-ykP" secondAttribute="trailing" constant="105" id="GF7-jT-HnM"/>
+                    <constraint firstItem="Id5-zZ-97S" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="20" id="Lg7-nf-JPb"/>
+                    <constraint firstItem="2kZ-hk-ykP" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="QsF-OC-uJx"/>
+                    <constraint firstItem="bGx-Si-DVG" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="7" id="R6o-I7-wtZ"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="bGx-Si-DVG" secondAttribute="trailing" constant="20" id="bsN-Rd-ulO"/>
+                    <constraint firstAttribute="bottom" secondItem="bGx-Si-DVG" secondAttribute="bottom" constant="7" id="var-qv-wOP"/>
+                    <constraint firstItem="Id5-zZ-97S" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="12" id="y9k-De-avz"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="buttonPlay" destination="bGx-Si-DVG" id="aZO-Hx-kdi"/>
+                <outlet property="buttonRecord" destination="2kZ-hk-ykP" id="Aoz-6z-uGo"/>
+                <outlet property="lableTitle" destination="Id5-zZ-97S" id="TfB-k3-F8B"/>
+            </connections>
+            <point key="canvasLocation" x="508" y="487"/>
+        </tableViewCell>
+    </objects>
+</document>

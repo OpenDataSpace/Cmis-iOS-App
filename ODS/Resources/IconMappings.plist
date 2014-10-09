@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>.png</key>
+	<string>img.png</string>
+	<key>.jpg</key>
+	<string>img.png</string>
+	<key>.jpeg</key>
+	<string>img.png</string>
+	<key>.gif</key>
+	<string>img.png</string>
+	<key>.doc</key>
+	<string>doc.png</string>
+	<key>.docx</key>
+	<string>doc.png</string>
+	<key>.xls</key>
+	<string>xls.png</string>
+	<key>.xlsx</key>
+	<string>xls.png</string>
+	<key>.ppt</key>
+	<string>ppt.png</string>
+	<key>.pptx</key>
+	<string>ppt.png</string>
+	<key>.xml</key>
+	<string>xml.png</string>
+	<key>.txt</key>
+	<string>txt.png</string>
+	<key>.pdf</key>
+	<string>pdf.png</string>
+	<key>.zip</key>
+	<string>archive.png</string>
+	<key>.sit</key>
+	<string>archive.png</string>
+	<key>.gz</key>
+	<string>archive.png</string>
+	<key>.tar</key>
+	<string>archive.png</string>
+	<key>.mp3</key>
+	<string>audio.png</string>
+	<key>.wav</key>
+	<string>audio.png</string>
+	<key>.tif</key>
+	<string>img.png</string>
+	<key>.tiff</key>
+	<string>img.png</string>
+	<key>.mov</key>
+	<string>video.png</string>
+	<key>.m4a</key>
+	<string>audio.png</string>
+	<key>.bmp</key>
+	<string>img.png</string>
+    <key>.mp4</key>
+	<string>video.png</string>
+</dict>
+</plist>
