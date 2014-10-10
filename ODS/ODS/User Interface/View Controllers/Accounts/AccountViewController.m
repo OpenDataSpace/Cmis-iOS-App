@@ -292,12 +292,8 @@
     [self.navigationItem.rightBarButtonItem setEnabled:[self validateAccountSettings]];
 }
 
-- (void) dismissViewcontroller {
-    if (IS_IPAD) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }else {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+- (void) dismissViewcontroller {    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -
