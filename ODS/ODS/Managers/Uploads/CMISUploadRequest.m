@@ -51,7 +51,7 @@
     @autoreleasepool {
         
         @try {
-            [[self uploadInfo] setUploadStatus:UploadInfoStatusActive];
+            [self uploadStart];
             CMISSessionParameters *params = [CMISUtility sessionParametersWithAccount:[[self uploadInfo] selectedAccountUUID] withRepoIdentifier:[[self uploadInfo] repositoryIdentifier]];
             self.currentRequest = [CMISSession connectWithSessionParameters:params completionBlock:^(CMISSession *session, NSError *sessionError) {
                 if (session == nil) {
@@ -84,7 +84,7 @@
                         }
                     } progressBlock:^(unsigned long long bytesUploaded, unsigned long long bytesTotal){
                         ODSLogDebug(@"bytesUploaded:%llu -- bytesTotal:%llu,  fileSize:%lu", bytesUploaded, bytesTotal, [self fileSize]);
-                        //[self didSendBytes:bytesUploaded total:bytesTotal];
+                        [self didSendBytes:bytesUploaded total:bytesTotal];
                     }];
                 }
             }];
@@ -172,20 +172,20 @@
 //#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 
 - (void) didSendBytes:(long long)bytes total:(unsigned long long) bytesTotal {
-    unsigned long long value = bytes;
-    self.sentBytes = value;
+    self.sentBytes = bytes;
     self.totalBytes = bytesTotal;
     if (self.queue) {
         //[self performSelector:@selector(request:didSendBytes:) onTarget:&uploadQueue withObject:self amount:&value callerToRetain:self];
         //[_queue request:self didSendBytes:value];
     }
 
-    if (self.uploadProgressDelegate) {
+    if ([self uploadProgressDelegate]) {
         [self performSelectorInBackground:@selector(updateProgressIndicator) withObject:self];
     }
 }
 
 - (void) uploadStart {
+    [[self uploadInfo] setUploadStatus:UploadInfoStatusUploading];
     [[self cancelledLock] lock];
     
     if (self.queue && [self.queue respondsToSelector:@selector(requestStarted:)]) {
@@ -195,6 +195,7 @@
 }
 
 - (void) uploadFailed {
+    [[self uploadInfo] setUploadStatus:UploadInfoStatusFailed];
     [[self cancelledLock] lock];
     
     if (self.queue && [self.queue respondsToSelector:@selector(requestFailed:)]) {
@@ -205,6 +206,7 @@
 }
 
 - (void) uploadFinish {
+    [[self uploadInfo] setUploadStatus:UploadInfoStatusUploaded];
     [[self cancelledLock] lock];
     
     if (self.queue && [self.queue respondsToSelector:@selector(requestFinished:)]) {
@@ -216,9 +218,11 @@
 
 - (void) updateProgressIndicator {
     dispatch_main_sync_safe(^{
-        UIProgressView *uploadIndicator = (UIProgressView *)self.uploadProgressDelegate;
-        float amount = (self.sentBytes*1.0f)/self.totalBytes;
-        [uploadIndicator setProgress:amount];
+        if (self.uploadProgressDelegate) {
+            UIProgressView *uploadIndicator = (UIProgressView *)[self uploadProgressDelegate];
+            float amount = (self.sentBytes*1.0f)/self.totalBytes;
+            [uploadIndicator setProgress:amount];
+        }
     });
 }
 @end

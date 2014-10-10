@@ -25,7 +25,7 @@
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bGx-Si-DVG">
-                        <rect key="frame" x="239" y="7" width="70" height="30.5"/>
+                        <rect key="frame" x="239" y="7" width="70" height="31"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="70" id="6mQ-dp-ggq"/>
                         </constraints>

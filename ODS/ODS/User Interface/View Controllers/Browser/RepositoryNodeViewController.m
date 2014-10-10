@@ -652,6 +652,7 @@ NSString * const kMultiSelectMove = @"moveAction";
     [uploadFormController setSelectedAccountUUID:self.selectedAccountUUID];
     [uploadFormController setMultiUploadItems:infos];
     [uploadFormController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [uploadFormController createUploadMultiItemsForm:infos uploadType:uploadType];
     
     //to fix issue: http://stackoverflow.com/questions/24854802/presenting-a-view-controller-modally-from-an-action-sheets-delegate-in-ios8
     dispatch_async(dispatch_get_main_queue(), ^ {

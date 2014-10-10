@@ -8,7 +8,7 @@
 
 #import "UploadsViewController.h"
 #import "UploadsManager.h"
-#import "RepositoryNodeViewCell.h"
+#import "UploadProgressTableViewCell.h"
 
 @interface UploadsViewController ()
 
@@ -21,6 +21,8 @@
     // Do any additional setup after loading the view.
     [self.navigationItem setTitle:NSLocalizedString(@"manage.uploads.view.title", @"Uploads")];
     [self createUploadCells];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadQueueChanged:) name:kNotificationUploadQueueChanged object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -58,16 +60,11 @@
     NSArray *uploads = [[UploadsManager sharedManager] allUploads];
     NSMutableArray *uploadSection = [NSMutableArray array];
     
-    RepositoryNodeViewCell *cell = nil;
+    UploadProgressTableViewCell *cell = nil;
     for (UploadInfo *upload in uploads) {
-        cell = (RepositoryNodeViewCell*)[self createTableViewCellFromNib:@"RepositoryNodeViewCell"];
+        cell = (UploadProgressTableViewCell*)[self createTableViewCellFromNib:@"UploadProgressTableViewCell"];
         
-        [cell.lblFileName setText:[upload completeFileName]];
-        [cell.imgIcon setImage:imageForFilename([upload completeFileName])];
-        [cell.lblDetails setHidden:YES];
-        [cell.progressBar setProgress:[upload uploadedProgress]];
-        [cell.progressBar setHidden:NO];
-        [upload.uploadRequest setUploadProgressDelegate:cell.progressBar];
+        [cell setUploadInfo:upload];
         [uploadSection addObject:cell];
     }
     
@@ -78,4 +75,30 @@
     return NO;
 }
 
+#pragma mark - NSNotificationCenter methods
+- (void)uploadQueueChanged:(NSNotification *) notification {
+    @synchronized(self.tableSections)
+    {
+        NSMutableArray *indexPaths = [NSMutableArray array];
+        NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+        NSMutableArray *uploads = [self.tableSections objectAtIndex:0];
+        for (NSUInteger index = 0; index < [uploads count]; index++) {
+            UploadProgressTableViewCell *cellWrapper = [uploads objectAtIndex:index];
+            // We keep the cells for finished uploads and failed uploads
+            if (cellWrapper.uploadInfo && [cellWrapper.uploadInfo uploadStatus] != UploadInfoStatusUploaded && ![[UploadsManager sharedManager] isManagedUpload:cellWrapper.uploadInfo.uuid])
+            {
+                ODSLogTrace(@"We are displaying an upload that is not currently managed");
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                [indexPaths addObject:indexPath];
+                [indexSet addIndex:index];
+            }
+        }
+        
+        if ([indexPaths count] > 0)
+        {
+            [uploads removeObjectsAtIndexes:indexSet];
+            [self.tableView reloadData];
+        }
+    }
+}
 @end

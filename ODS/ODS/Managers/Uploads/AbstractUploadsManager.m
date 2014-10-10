@@ -37,13 +37,13 @@
             //Complete protection for uploads metadata only if it already has data in it
             [[FileProtectionManager sharedInstance] completeProtectionForFileAtPath:uploadsStorePath];
             NSMutableDictionary *deserializedDict = [NSKeyedUnarchiver unarchiveObjectWithData:serializedUploadsData];
-            [self setAllUploadsDictionary:[NSMutableDictionary dictionary]];
+            [self setAllUploadsDictionary:deserializedDict];
         }
         
-//        if (self.allUploadsDictionary == nil)
-//        {
-//            [self setAllUploadsDictionary:[NSMutableDictionary dictionary]];
-//        }
+        if (self.allUploadsDictionary == nil)
+        {
+            [self setAllUploadsDictionary:[NSMutableDictionary dictionary]];
+        }
         
         [self setUploadsQueue:[ODSUploadQueue queue]];
         [self.uploadsQueue setMaxConcurrentOperationCount:2];

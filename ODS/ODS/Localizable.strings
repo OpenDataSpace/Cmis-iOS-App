@@ -81,6 +81,9 @@
 "delete.confirmation.multiple.message" = "Do you want to delete %d items from the server?";
 "delete.confirmation.button" = "Delete";
 
+"deleteprogress.file-left" = "1 item remaining";
+"deleteprogress.files-left" = "%d items remaining";
+
 /* create links */
 "create-link.fields.email" = "Email";
 "create-link.fields.subject" = "Subject";
@@ -171,6 +174,7 @@
 "uploadview.tablecell.name.placeholder" = "Enter a name";
 "uploadview.tablecell.media.count" = "%d medias";
 "uploadview.tablecell.document.count" = "%d documents";
+"upload.finished" = "Upload finished";
 
 "audiorecord.play" = "Play";
 "audiorecord.stop" = "Stop";
@@ -187,3 +191,5 @@
 "Loading..." = "Loading...";
 "Last Updated: %@" = "Last Updated: %@";
 
+/* Please wait... */
+"pleaseWaitMessage" = "Please wait...";

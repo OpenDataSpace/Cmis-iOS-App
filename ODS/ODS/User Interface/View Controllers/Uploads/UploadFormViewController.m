@@ -55,6 +55,10 @@
     if ([self.nameTextField text] == nil || [[self.nameTextField text] length] == 0) {
         [self.navigationItem.rightBarButtonItem setEnabled:NO];
     }
+    
+    if (self.multiUploadItems) {
+        [self.navigationItem.rightBarButtonItem setEnabled:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -166,11 +170,87 @@
 }
 
 - (void) createUploadMultiItemsForm:(NSArray*) uploadItems uploadType:(UploadFormType) type {
-    if (type == UploadFormTypeMultipleDocuments) { //title: Upload %d Items (Documents --- %d Documents)
-        
-    }else if (type == UploadFormTypeLibrary) {  //title: Upload %d Items (Photo Library --- %d photos, %d Videos)
-        
+    [self setUploadType:type];
+    [self setMultiUploadItems:uploadItems];
+    
+    NSMutableArray *cellArr = [NSMutableArray array];
+    
+    TextFieldTableViewCell *nameCell =  (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
+    
+    [[nameCell lblTitle] setText:NSLocalizedString([self uploadTypeCellLabel:self.uploadType], @"")];
+    [[nameCell textField] setText:[self multipleItemsDetailLabel]];
+    [[nameCell textField] setBorderStyle:UITextBorderStyleNone];
+    [[nameCell textField] setEnabled:NO];
+    
+    [cellArr addObject:nameCell];
+    
+    self.tableCells = cellArr;
+}
+
+- (NSString *)multipleItemsDetailLabel
+{
+    NSMutableDictionary *counts = [NSMutableDictionary dictionaryWithCapacity:3];
+    for(UploadInfo *anUploadInfo in self.multiUploadItems)
+    {
+        NSInteger count = [[counts objectForKey:[NSNumber numberWithInt:anUploadInfo.uploadType]] intValue];
+        count++;
+        [counts setObject:[NSNumber numberWithInt:count] forKey:[NSNumber numberWithInt:anUploadInfo.uploadType]];
     }
+    
+    BOOL first = YES;
+    NSString *label = [NSString string];
+    for(NSNumber *type in [counts allKeys])
+    {
+        NSInteger typeCount = [[counts objectForKey:type] intValue];
+        NSString *comma = nil;
+        if(!first)
+        {
+            comma = @", ";
+        }
+        else
+        {
+            comma = [NSString string];
+            first = NO;
+        }
+        
+        
+        BOOL plural = typeCount > 1;
+        NSString *mediaType = [UploadInfo typeDescription:[type intValue] plural:plural];
+        label = [NSString stringWithFormat:@"%@%@%d %@", label, comma, typeCount, mediaType];
+    }
+    return label;
+}
+
+- (NSString *)uploadTypeCellLabel: (UploadFormType) type
+{
+    NSString *label = nil;
+    switch (type)
+    {
+        case UploadFormTypeDocument:
+            label = @"uploadview.tablecell.document.label";
+            break;
+            
+        case UploadFormTypeVideo:
+            label = @"uploadview.tablecell.video.label";
+            break;
+            
+        case UploadFormTypeAudio:
+            label = @"uploadview.tablecell.audio.label";
+            break;
+            
+        case UploadFormTypeLibrary:
+            label = @"uploadview.tablecell.library.label";
+            break;
+            
+        case UploadFormTypeMultipleDocuments:
+            label = @"uploadview.tablecell.multiple.label";
+            break;
+            
+        default:
+            label = @"uploadview.tablecell.photo.label";
+            break;
+    }
+    return label;
 }
 
 #pragma mark - 

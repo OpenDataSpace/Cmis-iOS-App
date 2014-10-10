@@ -243,6 +243,9 @@
 		2D6AE80D19D3E869000B7180 /* UploadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE80B19D3E869000B7180 /* UploadTableViewCell.xib */; };
 		2D6AE81419D7A11B000B7180 /* AccountStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE81319D7A11B000B7180 /* AccountStatusViewController.m */; };
 		2D6AE81719D9543F000B7180 /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE81619D9543F000B7180 /* CustomTableViewCell.m */; };
+		2D6BAA0619E7B2D500C26CDC /* UploadProgressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BAA0419E7B2D500C26CDC /* UploadProgressTableViewCell.m */; };
+		2D6BAA0719E7B2D500C26CDC /* UploadProgressTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2D6BAA0519E7B2D500C26CDC /* UploadProgressTableViewCell.xib */; };
+		2D6BAA0A19E7C31000C26CDC /* UIColor+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BAA0919E7C31000C26CDC /* UIColor+Theme.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -729,6 +732,11 @@
 		2D6AE81319D7A11B000B7180 /* AccountStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountStatusViewController.m; sourceTree = "<group>"; };
 		2D6AE81519D9543F000B7180 /* CustomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewCell.h; sourceTree = "<group>"; };
 		2D6AE81619D9543F000B7180 /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
+		2D6BAA0319E7B2D500C26CDC /* UploadProgressTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadProgressTableViewCell.h; sourceTree = "<group>"; };
+		2D6BAA0419E7B2D500C26CDC /* UploadProgressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadProgressTableViewCell.m; sourceTree = "<group>"; };
+		2D6BAA0519E7B2D500C26CDC /* UploadProgressTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadProgressTableViewCell.xib; sourceTree = "<group>"; };
+		2D6BAA0819E7C31000C26CDC /* UIColor+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Theme.h"; sourceTree = "<group>"; };
+		2D6BAA0919E7C31000C26CDC /* UIColor+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Theme.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1285,6 +1293,8 @@
 		2D06F0D719CB11DB00788C4C /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				2D6BAA0819E7C31000C26CDC /* UIColor+Theme.h */,
+				2D6BAA0919E7C31000C26CDC /* UIColor+Theme.m */,
 				2D06F15F19CBC6A500788C4C /* NSNotificationCenter+CustomNotification.h */,
 				2D06F16019CBC6A500788C4C /* NSNotificationCenter+CustomNotification.m */,
 				2D06F11919CB169400788C4C /* NSArray+Utils.h */,
@@ -1369,6 +1379,9 @@
 				2D6AE80B19D3E869000B7180 /* UploadTableViewCell.xib */,
 				2D6AE81519D9543F000B7180 /* CustomTableViewCell.h */,
 				2D6AE81619D9543F000B7180 /* CustomTableViewCell.m */,
+				2D6BAA0319E7B2D500C26CDC /* UploadProgressTableViewCell.h */,
+				2D6BAA0419E7B2D500C26CDC /* UploadProgressTableViewCell.m */,
+				2D6BAA0519E7B2D500C26CDC /* UploadProgressTableViewCell.xib */,
 			);
 			path = "Table Cells";
 			sourceTree = "<group>";
@@ -1767,6 +1780,7 @@
 			files = (
 				2D06F19119CE6B3C00788C4C /* IconMappings.plist in Resources */,
 				2D06F1F219D14CA400788C4C /* CheckMarkTableViewCell.xib in Resources */,
+				2D6BAA0719E7B2D500C26CDC /* UploadProgressTableViewCell.xib in Resources */,
 				2D06F1E519D0294F00788C4C /* VideoTableViewCell.xib in Resources */,
 				2D06ED5E19CB0C5E00788C4C /* LaunchScreen.xib in Resources */,
 				2D06F05019CB101C00788C4C /* AGImagePickerController.bundle in Resources */,
@@ -1814,6 +1828,7 @@
 				2D6AE80119D3BA92000B7180 /* AboutViewController.m in Sources */,
 				2D6AE7EB19D19AF6000B7180 /* CMISDownloadFileRequest.m in Sources */,
 				2D06F05719CB101C00788C4C /* ALAsset+AGIPC.m in Sources */,
+				2D6BAA0619E7B2D500C26CDC /* UploadProgressTableViewCell.m in Sources */,
 				2D06F0D219CB101D00788C4C /* TVOutManager.m in Sources */,
 				2D06F11619CB139B00788C4C /* ODSLog.m in Sources */,
 				2D06F06619CB101D00788C4C /* CMISAtomPubPropertyDefinitionParser.m in Sources */,
@@ -1950,6 +1965,7 @@
 				2D6AE81719D9543F000B7180 /* CustomTableViewCell.m in Sources */,
 				2D06F05919CB101D00788C4C /* KeychainItemWrapper.m in Sources */,
 				2D06F08619CB101D00788C4C /* CMISDocumentTypeDefinition.m in Sources */,
+				2D6BAA0A19E7C31000C26CDC /* UIColor+Theme.m in Sources */,
 				2D06F0B719CB101D00788C4C /* CMISHttpDownloadRequest.m in Sources */,
 				2D06F09619CB101D00788C4C /* CMISFolder.m in Sources */,
 				2D06F06D19CB101D00788C4C /* CMISAtomPubConstants.m in Sources */,

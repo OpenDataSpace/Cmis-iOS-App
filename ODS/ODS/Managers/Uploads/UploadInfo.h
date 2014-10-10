@@ -56,4 +56,6 @@ typedef enum
 - (BOOL) sourceFileExists;
 
 - (float) uploadedProgress;
+
++ (NSString *)typeDescription:(UploadFormType)type plural:(BOOL)plural;
 @end

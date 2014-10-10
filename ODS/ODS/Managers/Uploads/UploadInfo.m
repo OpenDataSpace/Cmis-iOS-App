@@ -105,4 +105,23 @@ NSString * const kUploadInfoUploadFileIsTemporary = @"uploadFileIsTemporary";
     return 0.0f;
 }
 
++ (NSString *)typeDescription:(UploadFormType)type plural:(BOOL)plural
+{
+    NSString *typeDescription = nil;
+    switch (type) {
+        case UploadFormTypeAudio:
+            typeDescription = plural? NSLocalizedString(@"Audios", @"Audios") : NSLocalizedString(@"Audio", @"Audio");
+            break;
+        case UploadFormTypePhoto:
+            typeDescription = plural? NSLocalizedString(@"Photos", @"Photos") : NSLocalizedString(@"Photo", @"Photo");
+            break;
+        case UploadFormTypeVideo:
+            typeDescription = plural? NSLocalizedString(@"Videos", @"Videos") : NSLocalizedString(@"Video", @"Video");
+            break;
+        default:
+            typeDescription = plural? NSLocalizedString(@"Documents", @"Documents") : NSLocalizedString(@"Document", @"Document");
+            break;
+    }
+    return typeDescription;
+}
 @end
