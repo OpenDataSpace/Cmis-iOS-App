@@ -308,12 +308,14 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     switch (eventCode){
         case NSStreamEventOpenCompleted:{
+#if TARGET_OS_IPHONE
+#ifndef __IPHONE_8_0
+            // this workaround breaks POST requests on MacOS targets and iOS 8
             if (self.combinedInputStream.streamStatus != NSStreamStatusOpen) {
                 [self.combinedInputStream open]; // this seems to work around the 'Stream ... is sending an event before being opened' Apple bug
             }
-            if (self.inputStream.streamStatus != NSStreamStatusOpen) {
-                [self.inputStream open];
-            }
+#endif
+#endif
         }
             break;
 
@@ -452,6 +454,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
     self.encoderStream = outputStream;
     self.encoderStream.delegate = self;
     [self.encoderStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.encoderStream open];
 }
 
 
