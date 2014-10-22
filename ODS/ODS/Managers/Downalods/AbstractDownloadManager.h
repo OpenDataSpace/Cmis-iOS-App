@@ -13,7 +13,10 @@
 
 @class DownloadInfo;
 
-@interface AbstractDownloadManager : NSObject
+@interface AbstractDownloadManager : NSObject {
+    NSMutableDictionary *_allDownloads;
+}
+
 
 @property (nonatomic, strong, readonly) ODSDownloadQueue *downloadQueue;
 
@@ -37,6 +40,9 @@
 // Queue a single download
 - (void)queueDownloadInfo:(DownloadInfo *)downloadInfo;
 
+- (void)queueRepositoryItem:(CMISObject *)repositoryItem withAccountUUID:(NSString *)accountUUID  withRepositoryID:(NSString*)repositoryID andTenantId:(NSString *)tenantId;
+- (void)queueRepositoryItems:(NSArray *)repositoryItems withAccountUUID:(NSString *)accountUUID withRepositoryID:(NSString*)repositoryID andTenantId:(NSString *)tenantId;
+
 // Queue multiple downloads
 - (void)queueDownloadInfoArray:(NSArray *)downloadInfos;
 
@@ -58,4 +64,9 @@
 
 - (void)successDownload:(DownloadInfo *)downloadInfo;
 - (void)failedDownload:(DownloadInfo *)downloadInfo withError:(NSError *)error;
+
+- (void)requestStarted:(CMISDownloadFileRequest *)request;
+- (void)requestFinished:(CMISDownloadFileRequest *)request;
+- (void)requestFailed:(CMISDownloadFileRequest *)request;
+- (void)queueFinished:(ODSDownloadQueue *)queue;
 @end

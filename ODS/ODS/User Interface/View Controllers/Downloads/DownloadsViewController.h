@@ -8,7 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "CustomTableViewController.h"
+#import "DocumentFilter.h"
+#import "DirectoryWatcher.h"
 
-@interface DownloadsViewController : CustomTableViewController
+@class FolderTableViewDataSource;
 
+@interface DownloadsViewController : CustomTableViewController <DirectoryWatcherDelegate, UIDocumentInteractionControllerDelegate>
+
+@property (nonatomic, strong) DirectoryWatcher *dirWatcher;
+@property (nonatomic, strong) NSURL *selectedFile;
+@property (nonatomic, strong) FolderTableViewDataSource *folderDatasource;
+@property (nonatomic, strong) id<DocumentFilter> documentFilter;
+
+- (void)directoryDidChange:(DirectoryWatcher *)folderWatcher;
+- (void)detailViewControllerChanged:(NSNotification *)notification;
 @end

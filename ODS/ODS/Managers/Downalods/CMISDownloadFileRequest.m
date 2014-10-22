@@ -41,7 +41,7 @@
                     ODSLogError(@"%@", sessionError);
                     [self downloadFailed];
                 }else {
-                    self.currentRequest = [session downloadContentOfCMISObject:[[self downloadInfo] cmisObjectId] toFile:@""
+                    self.currentRequest = [session downloadContentOfCMISObject:[[self downloadInfo] cmisObjectId] toFile:_downloadInfo.tempFilePath
                                                                completionBlock:^(NSError *error){
                                                                    if (error) {
                                                                        ODSLogError(@"%@", error);
@@ -78,16 +78,37 @@
 #pragma Helpers
 - (void) downloadStarted {
     [[self downloadInfo] setDownloadStatus:DownloadInfoStatusDownloading];
+    [[self cancelledLock] lock];
+    
+    if (self.queue && [self.queue respondsToSelector:@selector(requestStarted:)]) {
+        [self.queue performSelector:@selector(requestStarted:) withObject:self];
+    }
+    
+    [[self cancelledLock] unlock];
 }
 
 - (void) downloadFinished {
-    [self setComplete:YES];
     [[self downloadInfo] setDownloadStatus:DownloadInfoStatusDownloaded];
+    [[self cancelledLock] lock];
+    
+    if (self.queue && [self.queue respondsToSelector:@selector(requestFinished:)]) {
+        [self.queue performSelector:@selector(requestFinished:) withObject:self];
+    }
+    
+    [[self cancelledLock] unlock];
+    [self setComplete:YES];
 }
 
 - (void) downloadFailed {
-    [self setComplete:YES];
     [[self downloadInfo] setDownloadStatus:DownloadInfoStatusFailed];
+    [[self cancelledLock] lock];
+    
+    if (self.queue && [self.queue respondsToSelector:@selector(requestFailed:)]) {
+        [self.queue performSelector:@selector(requestFailed:) withObject:self];
+    }
+    
+    [[self cancelledLock] unlock];
+    [self setComplete:YES];
 }
 
 - (void) updateDownloadProgress {

@@ -72,6 +72,53 @@
     return cmisRequest;
 }
 
+/**
+ * Retrieves the children(folder only) for the given object identifier.
+ * completionBlock returns object list or nil if unsuccessful
+ */
+- (CMISRequest*)retrieveFolderTree:(NSString *)objectId
+                           orderBy:(NSString *)orderBy
+                            filter:(NSString *)filter
+                     relationships:(CMISIncludeRelationship)relationships
+                   renditionFilter:(NSString *)renditionFilter
+           includeAllowableActions:(BOOL)includeAllowableActions
+                includePathSegment:(BOOL)includePathSegment
+                         skipCount:(NSNumber *)skipCount
+                          maxItems:(NSNumber *)maxItems
+                   completionBlock:(void (^)(CMISObjectList *objectList, NSError *error))completionBlock {
+    NSString *objectUrl = [self retrieveObjectUrlForObjectWithId:objectId selector:kCMISBrowserJSONSelectorFolderTree];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterFilter value:filter urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterOrderBy value:orderBy urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeAllowableActions boolValue:includeAllowableActions urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment boolValue:includePathSegment urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISBrowserJSONParameterSuccinct value:kCMISParameterValueTrue urlString:objectUrl];
+    
+    CMISRequest *cmisRequest = [[CMISRequest alloc] init];
+    
+    [self.bindingSession.networkProvider invokeGET:[NSURL URLWithString:objectUrl]
+                                           session:self.bindingSession
+                                       cmisRequest:cmisRequest
+                                   completionBlock:^(CMISHttpResponse *httpResponse, NSError *error) {
+                                       if (httpResponse.statusCode == 200 && httpResponse.data) {
+                                           CMISBrowserTypeCache *typeCache = [[CMISBrowserTypeCache alloc] initWithRepositoryId:self.bindingSession.repositoryId bindingService:self];
+                                           [CMISBrowserUtil objectListFromJSONData:httpResponse.data typeCache:typeCache isQueryResult:NO completionBlock:^(CMISObjectList *objectList, NSError *error) {
+                                               if (error) {
+                                                   completionBlock(nil, error);
+                                               } else {
+                                                   completionBlock(objectList, nil);
+                                               }
+                                           }];
+                                       } else {
+                                           completionBlock(nil, error);
+                                       }
+                                   }];
+    
+    return cmisRequest;
+}
 
 - (CMISRequest*)retrieveParentsForObject:(NSString *)objectId
                                   filter:(NSString *)filter

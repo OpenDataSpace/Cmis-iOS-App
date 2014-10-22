@@ -97,3 +97,16 @@ ALAsset *assetFromURL(NSURL* assetURL);
 void styleButtonAsDefaultAction(UIBarButtonItem *button);
 void styleButtonAsDestructiveAction(UIBarButtonItem *button);
 
+BOOL addSkipBackupAttributeToItemAtURL(NSURL *URL);
+
+//get storyboard instance
+UIStoryboard *instanceMainStoryboard();
+
+/* External API keys */
+typedef NS_ENUM(NSUInteger, APIKey)
+{
+    APIKeyFlurry = 0,
+    APIKeyQuickoffice,
+};
+
+NSString *externalAPIKey(APIKey apiKey);

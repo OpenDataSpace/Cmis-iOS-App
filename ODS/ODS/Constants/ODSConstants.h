@@ -65,8 +65,13 @@ extern unsigned int const kFileSuffixMaxAttempts;
 /**
  * The name of the images used in the UITableViewCells
  */
-NSString * const kServerIcon_ImageName;
-NSString * const kImageUIButtonBarBadgeError;
+extern NSString * const kServerIcon_ImageName;
+extern NSString * const kImageUIButtonBarBadgeError;
+
+/**
+ * The default UITableViewCell height
+ */
+extern CGFloat const kDefaultTableCellHeight;
 
 @interface ODSConstants : NSObject
 

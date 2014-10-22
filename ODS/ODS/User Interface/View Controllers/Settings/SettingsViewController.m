@@ -10,8 +10,17 @@
 
 #import "UISwitchTableViewCell.h"
 #import "CheckMarkTableViewCell.h"
+#import "DeleteCacheTableViewCell.h"
+#import "FileUtils.h"
+#import "PreviewCacheManager.h"
+
+#define kAlertTagCleanCache 10010
+
+static NSString * const kDeleteCacheModelIdentifier = @"DeleteCacheModelIdentifier";
 
 @interface SettingsViewController ()
+@property (nonatomic, strong) DirectoryWatcher *dirWatcher;
+@property (nonatomic, strong) DeleteCacheTableViewCell *cleanCacheCell;
 @end
 
 @implementation SettingsViewController
@@ -35,6 +44,9 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self.navigationItem setTitle:NSLocalizedString(@"settings.view.title", @"Settings")];
+    
+    [self setDirWatcher:[DirectoryWatcher watchFolderWithPath:[self directoryPreviewCache]
+                                                     delegate:self]];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -95,13 +107,15 @@
             [checkMarkController setCheckMarkCell:checkMarkCell];
             
             [self.navigationController pushViewController:checkMarkController animated:YES];
+        }else if ([cell isKindOfClass:[DeleteCacheTableViewCell class]]) {
+            [self alertCleanPreviewCache];
         }
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.tableHeaders) {
+    if (self.tableHeaders && [self.tableHeaders count] > section) {
        return [self.tableHeaders objectAtIndex:section];
     }
     return @"";
@@ -169,6 +183,18 @@
     if (settingItems) {  //to add the last section
         [self.tableSections addObject:settingItems];
     }
+    
+    //add preview cache clean button
+    NSMutableArray *deleteGroup = [NSMutableArray array];
+    DeleteCacheTableViewCell *cell = [[DeleteCacheTableViewCell alloc] initWithReuseIdentifier:@""];
+    [cell setModelIdentifier:kDeleteCacheModelIdentifier];
+    [cell.textLabel setText:NSLocalizedString(@"settings.cmisRepository.CleanPreviewCache", @"Clean Preview Caches")];
+    [cell.detailTextLabel setText:[[PreviewCacheManager sharedManager] previewCahceSize]];
+    
+    self.cleanCacheCell = cell;
+    [deleteGroup addObject:cell];
+    
+    [self.tableSections addObject:deleteGroup];
 }
 
 - (NSArray*) readCheckMarkOptions:(NSDictionary*) prefSpecification bundle:(NSBundle*) bundle {
@@ -200,4 +226,52 @@
     [[ODSUserDefaults standardUserDefaults] setInteger:index forKey:cell.modelIdentifier];
 }
 
+#pragma mark -
+#pragma mark Folder watcher Delegate
+- (void)directoryDidChange:(DirectoryWatcher *)folderWatcher {
+    self.cleanCacheCell.detailTextLabel.text = [[PreviewCacheManager sharedManager] previewCahceSize];
+}
+
+- (NSString*) directoryPreviewCache {
+    return [FileUtils pathToCacheFile:@""];
+}
+
+- (void) cleanPreviewCache {
+    __block MBProgressHUD *hud = createAndShowProgressHUDForView(self.navigationController.view);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[PreviewCacheManager sharedManager] removeAllCacheFiles];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.cleanCacheCell.detailTextLabel.text = [[PreviewCacheManager sharedManager] previewCahceSize];
+            stopProgressHUD(hud);
+            hud = nil;
+        });
+    });
+}
+
+- (void) alertCleanPreviewCache {
+    if (IS_IPAD) {
+        UIAlertView *alerView = [[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"confirm.cleanPreviewCache.prompt.message", @"") delegate:self cancelButtonTitle:NSLocalizedString(@"confirm.cleanPreviewCache.prompt.cancel", @"") otherButtonTitles:NSLocalizedString(@"confirm.cleanPreviewCache.prompt.ok", @""), nil];
+        alerView.tag = kAlertTagCleanCache;
+        [alerView show];
+    }else {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"confirm.cleanPreviewCache.prompt.message", @"") delegate:self cancelButtonTitle:NSLocalizedString(@"confirm.cleanPreviewCache.prompt.cancel", @"") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"confirm.cleanPreviewCache.prompt.ok", @""), nil];
+        actionSheet.tag = kAlertTagCleanCache;
+        [actionSheet showFromToolbar:self.navigationController.toolbar];
+    }
+}
+
+#pragma mark -
+#pragma mark UIAlertView delegate && UIActionSheet delegate
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == kAlertTagCleanCache && buttonIndex == 1) {  //clean cache
+        [self cleanPreviewCache];
+    }
+}
+
+- (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (actionSheet.tag == kAlertTagCleanCache && buttonIndex == 0) { //clean cache
+        [self cleanPreviewCache];
+    }
+}
 @end

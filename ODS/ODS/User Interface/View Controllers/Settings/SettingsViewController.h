@@ -9,7 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "CustomTableViewController.h"
 #import "CheckMarkViewController.h"
+#import "DirectoryWatcher.h"
 
-@interface SettingsViewController : CustomTableViewController <CheckMarkDelegate>
+@interface SettingsViewController : CustomTableViewController <
+    CheckMarkDelegate,
+    DirectoryWatcherDelegate,
+    UIAlertViewDelegate,
+    UIActionSheetDelegate>
 
 @end

@@ -22,6 +22,7 @@ typedef enum
 
 @interface DownloadInfo : NSObject
 
+@property (nonatomic, strong) CMISObject *repositoryItem;
 @property (nonatomic, copy) NSString *tempFilePath;
 @property (nonatomic, copy) NSURL *downloadFileURL;
 @property (nonatomic, copy) NSString *selectedAccountUUID;
@@ -34,4 +35,5 @@ typedef enum
 @property (nonatomic, retain) CMISDownloadFileRequest *downloadRequest;
 @property (nonatomic, retain) NSError *error;
 
+- (id)initWithRepositoryItem:(CMISObject *)repositoryItem withAcctUUID:(NSString*)acctUUID withRepositoryID:(NSString*)repositoryID withTenantID:(NSString*) tenantID;
 @end

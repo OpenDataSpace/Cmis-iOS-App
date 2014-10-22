@@ -7,7 +7,11 @@
 //
 
 #import "CustomTableViewController.h"
+#import "DownloadManager.h"
+#import "DownloadInfo.h"
 
-@interface ActiveDownloadsViewController : CustomTableViewController
-
+@interface ActiveDownloadsViewController : CustomTableViewController <UIAlertViewDelegate>
+@property (nonatomic, strong) NSMutableArray *activeDownloads;
+@property (nonatomic, strong) UIButton *clearButton;
+@property (nonatomic, strong) UIAlertView *alertView;
 @end

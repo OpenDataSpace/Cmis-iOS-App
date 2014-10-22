@@ -69,6 +69,11 @@ unsigned int const kFileSuffixMaxAttempts = 1000;
 NSString * const kServerIcon_ImageName = @"server";
 NSString * const kImageUIButtonBarBadgeError = @"ui-button-bar-badge-error.png";
 
+/**
+ * The default UITableViewCell height
+ */
+CGFloat const kDefaultTableCellHeight = 60.0f;
+
 @implementation ODSConstants
 
 @end

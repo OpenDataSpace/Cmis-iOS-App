@@ -8,6 +8,8 @@
 
 #import "RepositoryViewCell.h"
 
+NSString * const kRepositoryCellIdentifier = @"RepositoryCellIdentifier";
+
 @implementation RepositoryViewCell
 
 - (void)awakeFromNib

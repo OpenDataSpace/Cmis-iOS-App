@@ -134,4 +134,21 @@ DetailNavigationController *detailController;
     return objectID;
 }
 
++ (NSURL *)getCurrentDetailViewControllerFileURL
+{
+    NSURL *fileURL = nil;
+    
+//    if ([detailController.detailViewController isKindOfClass:[DocumentViewController class]])
+//    {
+//        fileURL = [NSURL fileURLWithPath:[((DocumentViewController *)detailController.detailViewController) filePath]];
+//    }
+    
+    return fileURL;
+}
+
++ (void)showMasterPopover
+{
+    [detailController showMasterPopoverController];
+}
+
 @end

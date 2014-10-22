@@ -10,6 +10,7 @@
 #import "TVOutManager.h"
 #import "UIDeviceHardware.h"
 #import "Flurry.h"
+#import "AppUrlManager.h"
 
 #import "DetailNavigationController.h"
 
@@ -21,7 +22,8 @@ static NSArray *unsupportedDevices;
 @end
 
 @implementation AppDelegate
-
+@synthesize tabBarController = _tabBarController;
+@synthesize downloadNavController = _downloadNavController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -32,18 +34,20 @@ static NSArray *unsupportedDevices;
     ODSLogInfo(@"%@ %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"], buildTime);
     
     //Initial UI from storyboard
-    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:IS_IPAD?kMainStoryboardNameiPad:kMainStoryboardNameiPhone bundle:nil];
+    UIStoryboard *mainStoryboard = instanceMainStoryboard();
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = [mainStoryboard instantiateInitialViewController];
     
     if (IS_IPAD) {
-        UISplitViewController *splitController = (UISplitViewController*)self.window.rootViewController;
+        UISplitViewController *splitController = (UISplitViewController*)self.window.rootViewController;        
         DetailNavigationController *detailController = nil;
         for (UIViewController *controller in [splitController viewControllers]) {
+            if ([controller isKindOfClass:[UITabBarController class]]) {
+                _tabBarController = (UITabBarController*)controller;
+            }
             if ([controller isKindOfClass:[DetailNavigationController class]]) {
                 detailController = (DetailNavigationController*)controller;
-                break;
             }
         }
         
@@ -53,8 +57,13 @@ static NSArray *unsupportedDevices;
             [IpadSupport registerGlobalDetail:detailController];
         }
         
+        self.mainViewController = splitController;
+    }else {
+        self.mainViewController = self.window.rootViewController;
+        _tabBarController = (UITabBarController*)self.mainViewController;
     }
-
+    
+    _downloadNavController = [[_tabBarController viewControllers] objectAtIndex:1];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     
@@ -119,6 +128,12 @@ static NSArray *unsupportedDevices;
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark - App Delegate - Document Support
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [[AppUrlManager sharedManager] handleUrl:url annotation:annotation];
 }
 
 #pragma mark -

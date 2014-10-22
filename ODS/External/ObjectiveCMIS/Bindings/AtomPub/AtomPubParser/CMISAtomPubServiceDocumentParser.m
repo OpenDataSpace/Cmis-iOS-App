@@ -88,7 +88,7 @@
     return parseSuccessful;
 }
 
-- (NSArray *)workspaces
+- (NSArray *)workspaces                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 {
     return [NSArray arrayWithArray:self.internalWorkspaces];
 }

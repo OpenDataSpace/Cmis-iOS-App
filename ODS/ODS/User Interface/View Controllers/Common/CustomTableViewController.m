@@ -8,8 +8,6 @@
 
 #import "CustomTableViewController.h"
 
-#define DEFAULT_TABLE_CELL_HEIGHT   62.0f
-
 @interface CustomTableViewController ()
 @end
 
@@ -45,7 +43,7 @@
         [self setRefreshControl:refreshControl];
         
         //endfresh
-        [self endRefreshing];
+        [self endRefreshingState];
         
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
@@ -65,7 +63,7 @@
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return DEFAULT_TABLE_CELL_HEIGHT;
+    return kDefaultTableCellHeight;
 }
 
 - (UITableViewCell*) createTableViewCellFromNib:(NSString*) nibName {
@@ -95,9 +93,13 @@
     }
 }
 
-- (void) endRefreshing {
+- (void) endRefreshingState {
     [self.refreshControl endRefreshing];
     self.refreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:NSLocalizedString(@"Pull down to refresh...", @"Pull down to refresh...")];
+}
+
+- (void) endRefreshing {
+    [self endRefreshingState];
     [self.tableView reloadData];
 }
 

@@ -8,6 +8,9 @@
 
 #import "CMISUtility.h"
 #import "CMISSessionParameters.h"
+#import "CMISFolder.h"
+#import "CMISConstants.h"
+#import "CMISOperationContext.h"
 
 @implementation CMISUtility
 
@@ -47,7 +50,7 @@
     if ([cmisType integerValue] == CMISBindingTypeAtomPub) {
         protocolString = NSLocalizedString(@"cmis.binding.type.atompub", @"Atompub");
     }else if ([cmisType integerValue] == CMISBindingTypeBrowser) {
-        protocolString = NSLocalizedString(@"cmis.binding.type.browse", @"Browse");
+        protocolString = NSLocalizedString(@"cmis.binding.type.browser", @"Browser");
     }
     
     return protocolString;
@@ -71,5 +74,14 @@
     return sessionParameters;
 }
 
+/* Rename File or Folder */
++ (void) renameWithItem:(CMISObject*) item newName:(NSString*) newName withCompletionBlock:(void (^)(CMISObject *object, NSError *error))completionBlock {
+    NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:newName, kCMISPropertyName, nil];
+    [item updateProperties:param completionBlock:^(CMISObject *object, NSError *error) {
+        if (completionBlock) {
+            completionBlock(object, error);
+        }
+    }];
+}
 
 @end

@@ -215,7 +215,7 @@ NSInteger const kDeleteCounterTag =  6;
     if (buttonIndex == 0)
     {
         [self cancelDeleteOperation];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(deleteQueueWasCancelled:completedDeletes:)])
+        if (self.delegate && [self.delegate respondsToSelector:@selector(deleteQueueWasCancelled:)])
         {
             [self.delegate deleteQueueWasCancelled:self];
         }

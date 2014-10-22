@@ -29,6 +29,9 @@
 #import "AccountManager.h"
 #import "AccountInfo+URL.h"
 #import "CMISConstants.h"
+#import "DetailNavigationController.h"
+
+#import <sys/xattr.h>
 
 static NSDictionary *iconMappings;
 static NSDictionary *mimeMappings;
@@ -480,7 +483,7 @@ SystemNotice *displayInformationMessage(NSString *message)
 UIView *activeView(void)
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    /*DetailNavigationController *detailNavigation = (DetailNavigationController *)[[(UISplitViewController *)appDelegate.mainViewController viewControllers] objectAtIndex:1];
+    DetailNavigationController *detailNavigation = (DetailNavigationController *)[[(UISplitViewController *)appDelegate.mainViewController viewControllers] objectAtIndex:1];
     if (appDelegate.mainViewController.presentedViewController)
     {
         //To work around a system notice that is tried to be presented in a modal view controller
@@ -498,8 +501,7 @@ UIView *activeView(void)
             return detailNavigation.view;
         }
     }
-    return appDelegate.mainViewController.view;*/
-    return nil;
+    return appDelegate.mainViewController.view;
 }
 
 //shared ALAssetsLibrary
@@ -539,3 +541,45 @@ void styleButtonAsDestructiveAction(UIBarButtonItem *button)
     [button setTintColor:actionColor];
 }
 
+
+extern NSString *const NSURLIsExcludedFromBackupKey __attribute__((weak_import));
+
+BOOL addSkipBackupAttributeToItemAtURL(NSURL *URL)
+{
+    BOOL returnValue = NO;
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"5.1"))
+    {
+        const char *filePath = [[URL path] fileSystemRepresentation];
+        const char *attrName = "com.apple.MobileBackup";
+        u_int8_t attrValue = 1;
+        
+        int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
+        returnValue = (result == 0);
+    }
+    else
+    {
+        NSError *error = nil;
+        returnValue = [URL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
+    }
+    
+    return returnValue;
+}
+
+//get storyboard instance
+UIStoryboard *instanceMainStoryboard() {
+    return [UIStoryboard storyboardWithName:IS_IPAD?kMainStoryboardNameiPad:kMainStoryboardNameiPhone bundle:nil];
+}
+
+NSString *externalAPIKey(APIKey apiKey)
+{
+    if (!apiKeys)
+    {
+        // We could use an NSArray here, but the binding between enum value and array index would be weak
+        apiKeys = [[NSDictionary alloc] initWithObjectsAndKeys:
+                   @"ODS_FLURRY_API_KEY", [NSNumber numberWithInt:APIKeyFlurry],
+                   @"", [NSNumber numberWithInt:APIKeyQuickoffice],
+                   nil];
+    }
+    return [apiKeys objectForKey:[NSNumber numberWithInt:apiKey]];
+}

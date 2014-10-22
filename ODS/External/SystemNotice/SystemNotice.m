@@ -238,6 +238,7 @@ CGFloat hiddenYOrigin;
         CGRect newFrame = self.noticeView.frame;
         newFrame.origin.y = self.offsetY;
         self.noticeView.frame = newFrame;
+        [self.noticeView setNeedsDisplay];
     } completion:^(BOOL finished){
         [self performSelector:@selector(dismissNotice) withObject:nil afterDelay:self.displayTime];
     }];

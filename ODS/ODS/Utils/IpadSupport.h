@@ -23,4 +23,6 @@
 + (void)pushDetailController:(UIViewController *)newController withNavigation:(UINavigationController *)navController andSender:(id)sender;
 
 + (NSString *)getCurrentDetailViewControllerObjectID;
++ (NSURL *)getCurrentDetailViewControllerFileURL;
++ (void)showMasterPopover;
 @end

@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CustomTableViewController.h"
 
-@interface MetadataViewController : UITableViewController
+@interface MetadataViewController : CustomTableViewController
+@property (nonatomic, strong) CMISObject    *cmisObject;
+@property (nonatomic, copy) NSString        *selectedAccountUUID;
+@property (nonatomic, copy) NSString        *repositoryID;
 
+- (id)initWithStyle:(UITableViewStyle)style cmisObject:(CMISObject *)cmisObj accountUUID:(NSString *)uuid repositoryID:(NSString*) repoId;
 @end

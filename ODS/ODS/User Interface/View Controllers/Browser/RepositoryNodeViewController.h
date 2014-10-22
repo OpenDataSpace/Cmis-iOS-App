@@ -13,14 +13,20 @@
 #import "AGImagePickerController.h"
 #import "PhotoCaptureSaver.h"
 #import "DeleteQueueProgressBar.h"
+#import "MoveQueueProgressBar.h"
+#import "RenameQueueProgressBar.h"
 #import "MultiSelectActionsToolbar.h"
+#import "ChooserFolderViewController.h"
 
 @interface RepositoryNodeViewController : CustomTableViewController <
     AGImagePickerControllerDelegate,
     CreateFolderRequestDelegate,
     PhotoCaptureSaverDelegate,
     DeleteQueueDelegate,
+    MoveQueueDelegate,
+    RenameQueueDelegate,
     MultiSelectActionsDelegate,
+    ChooserFolderDelegate,
     UIActionSheetDelegate,
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate>
@@ -39,7 +45,8 @@
 
 @property (nonatomic, strong) CMISObject                *selectedItem;
 
-
 @property (nonatomic, strong) MultiSelectActionsToolbar *multiSelectToolbar;
 @property (nonatomic, strong) DeleteQueueProgressBar *deleteQueueProgressBar;
+@property (nonatomic, retain) MoveQueueProgressBar *moveQueueProgressBar;
+@property (nonatomic, retain) RenameQueueProgressBar *renameQueueProgressBar;
 @end

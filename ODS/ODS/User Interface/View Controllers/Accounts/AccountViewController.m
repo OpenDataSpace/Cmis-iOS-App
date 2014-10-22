@@ -327,6 +327,7 @@
     [self.acctInfo setPort:[switchButton isOn]?kFDHTTPS_DefaultPort:kFDHTTP_DefaultPort];
     TextFieldTableViewCell *cellPort = (TextFieldTableViewCell*)[self findeCellByModeIdentifier:kServerPort];
     [cellPort.textField setText:[self.acctInfo port]];
+    [self.navigationItem.rightBarButtonItem setEnabled:[self validateAccountSettings]];
 }
 
 - (void) selectCheckMarkOption:(NSInteger) index withCell:(CheckMarkTableViewCell*) cell {
@@ -336,5 +337,6 @@
     
     TextFieldTableViewCell *cellServiceDoc = (TextFieldTableViewCell*)[self findeCellByModeIdentifier:kServerServiceDocumentRequestPath];
     [cellServiceDoc.textField setText:[self.acctInfo serviceDocumentRequestPath]];
+    [self.navigationItem.rightBarButtonItem setEnabled:[self validateAccountSettings]];
 }
 @end

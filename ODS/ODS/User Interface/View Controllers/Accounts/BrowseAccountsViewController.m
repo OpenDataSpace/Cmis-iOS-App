@@ -48,6 +48,8 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
     activeAccounts = nil;
     [[self navigationItem] setTitle:NSLocalizedString(@"browse.accounts.view.title", @"Accounts")];
     [self.tableView registerNib:[UINib nibWithNibName:@"AccountViewCell" bundle:nil] forCellReuseIdentifier:kBrowseAccountsCellIdentifier];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleBrowseDocuments:)
+                                                 name:kBrowseDocumentsNotification object:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -118,6 +120,27 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
             [self.navigationController pushViewController:repositoryController animated:YES];
         }
     }];
+}
+
+#pragma mark -
+#pragma mark Notification Handler
+- (void)handleBrowseDocuments:(NSNotification *)notification
+{
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(handleBrowseDocuments:) withObject:notification waitUntilDone:NO];
+        return;
+    }
+    
+    NSString *uuidToBrowse = [[notification userInfo] objectForKey:@"accountUUID"];
+    AccountInfo *accountInfo = [[AccountManager sharedManager] accountInfoForUUID:uuidToBrowse];
+    
+    [self loadRepositoriesWithAccount:accountInfo];
+    
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {  //to fix ios6 have no such property
+        [self tabBarController].tabBar.translucent = NO;
+    }
+    
+    [[self tabBarController] setSelectedViewController:[self navigationController]];
 }
 
 @end

@@ -12,6 +12,10 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (nonatomic, strong) UIViewController *mainViewController;
+@property (nonatomic, strong) UITabBarController *tabBarController;
+@property (nonatomic, strong) UINavigationController *downloadNavController;
+
 - (void)presentModalViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
 @end

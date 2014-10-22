@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @class CMISSessionParameters;
+@class CMISFolder;
+@class CMISObject;
+@class CMISRequest;
+@class CMISOperationContext;
+
 
 @interface CMISUtility : NSObject
 + (NSArray*) filterRepositories:(NSArray*) repos;
@@ -18,4 +23,7 @@
 + (NSString*) defaultCmisDocumentServicePathWithType:(NSInteger) type;
 
 + (CMISSessionParameters*) sessionParametersWithAccount:(NSString*) acctUUID withRepoIdentifier:(NSString*) repoIdentifier;
+
+/* Rename File or Folder */
++ (void) renameWithItem:(CMISObject*) item newName:(NSString*) newName withCompletionBlock:(void (^)(CMISObject *object, NSError *error))completionBlock;
 @end

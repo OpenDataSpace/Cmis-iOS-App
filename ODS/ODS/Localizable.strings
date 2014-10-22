@@ -8,7 +8,7 @@
 
 /* CMIS Binding type */
 "cmis.binding.type.atompub" = "Atompub";
-"cmis.binding.type.browse" = "Browse";
+"cmis.binding.type.browser" = "Browser";
 
 /* Table View Controllers */
 "documents.view.title" = "Documents";
@@ -84,6 +84,10 @@
 "deleteprogress.file-left" = "1 item remaining";
 "deleteprogress.files-left" = "%d items remaining";
 
+/**/
+"noContentWarningMessage" = "This document has no content";
+"noContentWarningTitle" = "No Content";
+
 /* create links */
 "create-link.fields.email" = "Email";
 "create-link.fields.subject" = "Subject";
@@ -97,8 +101,49 @@
 "create-link.failure" = "Failed to create link.";
 
 /* Downloads View */
+"download.failures.title" = "Download Failures";
+"download.failures.retryAll" = "Retry All";
+"download.failures.clearAll" = "Clear All";
+"download.failuresView.title" = "Failures";
+"download.failureDetail.title" = "Failed Download";
+"download.progress.waiting" = "Waiting to download ...";
+"download.progress.starting" = "Download starting ...";
+"download.progress.successed" = "Download finished.";
+"dwonload.ismanaged" = "have already downloaded.";
+"download.progress.files.starting" = " files download starting ...";
+"download.progress.failed" = "Failed to download";
+"download.progress.stopAll" = "Stop All";
+"download.progress.details" = "%@ of %@";
+"download.summary.title" = "In Progress";
+"download.summary.details" = "%@ remaining";
+"download.cancel.title" = "Downloads";
+"download.cancel.body" = "Would you like to stop downloading %@?";
+"download.cancelAll.body" = "Would you like to stop all downloads?";
+
+"downloadview.footer.one-document" = "1 Document";
+"downloadview.footer.multiple-documents" = "%d Documents";
+"downloadview.footer.no-documents" = "No Downloaded Documents";
+
+/* Document preview */
+"documentview.action.openin" = "Open in...";
+"documentview.action.email.attachment" = "Email as Attachment";
+"documentview.action.email.link" = "Email as Link";
+"documentview.action.download" = "Download";
+"documentview.action.delete" = "Delete";
+"documentview.action.print" = "Print";
+"documentview.action.review" = "Send for review";
+"documentview.action.review.defaulttext" = "Review";
+
+/* Email */
+"email.body.link" = "Link to %@";
+"email.footer.text" = "Sent from my document repository using ODS+, the native iPhone CMIS client";
+"email.footer.html" = "Sent from my document repository using <a href=\"https://itunes.apple.com/us/app/ods/id771367239?ls=1&mt=8\">ODS+</a>, the native iPhone CMIS client";
 
 /* Settings View */
+"confirm.cleanPreviewCache.prompt.message" = "Are you sure to clean preview caches?";
+"confirm.cleanPreviewCache.prompt.ok" = "Clean";
+"confirm.cleanPreviewCache.prompt.cancel" = "Cancel";
+"settings.cmisRepository.CleanPreviewCache" = "Clean Preview Caches";
 
 /* Manage Accounts View */
 "serverlist.cell.noaccounts" = "No Accounts";
@@ -179,6 +224,30 @@
 "audiorecord.play" = "Play";
 "audiorecord.stop" = "Stop";
 "audiorecord.record" = "Record";
+
+/* Metadata view */
+"metadata.group.header.general" = "General";
+"metadata.group.header.preview"="PREVIEW";
+"metadata.group.header.action"="ACTIONS";
+
+"metadata.button.download"="Download";
+
+"metadata.error.notfound" = "The repository could not find metadata for this document";
+"metadata.error.cell.notfound" = "Metadata could not be found";
+"metadata.error.cell.requestfailed" = "Metadata currently unavailable";
+"metadata.error.cell.notsaved" = "No Metadata available";
+"metadata.error.alert.title" = "Error";
+
+"cmis:name" = "Name";
+"cm:title" = "Title";
+"cm:description" = "Description";
+"cmis:createdBy" = "Created By";
+"cmis:creationDate" = "Creation Date";
+"cmis:lastModifiedBy" = "Last Modified By";
+"cmis:lastModificationDate" = "Last Modification Date";
+"cm:author" = "Author";
+"cmis:versionLabel" = "Version Label";
+"cmis:thumbnail" = "PREVIEW";
 
 /* Button Captions */
 "cancelButton" = "Cancel";

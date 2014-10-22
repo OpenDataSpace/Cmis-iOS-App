@@ -12,12 +12,24 @@
 #import "UploadFormViewController.h"
 #import "FileUtils.h"
 #import "UITableView+LongPress.h"
+#import "DownloadManager.h"
+#import "LocalFileManager.h"
+#import "DownloadInfo.h"
+#import "DocumentViewController.h"
+#import "AccountManager.h"
+#import "PreviewCacheManager.h"
+#import "MetadataViewController.h"
 
 #import "CMISFolder.h"
 #import "CMISPagedResult.h"
 #import "CMISConstants.h"
+#import "CMISRequest.h"
+#import "CMISUtility.h"
+#import "CMISSession.h"
+#import "CMISOperationContext.h"
 
-static NSString * const kRepositoryNodeCellIdentifier = @"RepositoryNodeCellIdentifier";
+NSInteger const kDownloadFolderAlert = 1;
+NSInteger const kConfirmMultipleDeletePrompt = 4;
 
 //action sheet tags
 static NSInteger const kAddActionSheetTag = 100;
@@ -36,11 +48,16 @@ NSString * const kMultiSelectMove = @"moveAction";
     NSMutableArray *itemsToMove_;
 }
 
+@property (nonatomic, strong) CMISRequest   *currentPreviewRequest;
+//@property (nonatomic, strong) CMISObject    *currentPreviewItem;
+//@property (nonatomic, strong) NSString      *previewItemDownloadPath;
 @end
 
 @implementation RepositoryNodeViewController
+@synthesize moveQueueProgressBar = _moveQueueProgressBar;
 
 - (void) dealloc {
+    [self cancelPreview];
     [self.multiSelectToolbar removeFromSuperview];
 }
 
@@ -126,6 +143,7 @@ NSString * const kMultiSelectMove = @"moveAction";
             [self loadFolderChildren:(CMISFolder*)fileObj];
         }else {
             //Preview Document
+            [self previewItem:fileObj];
         }
         
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -159,6 +177,29 @@ NSString * const kMultiSelectMove = @"moveAction";
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"accessoryButtonTappedForRowWithIndexPath:%ld", (long)indexPath.row);
+    RepositoryNodeViewCell * cell = (RepositoryNodeViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+    CMISObject *fileObj = [[self.pagedFolders resultArray] objectAtIndex:[indexPath row]];
+    if (cell.isDownloadingPreview) { //cancel preview
+        [self cancelPreview];
+    }else { //display item metadata
+        //[self showMetadata:fileObj];
+        CMISOperationContext *opContext = [CMISOperationContext defaultOperationContext];
+        opContext.renditionFilterString = @"cmis:thumbnail";
+        [self startHUD];
+        [fileObj.session retrieveObject:fileObj.identifier operationContext:opContext completionBlock:^(CMISObject *object, NSError *error) {
+            [self stopHUD];
+            if (object) {
+                [self showMetadata:object];
+            }else {  //TODO: show error message
+//                SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
+//                                                                    inView:activeView()
+//                                                                   message:[NSString stringWithFormat:@"%@ %@", _cmisObject.name, NSLocalizedString(@"dwonload.ismanaged", @"Retire object failed.")]
+//                                                                     title:@""];
+//                notice.displayTime = 3.0;
+//                [notice show];
+            }
+        }];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didRecognizeLongPressOnRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -526,23 +567,26 @@ NSString * const kMultiSelectMove = @"moveAction";
     {
         [self showRenameItemPrompt];
     }
-//    else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.move", @"Move")])
-//    {
-//        [_itemsToMove release];
-//        _itemsToMove = [[NSMutableArray alloc] initWithObjects:_selectedItem, nil];
-//        [self showChooseMoveTarget];
-//    }else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.download", @"Download")]){
-//        if (_selectedItem) {
-//            NSString *downloadMessage  = [NSString stringWithFormat:@"%@ %@", [_selectedItem title], NSLocalizedString(@"download.progress.starting", @"Download starting...")];
-//            SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
-//                                                                inView:activeView()
-//                                                               message:downloadMessage
-//                                                                 title:@""];
-//            notice.displayTime = 3.0;
-//            [notice show];
-//            [[DownloadManager sharedManager] queueRepositoryItems:[NSArray arrayWithObject:_selectedItem] withAccountUUID:self.selectedAccountUUID andTenantId:self.tenantID];
-//        }
-//    }else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.createlink", @"Create Download Link")]) {
+   else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.move", @"Move")])
+    {
+        itemsToMove_ = [[NSMutableArray alloc] initWithObjects:_selectedItem, nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showChooseMoveTarget];
+        });
+    }
+    else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.download", @"Download")]){
+        if (_selectedItem) {
+            NSString *downloadMessage  = [NSString stringWithFormat:@"%@ %@", [_selectedItem name], NSLocalizedString(@"download.progress.starting", @"Download starting...")];
+            SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
+                                                                inView:activeView()
+                                                               message:downloadMessage
+                                                                 title:@""];
+            notice.displayTime = 3.0;
+            [notice show];
+            [[DownloadManager sharedManager] queueRepositoryItems:[NSArray arrayWithObject:_selectedItem] withAccountUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier andTenantId:nil];
+        }
+    }
+//        else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.createlink", @"Create Download Link")]) {
 //        if (_selectedItem) {
 //            CreateLinkViewController *createLinkController = [[CreateLinkViewController alloc] initWithRepositoryItem:_selectedItem accountUUID:self.selectedAccountUUID];
 //            if ([self.folderItems item]) {
@@ -936,6 +980,22 @@ NSString * const kMultiSelectMove = @"moveAction";
     }
 }
 
+- (void)showChooseMoveTarget
+{
+    ChooserFolderViewController *chooseFolder = [[ChooserFolderViewController alloc] initWithAccountUUID:self.selectedAccountUUID];
+    AccountInfo *accountInfo = [[AccountManager sharedManager] accountInfoForUUID:self.selectedAccountUUID];
+    chooseFolder.viewTitle = [accountInfo description];
+    chooseFolder.itemType = kMoveTargetTypeRepo;
+    chooseFolder.selectedDelegate = self;
+    [chooseFolder setModalPresentationStyle:UIModalPresentationFormSheet];
+    [IpadSupport presentModalViewController:chooseFolder withNavigation:self.navigationController];
+}
+
+- (void) showMetadata:(CMISObject*) item {
+    MetadataViewController *metadataViewController = [[MetadataViewController alloc] initWithStyle:UITableViewStyleGrouped cmisObject:item accountUUID:self.selectedAccountUUID repositoryID:self.repositoryIdentifier];
+    [IpadSupport pushDetailController:metadataViewController withNavigation:self.navigationController andSender:self];
+}
+
 #pragma mark - UIAlertView Delegate 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -944,20 +1004,15 @@ NSString * const kMultiSelectMove = @"moveAction";
         [self dismissPopover];
     }
     
-//    if (alertView.tag == kDownloadFolderAlert)
-//    {
-//        [self continueDownloadFromAlert:alertView clickedButtonAtIndex:buttonIndex];
-//    }
-//    else if (alertView.tag == kConfirmMultipleDeletePrompt)
-//    {
-//        if (buttonIndex != alertView.cancelButtonIndex)
-//        {
-//            [self didConfirmMultipleDelete];
-//        }
-//        [self setEditing:NO];
-//    }
-//    else
-    if (alertView.tag == kDeleteFileAlert)
+    if (alertView.tag == kConfirmMultipleDeletePrompt)
+    {
+        if (buttonIndex != alertView.cancelButtonIndex)
+        {
+            [self didConfirmMultipleDelete];
+        }
+        [self setEditing:NO];
+    }
+    else if (alertView.tag == kDeleteFileAlert)
     {
         if (buttonIndex != alertView.cancelButtonIndex && _selectedItem)
         {
@@ -1030,9 +1085,66 @@ NSString * const kMultiSelectMove = @"moveAction";
     [self setEditing:NO];
 }
 
+#pragma mark - RenameQueueProgressBar Delegate Methods
+- (void)moveQueue:(MoveQueueProgressBar *)moveQueueProgressBar completedMoves:(NSArray *)movedItems {
+    
+    for (CMISObject *item in movedItems)
+    {
+        if (IS_IPAD && [item.identifier isEqualToString:[IpadSupport getCurrentDetailViewControllerObjectID]]) {
+            
+            [IpadSupport clearDetailController];
+        }
+    }
+    
+    [self reloadDataSource];
+    
+    [self setEditing:NO];
+}
+
+- (void)moveQueueWasCancelled:(MoveQueueProgressBar *)moveQueueProgressBar {
+    self.moveQueueProgressBar = nil;
+    [self setEditing:NO];
+}
+
 #pragma mark - Rename File & Folder
 - (void) renameItem:(NSString*) newFileName
 {
+    if (_selectedItem && newFileName) {
+        self.renameQueueProgressBar = [RenameQueueProgressBar createWithItem:_selectedItem withNewName:newFileName delegate:self andMessage:NSLocalizedString(@"Rename.progressbar.message", @"Renaming Item")];
+        [self.renameQueueProgressBar setSelectedUUID:self.selectedAccountUUID];
+        [self.renameQueueProgressBar setTenantID:nil];
+        [self.renameQueueProgressBar startRenaming];
+    }
+}
+
+#pragma mark - RenameQueueProgressBar Delegate Methods
+
+- (void)renameQueue:(RenameQueueProgressBar *)renameQueueProgressBar completedRename:(id)renamedItem
+{
+    CMISObject *item =  (CMISObject*) renamedItem;
+    if (IS_IPAD && [item.identifier isEqualToString:[IpadSupport getCurrentDetailViewControllerObjectID]]) {
+        
+        [IpadSupport clearDetailController];
+    }
+    
+    [self.tableView setAllowsMultipleSelectionDuringEditing:NO];
+    [self.tableView setEditing:NO animated:YES];
+    [self reloadDataSource];
+}
+
+- (void)renameQueueWasCancelled:(RenameQueueProgressBar *)renameQueueProgressBar
+{
+    self.renameQueueProgressBar = nil;
+    [self setEditing:NO];
+}
+
+#pragma mark - Chooser Folder Delegate
+- (void)selectedItem:(CMISObject *)selectedItem repositoryID:(NSString*) repoID{
+    self.moveQueueProgressBar = [MoveQueueProgressBar createWithItems:itemsToMove_ targetFolder:selectedItem delegate:self andMessage:NSLocalizedString(@"Moving Item", @"Moving Item")];
+    [self.moveQueueProgressBar setSelectedUUID:self.selectedAccountUUID];
+    [self.moveQueueProgressBar setTenantID:nil];
+    [self.moveQueueProgressBar setSourceFolderId:self.folder.identifier];
+    [self.moveQueueProgressBar startMoving];
 }
 
 #pragma mark - MultiSelectActionsDelegate Methods
@@ -1083,7 +1195,7 @@ NSString * const kMultiSelectMove = @"moveAction";
                                                              title:@""];
         notice.displayTime = 3.0;
         [notice show];
-        //[[DownloadManager sharedManager] queueRepositoryItems:selectedItems withAccountUUID:self.selectedAccountUUID andTenantId:self.tenantID];
+        [[DownloadManager sharedManager] queueRepositoryItems:selectedItems withAccountUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier andTenantId:nil];
         [self setEditing:NO];
     }
     else if ([name isEqual:kMultiSelectDelete])
@@ -1096,8 +1208,158 @@ NSString * const kMultiSelectMove = @"moveAction";
     {
         itemsToMove_ = nil;
         itemsToMove_ = [selectedItems copy];
-        //[self showChooseMoveTarget];
+        [self showChooseMoveTarget];
     }
+}
+
+#pragma mark -
+#pragma Preview Manager
+- (void) previewItem:(CMISObject*) item {
+    [self cancelPreview];
+    LocalFileManager *downloadManager = [LocalFileManager sharedInstance];
+    PreviewCacheManager *previewManager = [PreviewCacheManager sharedManager];
+    NSDictionary *previewInfo = [previewManager downloadInfoFromCache:item];
+    NSString *fileKey = [LocalFileManager objectIDFromFileObject:item];//
+    if ([downloadManager downloadExistsForObjectID:fileKey]) {   //use downloaded data
+        [self showDocument:item withPath:[FileUtils pathToSavedFile:fileKey]];
+    }else if ([previewManager previewFileExists:item] && previewInfo) {
+        [self showDocument:item withPath:[previewInfo objectForKey:@"path"]];
+    }else {
+        [self.tableView setAllowsSelection:NO];
+        //We fetch the current repository items from the DataSource
+        [self dwonlaodPreviewItem:item];
+    }
+}
+
+// Cancel current preview request
+- (void) cancelPreview {
+    if (self.currentPreviewRequest) {
+        [self.currentPreviewRequest cancel];
+        self.currentPreviewRequest = nil;
+    }
+}
+
+// download preview file
+- (void) dwonlaodPreviewItem:(CMISObject*) item {
+    [self downloadPreviewFileStarted:item];
+    CMISSessionParameters *params = [CMISUtility sessionParametersWithAccount:[self selectedAccountUUID] withRepoIdentifier:[self repositoryIdentifier]];
+    self.currentPreviewRequest = [CMISSession connectWithSessionParameters:params completionBlock:^(CMISSession *session, NSError *sessionError) {
+        if (session == nil) {
+            ODSLogError(@"%@", sessionError);
+            [self downlaodPreviewFileFailed:sessionError withItem:item];
+        }else {
+            PreviewCacheManager *previewManager = [PreviewCacheManager sharedManager];
+            self.currentPreviewRequest = [session downloadContentOfCMISObject:[item identifier] toFile:[previewManager generateTempPath:item]
+                                                       completionBlock:^(NSError *error){
+                                                           if (error) {
+                                                               ODSLogError(@"%@", error);
+                                                               [self downlaodPreviewFileFailed:error withItem:item];
+                                                           }else {
+                                                               [self downloadPreviewFileFinished:item];
+                                                           }
+                                                       } progressBlock:^(unsigned long long bytesDownloaded, unsigned long long bytesTotal){
+                                                           NSDictionary *progressInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLongLong:bytesDownloaded], @"DownloadedBytes", [NSNumber numberWithLongLong:bytesTotal], @"TotalBytes", item, @"Item", nil];
+                                                           [self performSelectorInBackground:@selector(updatePreviewDownloadProgress:) withObject:progressInfo];
+                                                       }];
+        }
+    }];
+}
+
+- (void) downlaodPreviewFileFailed:(NSError*) error withItem:(CMISObject*) item{
+    NSIndexPath *indexPath = [self getIndexPathForItem:item];
+    RepositoryNodeViewCell *cell = (RepositoryNodeViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    
+    [cell.progressBar setProgress:0.0f];
+    [cell.progressBar setHidden:YES];
+    [cell.lblDetails setHidden:NO];
+    [cell setIsDownloadingPreview:NO];
+    self.currentPreviewRequest = nil;
+    [self.tableView setAllowsSelection:YES];
+}
+
+- (void) downloadPreviewFileFinished:(CMISObject*) item {
+    NSIndexPath *indexPath = [self getIndexPathForItem:item];
+    RepositoryNodeViewCell *cell = (RepositoryNodeViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    
+    [cell.progressBar setProgress:0.0f];
+    [cell.progressBar setHidden:YES];
+    [cell.lblDetails setHidden:NO];
+    [cell setIsDownloadingPreview:NO];
+    
+    //cache file
+    PreviewCacheManager *previewManager = [PreviewCacheManager sharedManager];
+    DownloadInfo *downloadInfo = [[DownloadInfo alloc] initWithRepositoryItem:item withAcctUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier withTenantID:nil];
+    [downloadInfo setTempFilePath:[previewManager generateTempPath:item]];
+    [previewManager cachePreviewFile:downloadInfo];
+
+    [self showDocument:item withPath:[previewManager generateCachePath:item]];
+    
+    self.currentPreviewRequest = nil;
+    [self.tableView setAllowsSelection:YES];
+}
+
+- (void) downloadPreviewFileStarted:(CMISObject*) item {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSIndexPath *indexPath = [self getIndexPathForItem:item];
+        RepositoryNodeViewCell *cell = (RepositoryNodeViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        
+        [cell.progressBar setProgress:0.0f];
+        [cell.lblDetails setHidden:YES];
+        [cell.progressBar setHidden:NO];
+        [cell setIsDownloadingPreview:YES];
+    });
+}
+
+- (void) updatePreviewDownloadProgress:(NSDictionary*) progressInfo {
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        if (progressInfo) {
+            CMISObject *item = [progressInfo objectForKey:@"Item"];
+            RepositoryNodeViewCell *cell = (RepositoryNodeViewCell*)[self.tableView cellForRowAtIndexPath:[self getIndexPathForItem:item]];
+            if (cell) {
+                NSNumber *downloadBytes = [progressInfo objectForKey:@"DownloadedBytes"];
+                NSNumber *totalBytes = [progressInfo objectForKey:@"TotalBytes"];
+                [cell.progressBar setProgress:(downloadBytes.longLongValue*1.0)/totalBytes.longLongValue];
+            }
+        }
+    });
+}
+
+- (void) showDocument:(CMISObject*) item withPath:(NSString*) filePath{
+    UIStoryboard *mainStoryboard = instanceMainStoryboard();
+    DocumentViewController *doc = [mainStoryboard instantiateViewControllerWithIdentifier:@"DocumentControllerIdentifier"];
+    [doc setCmisObjectId:item.identifier];
+    //    [doc setContentMimeType:info.repositoryItem];
+    [doc setHidesBottomBarWhenPushed:YES];
+    [doc setSelectedAccountUUID:self.selectedAccountUUID];
+    [doc setTenantID:nil];
+    
+    DownloadInfo *info = [[DownloadInfo alloc] initWithRepositoryItem:item withAcctUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier withTenantID:nil];
+    DownloadMetadata *fileMetadata = info.downloadMetadata;
+    [doc setFileMetadata:fileMetadata];
+    [doc setFileName:item.name];
+    [doc setFilePath:filePath];
+    
+    // Special case in the iPhone to avoid chained animations when presenting the edit view
+    // only right after creating a file, otherwise we animate the transition
+    if (!IS_IPAD)
+    {
+        [self.navigationController pushViewController:doc animated:NO];
+    }
+    else
+    {
+        [IpadSupport pushDetailController:doc withNavigation:self.navigationController andSender:self];
+    }
+    [self.tableView setAllowsSelection:YES];
+}
+
+- (NSIndexPath *)getIndexPathForItem:(CMISObject *)item {
+    for (NSInteger i = 0; i < [self.pagedFolders.resultArray count]; i++) {
+        CMISObject *fileObj = [self.pagedFolders.resultArray objectAtIndex:i];
+        if ([fileObj.identifier isEqualToCaseInsensitiveString:item.identifier]) {
+            return [NSIndexPath indexPathForRow:i inSection:0];
+        }
+    }
+    return nil;
 }
 
 @end

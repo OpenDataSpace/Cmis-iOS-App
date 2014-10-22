@@ -16,6 +16,7 @@
         self.uploadProgressDelegate = nil;
         self.currentRequest = nil;
         self.error = nil;
+        self.delegate = nil;
         
         self.downloadedBytes = 0;
         self.sentBytes = 0;

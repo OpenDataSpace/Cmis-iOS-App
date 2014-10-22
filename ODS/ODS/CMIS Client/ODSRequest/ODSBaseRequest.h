@@ -15,6 +15,8 @@ typedef void (^ODSProgressBlock)(unsigned long long size, unsigned long long tot
 
 @interface ODSBaseRequest : NSOperation
 
+@property (assign, nonatomic) id                delegate;
+
 @property (assign, nonatomic) id                uploadProgressDelegate;
 @property (assign, nonatomic) id                downloadProgressDelegate;
 @property (strong, nonatomic) CMISRequest       *currentRequest;

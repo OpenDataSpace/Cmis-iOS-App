@@ -121,6 +121,59 @@
     return request;
 }
 
+/**
+ * Retrieves the children(folder) of this folder as a paged result using the provided operation context.
+ *
+ * The completionBlock will return paged results with instances of CMISObject or nil if unsuccessful.
+ */
+- (CMISRequest*)retrieveFolderTreeWithOperationContext:(CMISOperationContext *)operationContext completionBlock:(void (^)(CMISPagedResult *result, NSError *error))completionBlock {
+    CMISRequest *request = [[CMISRequest alloc] init];
+    CMISFetchNextPageBlock fetchNextPageBlock = ^(int skipCount, int maxItems, CMISFetchNextPageBlockCompletionBlock pageBlockCompletionBlock)
+    {
+        // Fetch results through navigationService
+        CMISRequest * childrenRequest = [self.binding.navigationService retrieveFolderTree:self.identifier
+                                                                                 orderBy:operationContext.orderBy
+                                                                                  filter:operationContext.filterString
+                                                                           relationships:operationContext.relationships
+                                                                         renditionFilter:operationContext.renditionFilterString
+                                                                 includeAllowableActions:operationContext.includeAllowableActions
+                                                                      includePathSegment:operationContext.includePathSegments
+                                                                               skipCount:[NSNumber numberWithInt:skipCount]
+                                                                                maxItems:[NSNumber numberWithInt:maxItems]
+                                                                         completionBlock:^(CMISObjectList *objectList, NSError *error) {
+                                                                             if (error) {
+                                                                                 pageBlockCompletionBlock(nil, [CMISErrors cmisError:error cmisErrorCode:kCMISErrorCodeConnection]);
+                                                                             } else {
+                                                                                 CMISFetchNextPageBlockResult *result = [[CMISFetchNextPageBlockResult alloc] init];
+                                                                                 result.hasMoreItems = objectList.hasMoreItems;
+                                                                                 result.numItems = objectList.numItems;
+                                                                                 
+                                                                                 [self.session.objectConverter convertObjects:objectList.objects
+                                                                                                              completionBlock:^(NSArray *objects, NSError *error) {
+                                                                                                                  result.resultArray = objects;
+                                                                                                                  pageBlockCompletionBlock(result, error);
+                                                                                                              }];
+                                                                             }
+                                                                         }];
+        
+        // set the underlying request object on the object returned to the original caller
+        request.httpRequest = childrenRequest.httpRequest;
+    };
+    
+    [CMISPagedResult pagedResultUsingFetchBlock:fetchNextPageBlock
+                                limitToMaxItems:operationContext.maxItemsPerPage
+                             startFromSkipCount:operationContext.skipCount
+                                completionBlock:^(CMISPagedResult *result, NSError *error) {
+                                    if (error) {
+                                        completionBlock(nil, [CMISErrors cmisError:error cmisErrorCode:kCMISErrorCodeRuntime]);
+                                    } else {
+                                        completionBlock(result, nil);
+                                    }
+                                }];
+    return request;
+}
+
+
 - (CMISRequest*)createFolder:(NSDictionary *)properties completionBlock:(void (^)(NSString *objectId, NSError *error))completionBlock
 {
     CMISRequest *request = [[CMISRequest alloc] init];

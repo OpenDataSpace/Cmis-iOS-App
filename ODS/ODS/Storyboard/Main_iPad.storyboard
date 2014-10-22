@@ -242,6 +242,9 @@
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XAB-2y-Bnc">
                                 <rect key="frame" x="134" y="780" width="500" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="500" id="eYN-c3-8qw"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -282,6 +285,66 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vqV-ZT-4xT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="544" y="2167"/>
+        </scene>
+        <!--Document View Controller-->
+        <scene sceneID="6go-dG-4tv">
+            <objects>
+                <viewController storyboardIdentifier="DocumentControllerIdentifier" id="uR6-0L-N2W" customClass="DocumentViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VHZ-QR-Y4P"/>
+                        <viewControllerLayoutGuide type="bottom" id="ZHe-AH-E7j"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3tx-xG-JqH">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsJ-oG-l4J">
+                                <rect key="frame" x="361" y="378" width="72" height="72"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="72" id="Rg0-zu-ITg"/>
+                                    <constraint firstAttribute="width" constant="72" id="vzP-IX-Y9U"/>
+                                </constraints>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="playButtonTapped:" destination="uR6-0L-N2W" eventType="touchUpInside" id="kBy-r6-G2a"/>
+                                </connections>
+                            </button>
+                            <webView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lO5-MD-X13" customClass="CustomWebView">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOY-cA-HyX">
+                                <rect key="frame" x="0.0" y="980" width="768" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Exu-Az-AOL"/>
+                                </constraints>
+                                <items/>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="fsJ-oG-l4J" secondAttribute="centerY" id="Oj5-T7-GJp"/>
+                            <constraint firstAttribute="bottom" secondItem="MOY-cA-HyX" secondAttribute="bottom" id="SLk-Cy-5nN"/>
+                            <constraint firstItem="MOY-cA-HyX" firstAttribute="leading" secondItem="3tx-xG-JqH" secondAttribute="leading" id="aqy-0U-Zlx"/>
+                            <constraint firstAttribute="bottom" secondItem="lO5-MD-X13" secondAttribute="bottom" constant="44" id="fr2-vF-6TV"/>
+                            <constraint firstItem="lO5-MD-X13" firstAttribute="top" secondItem="3tx-xG-JqH" secondAttribute="top" id="hw5-23-lS4"/>
+                            <constraint firstAttribute="trailing" secondItem="MOY-cA-HyX" secondAttribute="trailing" id="iDP-xb-jII"/>
+                            <constraint firstItem="lO5-MD-X13" firstAttribute="leading" secondItem="3tx-xG-JqH" secondAttribute="leading" id="tMu-So-9K6"/>
+                            <constraint firstAttribute="trailing" secondItem="lO5-MD-X13" secondAttribute="trailing" id="uIx-SX-ClQ"/>
+                            <constraint firstAttribute="centerX" secondItem="fsJ-oG-l4J" secondAttribute="centerX" id="y5V-aJ-RJk"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="documentToolbar" destination="MOY-cA-HyX" id="sCK-as-pxe"/>
+                        <outlet property="playMediaButton" destination="fsJ-oG-l4J" id="pLj-Jq-aoT"/>
+                        <outlet property="webView" destination="lO5-MD-X13" id="v57-sj-JBU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UYO-Ad-NO8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="544" y="3307"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="t9a-Jq-gt3">

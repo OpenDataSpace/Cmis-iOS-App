@@ -42,6 +42,21 @@
          completionBlock:(void (^)(CMISObjectList *objectList, NSError *error))completionBlock;
 
 /**
+ * Retrieves the children(folder only) for the given object identifier.
+ * completionBlock returns object list or nil if unsuccessful
+ */
+- (CMISRequest*)retrieveFolderTree:(NSString *)objectId
+                         orderBy:(NSString *)orderBy
+                          filter:(NSString *)filter
+                   relationships:(CMISIncludeRelationship)relationships
+                 renditionFilter:(NSString *)renditionFilter
+         includeAllowableActions:(BOOL)includeAllowableActions
+              includePathSegment:(BOOL)includePathSegment
+                       skipCount:(NSNumber *)skipCount
+                        maxItems:(NSNumber *)maxItems
+                 completionBlock:(void (^)(CMISObjectList *objectList, NSError *error))completionBlock;
+
+/**
  * Retrieves the parent of a given object.
  * Returns a list of CMISObjectData objects
  *

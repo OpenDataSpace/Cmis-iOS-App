@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString * const kRepositoryNodeCellIdentifier;
+
 @interface RepositoryNodeViewCell : UITableViewCell
 @property (nonatomic, weak) IBOutlet UIImageView    *imgIcon;
 @property (nonatomic, weak) IBOutlet UILabel        *lblFileName;
 @property (nonatomic, weak) IBOutlet UILabel        *lblDetails;
 @property (nonatomic, weak) IBOutlet UIProgressView *progressBar;
 @property (nonatomic, weak) IBOutlet UIImageView    *restrictedImage;  //Not use it at the moment
+
+@property (nonatomic, assign) BOOL  isDownloadingPreview;
 @end

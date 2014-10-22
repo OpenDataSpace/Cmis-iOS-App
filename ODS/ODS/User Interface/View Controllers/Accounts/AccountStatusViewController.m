@@ -10,6 +10,14 @@
 #import "UISwitchTableViewCell.h"
 #import "AccountViewController.h"
 #import "AccountManager.h"
+#import "CustomTableViewCell.h"
+#import "NSNotificationCenter+CustomNotification.h"
+
+static NSInteger kAlertPortProtocolTag = 0;
+static NSInteger kAlertDeleteAccountTag = 1;
+
+static NSString * const kBrowseDocumentCellModelIdentifier = @"BrowseDocumentCellModelIdentifier";
+static NSString * const kDeleteAccountCellModelIdentifier = @"DeleteAccountCellModelIdentifier";
 
 @interface AccountStatusViewController ()
 
@@ -102,18 +110,20 @@
     
     //browse documents (must be active)
     if ([self.acctInfo.accountStatusInfo isActive]) {
-        UITableViewCell *cellBrowse = [[UITableViewCell alloc] init];
+        CustomTableViewCell *cellBrowse = [[CustomTableViewCell alloc] init];
         [cellBrowse.textLabel setTextAlignment:NSTextAlignmentCenter];
         [cellBrowse.textLabel setText:NSLocalizedString(@"accountdetails.buttons.browse", @"Browse Documents")];
+        [cellBrowse setModelIdentifier:kBrowseDocumentCellModelIdentifier];
         [self.tableSections addObject:[NSArray arrayWithObject:cellBrowse]];
     }
     
     //delete account
-    UITableViewCell *cellDelete = [[UITableViewCell alloc] init];
+    CustomTableViewCell *cellDelete = [[CustomTableViewCell alloc] init];
     [cellDelete.textLabel setTextAlignment:NSTextAlignmentCenter];
     [cellDelete setBackgroundColor:[UIColor redColor]];
     [cellDelete.textLabel setTextColor:[UIColor whiteColor]];
     [cellDelete.textLabel setText:NSLocalizedString(@"accountdetails.buttons.delete", @"Delete Account")];
+    [cellDelete setModelIdentifier:kDeleteAccountCellModelIdentifier];
     [self.tableSections addObject:[NSArray arrayWithObject:cellDelete]];
 }
 
@@ -150,6 +160,24 @@
         }
     }
     return nil;
+}
+
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *optionsOfSection = nil;
+    
+    if (self.tableSections) {
+        optionsOfSection = [self.tableSections objectAtIndex:indexPath.section];
+        UITableViewCell *cell =  [optionsOfSection objectAtIndex:indexPath.row];
+        if ([cell isKindOfClass:[CustomTableViewCell class]]) {
+            CustomTableViewCell *customCell = (CustomTableViewCell*) cell;
+            if ([[customCell modelIdentifier] isEqualToCaseInsensitiveString:kBrowseDocumentCellModelIdentifier]) {
+                [self browseDocuments];
+            }else if ([[customCell modelIdentifier] isEqualToCaseInsensitiveString:kDeleteAccountCellModelIdentifier]) {
+                [self promptDeleteAccount];
+            }
+        }
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -196,4 +224,49 @@
         [self.tableView reloadData];
     }
 }
+
+- (void)browseDocuments {
+    [self.navigationController popToRootViewControllerAnimated:NO];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[self.acctInfo uuid] forKey:@"accountUUID"];
+    [[NSNotificationCenter defaultCenter] postBrowseDocumentsNotification:userInfo];
+}
+
+- (void)promptDeleteAccount
+{
+    //If this is the last qualifying account we want to warn the user that this is the last qualifying account.
+    UIAlertView *deletePrompt;
+    //Retrieving an updated accountInfo object for the uuid since it might contain an outdated isQualifyingAccount property
+    [self setAcctInfo:[[AccountManager sharedManager] accountInfoForUUID:[self.acctInfo uuid]]];
+//    if([self.acctInfo isQualifyingAccount] && [[AccountManager sharedManager] numberOfQualifyingAccounts] == 1)
+//    {
+//        deletePrompt = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"dataProtection.lastAccount.title", @"Data Protection")
+//                                                  message:NSLocalizedString(@"dataProtection.lastAccount.message", @"Last qualifying account...")
+//                                                 delegate:self
+//                                        cancelButtonTitle:NSLocalizedString(@"No", @"No")
+//                                        otherButtonTitles:NSLocalizedString(@"Yes", @"Yes"), nil];
+//    }
+//    else
+    {
+        deletePrompt = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"accountdetails.alert.delete.title", @"Delete Account")
+                                                  message:NSLocalizedString(@"accountdetails.alert.delete.confirm", @"Are you sure you want to remove this account?")
+                                                 delegate:self
+                                        cancelButtonTitle:NSLocalizedString(@"No", @"No")
+                                        otherButtonTitles:NSLocalizedString(@"Yes", @"Yes"), nil];
+    }
+    [deletePrompt setTag:kAlertDeleteAccountTag];
+    [deletePrompt show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if([alertView tag] == kAlertDeleteAccountTag)
+    {
+        if(buttonIndex == 1)
+        {
+            //Delete account
+            [[AccountManager sharedManager] removeAccountInfo:self.acctInfo];
+        }
+    }
+}
+
 @end

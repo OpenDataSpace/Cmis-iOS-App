@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UIPopoverController *masterPopoverController;
 @property (nonatomic, strong) UISplitViewController *splitViewController;
 @property (nonatomic, strong) UIViewController *fullScreenModalController;
+@property (nonatomic, copy) NSString *popoverButtonTitle;
 
 @property (nonatomic, strong) UIBarButtonItem *expandButton;
 @property (nonatomic, strong) UIBarButtonItem *closeButton;
@@ -25,5 +26,10 @@
 @property (nonatomic, assign) BOOL isExpanded;
 
 - (void)resetViewControllerStackWithNewTopViewController:(UIViewController *)newTopViewController dismissPopover:(BOOL)dismissPopover;
+- (void)addViewControllerToStack:(UIViewController *)newTopViewController;
+- (void)dismissPopover;
 - (void)showFullScreen;
+- (void)showFullScreenOnTopWithCloseButtonTitle:(NSString *)closeButtonTitle;
+- (void)showMasterPopoverController;
+- (void)performCloseAction:(id)sender;
 @end

@@ -9,10 +9,9 @@
 #import "AbstractDownloadManager.h"
 #import "CMISDownloadFileRequest.h"
 #import "DownloadInfo.h"
+#import "LocalFileManager.h"
 
-@interface AbstractDownloadManager() {
-    NSMutableDictionary *_allDownloads;
-}
+@interface AbstractDownloadManager()
 @property (nonatomic, strong, readwrite) ODSDownloadQueue *downloadQueue;
 @end
 
@@ -105,13 +104,26 @@
     [self.downloadQueue addOperation:request];
 }
 
+- (void)queueRepositoryItem:(CMISObject *)repositoryItem withAccountUUID:(NSString *)accountUUID  withRepositoryID:(NSString*)repositoryID andTenantId:(NSString *)tenantId
+{
+    DownloadInfo *downloadInfo = [[DownloadInfo alloc] initWithRepositoryItem:repositoryItem  withAcctUUID:accountUUID withRepositoryID:repositoryID withTenantID:tenantId];
+    [self queueDownloadInfo:downloadInfo];
+}
+
+- (void)queueRepositoryItems:(NSArray *)repositoryItems withAccountUUID:(NSString *)accountUUID withRepositoryID:(NSString*)repositoryID andTenantId:(NSString *)tenantId
+{
+    for (CMISObject *repositoryItem in repositoryItems)
+    {
+        [self queueRepositoryItem:repositoryItem withAccountUUID:accountUUID withRepositoryID:repositoryID andTenantId:tenantId];
+    }
+}
+
 - (void)queueDownloadInfo:(DownloadInfo *)downloadInfo
 {
     if (![self isManagedDownload:downloadInfo.cmisObjectId])
     {
         [self addDownloadToManaged:downloadInfo];
-        [self.downloadQueue go];
-        
+        [self.downloadQueue go];        
     }
 }
 
@@ -206,7 +218,13 @@
     [downloadInfo setDownloadRequest:nil];
     
     //handle downloaded file
-    
+//    NSError *error = nil;
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    NSString *tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[LocalFileManager objectIDFromFileObject:downloadInfo.repositoryItem withRepositoryId:downloadInfo.repositoryItem]];
+//    
+//    [fileManager removeItemAtPath:tempPath error:nil];
+//    [fileManager copyItemAtPath:downloadInfo.tempFilePath toPath:tempPath error:&error];
+    //[request setDownloadDestinationPath:tempPath];
 }
 
 - (void)requestFailed:(CMISDownloadFileRequest *)request

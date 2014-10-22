@@ -16,8 +16,6 @@
 
 #import "CMISSession.h"
 
-static NSString * const kRepositoryCellIdentifier = @"RepositoryCellIdentifier";
-
 @interface RepositoriesViewController () {
     CMISSession *session_;
     CMISFolder  *rootFolder;

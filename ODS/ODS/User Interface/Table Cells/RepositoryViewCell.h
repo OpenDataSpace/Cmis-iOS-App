@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString * const kRepositoryCellIdentifier;
+
 @interface RepositoryViewCell : UITableViewCell
 @property (nonatomic, weak) IBOutlet UIImageView    *imgIcon;
 @property (nonatomic, weak) IBOutlet UILabel        *lblRepositoryName;
