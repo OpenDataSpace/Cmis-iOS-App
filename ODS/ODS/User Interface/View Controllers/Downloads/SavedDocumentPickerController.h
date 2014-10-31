@@ -27,14 +27,16 @@
 
 #import "DirectoryWatcher.h"
 #import "DownloadsViewController.h"
+#import "LocalDocument.h"
+
 @class SelectDocumentController;
 
 @class SavedDocumentPickerController;
 
 @protocol SavedDocumentPickerDelegate <NSObject>
 @optional
-- (void) savedDocumentPicker:(SavedDocumentPickerController *)picker didPickDocument:(NSString *)document;
-- (void) savedDocumentPicker:(SavedDocumentPickerController *)picker didPickDocuments:(NSArray *)documentURLs;
+- (void) savedDocumentPicker:(SavedDocumentPickerController *)picker didPickDocument:(LocalDocument *)document;
+- (void) savedDocumentPicker:(SavedDocumentPickerController *)picker didPickDocuments:(NSArray *)documents;
 - (void) savedDocumentPickerDidCancel: (SavedDocumentPickerController *) picker;
 @end
 

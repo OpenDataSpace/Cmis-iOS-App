@@ -16,8 +16,12 @@
 
 @interface AGIPCAlbumsController : UITableViewController<UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) AGImagePickerController *imagePickerController;
+@property (ag_weak, nonatomic, readonly) NSMutableArray *assetsGroups;
+// change strong to weak, springox(20140422)
+@property (ag_weak) AGImagePickerController *imagePickerController;
 
 - (id)initWithImagePickerController:(AGImagePickerController *)imagePickerController;
+
+- (void)pushFirstAssetsController;
 
 @end

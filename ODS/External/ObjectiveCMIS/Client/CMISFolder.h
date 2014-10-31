@@ -98,7 +98,11 @@
                       continueOnFailure:(BOOL)continueOnFailure
                         completionBlock:(void (^)(NSArray *failedObjects, NSError *error))completionBlock;
 
-
+/**
+ * creates a link for an object with specified properties
+ *
+ */
+- (CMISRequest*)createLinkWithProperties:(CMISProperties *)properties completionBlock:(void (^)(NSString *objectId, NSError *error))completionBlock;
 @end
 
 

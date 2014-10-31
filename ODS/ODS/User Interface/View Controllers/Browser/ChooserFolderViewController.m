@@ -151,7 +151,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
         if (error != nil) {
             ODSLogError(@"%@", error);
         }else {
-            [self setFolderItems:[CMISUtility filterRepositories:repos]];
+            [self setFolderItems:[NSMutableArray arrayWithArray:[CMISUtility filterRepositories:repos]]];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
             });
@@ -174,15 +174,11 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
                 }else {
                     self.parentItem = folder;
                     [folder retrieveChildrenWithOperationContext:[CMISOperationContext defaultOperationContext] completionBlock:^(CMISPagedResult* results, NSError *error) {
-                        [self stopHUD];
                         if (error) {
                             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
+                            [self stopHUD];
                         }else {
-                            [self setFolderItems:[results resultArray]];
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self.doneBtn setEnabled:YES];
-                                [self.tableView reloadData];
-                            });
+                            [self loadMorePages:results];
                         }
                     }];
                 }
@@ -194,16 +190,45 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
 - (void) loadFolders:(CMISFolder*) folder {
     [self startHUD];
     [folder retrieveChildrenWithOperationContext:[CMISOperationContext defaultOperationContext] completionBlock:^(CMISPagedResult* results, NSError *error) {
-        [self stopHUD];
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
+            [self stopHUD];
         }else {
-            [self setFolderItems:[results resultArray]];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
+            [self loadMorePages:results];
         }
     }];
+}
+
+- (void) loadMorePages:(CMISPagedResult*) pagedResult {
+    [self saveResult:pagedResult.resultArray];
+    if (!pagedResult.hasMoreItems) {
+        [self stopHUD];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.doneBtn setEnabled:YES];
+            [self.tableView reloadData];
+        });
+        return;
+    }
+    
+    [pagedResult fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
+        if (error) {
+            [self stopHUD];
+        }else {
+            [self loadMorePages:results];
+        }
+    }];
+}
+
+- (void) saveResult:(NSArray*) items {
+    if (self.folderItems == nil) {
+        self.folderItems = [NSMutableArray array];
+    }
+    
+    for (CMISObject *item in items) {
+        if (isCMISFolder(item)) {
+            [self.folderItems addObject:item];
+        }
+    }
 }
 
 #pragma mark - ToolBar Button Actions

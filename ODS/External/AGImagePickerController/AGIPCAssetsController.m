@@ -16,11 +16,13 @@
 #import "AGIPCGridCell.h"
 #import "AGIPCToolbarItem.h"
 
+#import "AGImagePreviewController.h"
+
 @interface AGIPCAssetsController ()
 {
     ALAssetsGroup *_assetsGroup;
     NSMutableArray *_assets;
-    AGImagePickerController *_imagePickerController;
+    __ag_weak AGImagePickerController *_imagePickerController;
 }
 
 @property (nonatomic, strong) NSMutableArray *assets;
@@ -75,13 +77,29 @@
 
 - (void)setAssetsGroup:(ALAssetsGroup *)theAssetsGroup
 {
-    if (_assetsGroup != theAssetsGroup)
+    @synchronized (self)
     {
-        _assetsGroup = theAssetsGroup;
-        [_assetsGroup setAssetsFilter:[ALAssetsFilter allAssets]];
+        if (_assetsGroup != theAssetsGroup)
+        {
+            _assetsGroup = theAssetsGroup;
+            [_assetsGroup setAssetsFilter:[ALAssetsFilter allPhotos]];
 
-        [self reloadData];
+            // modified by springox(20140510)
+            //[self reloadData];
+        }
     }
+}
+
+- (ALAssetsGroup *)assetsGroup
+{
+    ALAssetsGroup *ret = nil;
+    
+    @synchronized (self)
+    {
+        ret = _assetsGroup;
+    }
+    
+    return ret;
 }
 
 - (NSArray *)selectedAssets
@@ -110,6 +128,7 @@
         self.assetsGroup = assetsGroup;
         self.imagePickerController = imagePickerController;
         self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Loading", nil, [NSBundle mainBundle], @"Loading...", nil);
+        self.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
         
         self.tableView.allowsMultipleSelection = NO;
         self.tableView.allowsSelection = NO;
@@ -123,6 +142,11 @@
     }
     
     return self;
+}
+
+- (void)dealloc
+{
+    [self unregisterFromNotifications];
 }
 
 #pragma mark - UITableViewDataSource Methods
@@ -157,6 +181,26 @@
     return items;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return self.imagePickerController.itemRect.origin.y;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] init];
+    // modified by springox(20141010)
+    //view.backgroundColor = [UIColor whiteColor];
+    view.backgroundColor = [UIColor clearColor];
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGRect itemRect = self.imagePickerController.itemRect;
+    return itemRect.size.height + itemRect.origin.y;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -174,13 +218,44 @@
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark - View Lifecycle
+
+- (void)viewDidLoad
 {
-    CGRect itemRect = self.imagePickerController.itemRect;
-    return itemRect.size.height + itemRect.origin.y;
+    [super viewDidLoad];
+    
+    // Fullscreen
+    if (self.imagePickerController.shouldChangeStatusBarStyle) {
+        self.wantsFullScreenLayout = YES;
+    }
+    
+    // Navigation Bar Items
+    UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
+    doneButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem = doneButtonItem;
+    
+    // modified by springox(20140510)
+    [self reloadData];
+    
+    // Setup Notifications
+    [self registerForNotifications];
 }
 
-#pragma mark - View Lifecycle
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+    // Destroy Notifications
+    [self unregisterFromNotifications];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // Reset the number of selections
+    [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -194,38 +269,12 @@
     [self reloadData];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+// add by springox(20141024)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    // Reset the number of selections
-    [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    // Fullscreen
-    if (self.imagePickerController.shouldChangeStatusBarStyle) {
-        self.wantsFullScreenLayout = YES;
-    }
-    
-    // Setup Notifications
-    [self registerForNotifications];
-    
-    // Navigation Bar Items
-    UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
-    doneButtonItem.enabled = NO;
-	self.navigationItem.rightBarButtonItem = doneButtonItem;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    // Destroy Notifications
-    [self unregisterFromNotifications];
+    [self reloadData];
 }
 
 #pragma mark - Private
@@ -256,26 +305,58 @@
         
         NSArray *toolbarItemsForManagingTheSelection = @[selectAll, flexibleSpace, deselectAll];
         self.toolbarItems = toolbarItemsForManagingTheSelection;
-        
     }
 }
 
-- (void) loadAssets
+- (void)loadAssets
 {
     [self.assets removeAllObjects];
     
-    [self.assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-        
-        AGIPCGridItem *gridItem = [[AGIPCGridItem alloc] initWithImagePickerController:self.imagePickerController asset:result andDelegate:self];
-        if ( self.imagePickerController.selection != nil &&
-            [self.imagePickerController.selection containsObject:result])
-        {
-            gridItem.selected = YES;
-        }
-        [self.assets addObject:gridItem];
-    }];
+    __ag_weak AGIPCAssetsController *weakSelf = self;
     
-    [self reloadData];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        __strong AGIPCAssetsController *strongSelf = weakSelf;
+        
+        @autoreleasepool {
+            [strongSelf.assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                
+                if (result == nil) 
+                {
+                    return;
+                }
+                if (strongSelf.imagePickerController.shouldShowPhotosWithLocationOnly) {
+                    CLLocation *assetLocation = [result valueForProperty:ALAssetPropertyLocation];
+                    if (!assetLocation || !CLLocationCoordinate2DIsValid([assetLocation coordinate])) {
+                        return;
+                    }
+                }
+                
+                AGIPCGridItem *gridItem = [[AGIPCGridItem alloc] initWithImagePickerController:self.imagePickerController asset:result andDelegate:self];
+                
+                // Drawing must be exectued in main thread. springox(20131220)
+                /*
+                if (strongSelf.imagePickerController.selection != nil &&
+                    [strongSelf.imagePickerController.selection containsObject:result])
+                {
+                    gridItem.selected = YES;
+                }
+                 */
+                
+                // Descending photos, springox(20131225)
+                [strongSelf.assets addObject:gridItem];
+                //[strongSelf.assets insertObject:gridItem atIndex:0];
+
+            }];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [strongSelf reloadData];
+            
+        });
+    
+    });
 }
 
 - (void)reloadData
@@ -284,14 +365,14 @@
     [self.navigationController setToolbarHidden:[self toolbarHidden] animated:YES];
     
     [self.tableView reloadData];
-    [self setTitle:[self.assetsGroup valueForProperty:ALAssetsGroupPropertyName]];
+    
+    //[self setTitle:[self.assetsGroup valueForProperty:ALAssetsGroupPropertyName]];
     [self changeSelectionInformation];
     
-    NSInteger totalRows = [self.tableView numberOfRowsInSection:0];
     
-    //Prevents crash if totalRows = 0 (when the album is empty). 
+    NSInteger totalRows = [self.tableView numberOfRowsInSection:0];
+    //Prevents crash if totalRows = 0 (when the album is empty).
     if (totalRows > 0) {
-
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:totalRows-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     }
 }
@@ -338,8 +419,19 @@
 
 - (void)changeSelectionInformation
 {
-    if (self.imagePickerController.shouldDisplaySelectionInformation) {
-        self.navigationController.navigationBar.topItem.prompt = [NSString stringWithFormat:@"(%d/%d)", [AGIPCGridItem numberOfSelections], self.assets.count];
+    if (self.imagePickerController.shouldDisplaySelectionInformation ) {
+        if (0 == [AGIPCGridItem numberOfSelections] ) {
+            self.navigationController.navigationBar.topItem.prompt = nil;
+        } else {
+            //self.navigationController.navigationBar.topItem.prompt = [NSString stringWithFormat:@"(%d/%d)", [AGIPCGridItem numberOfSelections], self.assets.count];
+            // Display supports up to select several photos at the same time, springox(20131220)
+            NSInteger maxNumber = _imagePickerController.maximumNumberOfPhotosToBeSelected;
+            if (0 < maxNumber) {
+                self.navigationController.navigationBar.topItem.prompt = [NSString stringWithFormat:@"(%d/%d)", [AGIPCGridItem numberOfSelections], maxNumber];
+            } else {
+                self.navigationController.navigationBar.topItem.prompt = [NSString stringWithFormat:@"(%d/%d)", [AGIPCGridItem numberOfSelections], self.assets.count];
+            }
+        }
     }
 }
 
@@ -353,20 +445,30 @@
 
 - (BOOL)agGridItemCanSelect:(AGIPCGridItem *)gridItem
 {
-    if (self.imagePickerController.selectionMode == AGImagePickerControllerSelectionModeSingle && self.imagePickerController.selectionBehaviorInSingleSelectionMode == AGImagePickerControllerSelectionBehaviorTypeRadio)
-    {
+    if (self.imagePickerController.selectionMode == AGImagePickerControllerSelectionModeSingle && self.imagePickerController.selectionBehaviorInSingleSelectionMode == AGImagePickerControllerSelectionBehaviorTypeRadio) {
         for (AGIPCGridItem *item in self.assets)
             if (item.selected)
                 item.selected = NO;
         
         return YES;
-    } else
-    {
+    } else {
         if (self.imagePickerController.maximumNumberOfPhotosToBeSelected > 0)
             return ([AGIPCGridItem numberOfSelections] < self.imagePickerController.maximumNumberOfPhotosToBeSelected);
         else
             return YES;
     }
+}
+
+// add by springox(20141023)
+- (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem   //TODO:Exception with iOS8
+{
+//    ALAsset *asset = gridItem.asset;
+//    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+//    AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
+//    preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+//    [self.navigationController presentViewController:preController animated:YES completion:^{
+//        // do nothing
+//    }];
 }
 
 #pragma mark - Notifications

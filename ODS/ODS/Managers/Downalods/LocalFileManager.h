@@ -15,22 +15,22 @@
 @property (nonatomic, assign) BOOL overwriteExistingDownloads;
 @property (nonatomic, retain) NSString *metadataConfigFileName;
 
-- (BOOL) downloadExistsForObjectID:(NSString *)objectID;
+- (BOOL) downloadExistsForKey:(NSString *)key;
 - (BOOL) downloadExistsForFileObject:(CMISObject*) fileObj;
 
-//objectid (repositoryId + cmisobjectId) as key
+//objectid (cmisobjectId + fileName) as key
 - (NSString *)setDownload:(NSDictionary *)downloadInfo forKey:(NSString *)key withFilePath:(NSString *)tempFile;
 - (NSString *)setDownload:(NSDictionary *)downloadInfo forKey:(NSString *)key;
 
-- (NSDictionary *)downloadInfoForDocumentWithID:(NSString *)objectID;
+- (NSDictionary *)downloadInfoForDocumentWithKey:(NSString *)key;
 
-- (BOOL)removeDownloadInfoForFileObjectID:(NSString *)objectID;
+- (BOOL)removeDownloadInfoForKey:(NSString *)key;
 - (void)removeDownloadInfoForAllFiles;
 
 - (NSMutableDictionary *) readMetadata;
 - (BOOL) writeMetadata;
 
 + (LocalFileManager *)sharedInstance;
-+ (NSString*) objectIDFromFileObject:(CMISObject*) fileObj;
-+ (NSString*) objectIDFromFileObject:(CMISObject*) fileObj withRepositoryId:(NSString*)repositoryId;
++ (NSString*) downloadKeyWithObjectID:(NSString*) cmisObjectId withFileName:(NSString*) fileName;
++ (NSString*) downloadKeyWithObject:(CMISObject*) fileObj;
 @end

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="132" id="KGk-i7-Jjw" customClass="TextViewTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="132"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UEu-eA-KYq">
+                        <rect key="frame" x="20" y="41" width="77" height="49"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SDZ-8f-KjW">
+                        <rect key="frame" x="105" y="8" width="195" height="116"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="SDZ-8f-KjW" secondAttribute="trailing" constant="20" id="9NJ-mB-oPh"/>
+                    <constraint firstItem="SDZ-8f-KjW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="CnS-bL-L2j"/>
+                    <constraint firstAttribute="bottom" secondItem="SDZ-8f-KjW" secondAttribute="bottom" constant="7" id="NtZ-jr-tC4"/>
+                    <constraint firstItem="SDZ-8f-KjW" firstAttribute="width" secondItem="UEu-eA-KYq" secondAttribute="width" id="O5b-0O-rM6"/>
+                    <constraint firstItem="UEu-eA-KYq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="41" id="fiC-7y-QY0"/>
+                    <constraint firstItem="UEu-eA-KYq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="kod-1i-K8X"/>
+                    <constraint firstAttribute="bottom" secondItem="UEu-eA-KYq" secondAttribute="bottom" constant="41" id="nPy-J8-ynl"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="labelTitle" destination="UEu-eA-KYq" id="g0M-of-rzV"/>
+                <outlet property="textView" destination="SDZ-8f-KjW" id="cva-lf-5MT"/>
+            </connections>
+            <point key="canvasLocation" x="439" y="323"/>
+        </tableViewCell>
+    </objects>
+</document>

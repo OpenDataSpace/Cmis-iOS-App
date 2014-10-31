@@ -30,7 +30,7 @@
     defaultContext.includeACLs = NO;
     defaultContext.includePolicies = NO;
     defaultContext.relationships = CMISIncludeRelationshipNone;
-    defaultContext.renditionFilterString = nil;// @"cmis:thumbnail"
+    defaultContext.renditionFilterString = nil;
     defaultContext.orderBy = nil;
     defaultContext.includePathSegments = NO;
     defaultContext.maxItemsPerPage = 100;

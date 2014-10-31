@@ -356,6 +356,7 @@
     CMISAtomEntryWriter *atomEntryWriter = [[CMISAtomEntryWriter alloc] init];
     atomEntryWriter.cmisProperties = properties;
     atomEntryWriter.generateXmlInMemory = YES;
+    
     NSString *writeResult = [atomEntryWriter generateAtomEntryXml];
     
     // Execute call

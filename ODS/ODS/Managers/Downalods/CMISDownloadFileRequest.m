@@ -12,6 +12,7 @@
 #import "CMISSession.h"
 
 @implementation CMISDownloadFileRequest
+@synthesize queue = _queue;
 
 +(CMISDownloadFileRequest *)cmisDownloadRequestWithDownloadInfo:(DownloadInfo *)downloadInfo {
     CMISDownloadFileRequest *newRequest = [[CMISDownloadFileRequest alloc] init];
@@ -51,7 +52,7 @@
                                                                        [self downloadFinished];
                                                                    }
                                                                 } progressBlock:^(unsigned long long bytesDownloaded, unsigned long long bytesTotal){
-                                                                    [self performSelectorInBackground:@selector(updateDownloadProgress) withObject:self];
+                                                                    [self didDownloadedBytes:bytesDownloaded total:bytesTotal];
                                                                 }];
                 }
             }];
@@ -111,11 +112,25 @@
     [self setComplete:YES];
 }
 
+- (void) didDownloadedBytes:(long long)bytes total:(unsigned long long) bytesTotal {
+    self.downloadedBytes = bytes;
+    self.totalBytes = bytesTotal;
+    if (self.queue) {
+        [_queue request:self downloadedBytes:self.downloadedBytes];
+    }
+    
+    if ([self downloadProgressDelegate]) {
+        [self performSelectorInBackground:@selector(updateDownloadProgress) withObject:self];
+    }
+}
+
 - (void) updateDownloadProgress {
     dispatch_main_sync_safe(^{
         UIProgressView *uploadIndicator = (UIProgressView *)self.downloadProgressDelegate;
-        float amount = (self.downloadedBytes*1.0f)/self.totalBytes;
-        [uploadIndicator setProgress:amount];
+        if (uploadIndicator) {
+            float amount = (self.downloadedBytes*1.0f)/self.totalBytes;
+            [uploadIndicator setProgress:amount];
+        }
     });
 }
 

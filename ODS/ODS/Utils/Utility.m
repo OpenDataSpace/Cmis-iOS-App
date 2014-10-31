@@ -30,6 +30,8 @@
 #import "AccountInfo+URL.h"
 #import "CMISConstants.h"
 #import "DetailNavigationController.h"
+#import "DownloadManager.h"
+#import "LocalFileManager.h"
 
 #import <sys/xattr.h>
 
@@ -582,4 +584,17 @@ NSString *externalAPIKey(APIKey apiKey)
                    nil];
     }
     return [apiKeys objectForKey:[NSNumber numberWithInt:apiKey]];
+}
+
+BOOL isFileDownloaded(CMISObject* fileObj) {
+    NSString *downloadKey = [LocalFileManager downloadKeyWithObject:fileObj];
+    if ([[DownloadManager sharedManager] isManagedDownload:downloadKey]) {
+        return YES;
+    }
+    
+    if ([[LocalFileManager sharedInstance] downloadExistsForKey:downloadKey]) {
+        return YES;
+    }
+    
+    return NO;
 }

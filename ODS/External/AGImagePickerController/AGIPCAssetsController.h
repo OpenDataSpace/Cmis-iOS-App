@@ -11,15 +11,17 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <CoreLocation/CoreLocation.h>
 
 #import "AGImagePickerController.h"
 #import "AGIPCGridItem.h"
 
 @interface AGIPCAssetsController : UITableViewController<UITableViewDataSource, UITableViewDelegate, AGIPCGridItemDelegate>
 
-@property (nonatomic, strong) ALAssetsGroup *assetsGroup;
-@property (nonatomic, ag_weak, readonly) NSArray *selectedAssets;
-@property (nonatomic, strong) AGImagePickerController *imagePickerController;
+@property (strong) ALAssetsGroup *assetsGroup;
+@property (ag_weak, readonly) NSArray *selectedAssets;
+// change strong to weak, springox(20140422)
+@property (ag_weak) AGImagePickerController *imagePickerController;
 
 - (id)initWithImagePickerController:(AGImagePickerController *)imagePickerController andAssetsGroup:(ALAssetsGroup *)assetsGroup;
 

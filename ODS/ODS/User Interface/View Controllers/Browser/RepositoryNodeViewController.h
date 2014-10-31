@@ -17,6 +17,8 @@
 #import "RenameQueueProgressBar.h"
 #import "MultiSelectActionsToolbar.h"
 #import "ChooserFolderViewController.h"
+#import "CreateLinkViewController.h"
+#import "SavedDocumentPickerController.h"
 
 @interface RepositoryNodeViewController : CustomTableViewController <
     AGImagePickerControllerDelegate,
@@ -27,12 +29,15 @@
     RenameQueueDelegate,
     MultiSelectActionsDelegate,
     ChooserFolderDelegate,
+    CreateLinkRequestDelegate,
+    SavedDocumentPickerDelegate,
     UIActionSheetDelegate,
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate>
 
 @property (nonatomic, strong) CMISFolder            *folder;
 @property (nonatomic, strong) CMISPagedResult       *pagedFolders;
+@property (nonatomic, strong) NSMutableArray        *folderItems;
 @property (nonatomic, copy) NSString                *selectedAccountUUID;
 @property (nonatomic, copy) NSString                *repositoryIdentifier;
 

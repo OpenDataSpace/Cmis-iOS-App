@@ -43,11 +43,13 @@ NSString * const kMultiSelectDownload = @"downloadAction";
 NSString * const kMultiSelectDelete = @"deleteAction";
 NSString * const kMultiSelectMove = @"moveAction";
 
+static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
+
 @interface RepositoryNodeViewController () {
     NSMutableArray *itemsToDelete_;
     NSMutableArray *itemsToMove_;
 }
-
+@property (nonatomic, strong) CustomTableViewCell *loadMoreCell;
 @property (nonatomic, strong) CMISRequest   *currentPreviewRequest;
 //@property (nonatomic, strong) CMISObject    *currentPreviewItem;
 //@property (nonatomic, strong) NSString      *previewItemDownloadPath;
@@ -55,6 +57,10 @@ NSString * const kMultiSelectMove = @"moveAction";
 
 @implementation RepositoryNodeViewController
 @synthesize moveQueueProgressBar = _moveQueueProgressBar;
+@synthesize folderItems = _folderItems;
+@synthesize pagedFolders = _pagedFolders;
+
+@synthesize loadMoreCell = _loadMoreCell;
 
 - (void) dealloc {
     [self cancelPreview];
@@ -94,6 +100,14 @@ NSString * const kMultiSelectMove = @"moveAction";
     [self.multiSelectToolbar addActionButtonNamed:kMultiSelectDownload withLabelKey:@"multiselect.button.download" atIndex:0];
     [self.multiSelectToolbar addActionButtonNamed:kMultiSelectDelete withLabelKey:@"multiselect.button.delete" atIndex:1];
     [self.multiSelectToolbar addActionButtonNamed:kMultiSelectMove withLabelKey:@"multiselect.button.move" atIndex:2];
+    
+    _loadMoreCell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [_loadMoreCell.textLabel setTextAlignment:NSTextAlignmentCenter];
+    [_loadMoreCell.textLabel setFont:[UIFont boldSystemFontOfSize:17.0]];
+    [_loadMoreCell.textLabel setText:NSLocalizedString(@"load.more.cell.title", @"Load More...")];
+    [_loadMoreCell setShouldIndentWhileEditing:YES];
+    
+    [self savePagedResult:_pagedFolders];
 }
 
 - (void)didReceiveMemoryWarning
@@ -107,8 +121,11 @@ NSString * const kMultiSelectMove = @"moveAction";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if (self.pagedFolders) {
-        return [[self.pagedFolders resultArray] count];
+    if (self.folderItems) {
+        if (_pagedFolders.hasMoreItems) {
+            return [self.folderItems count] + 1;
+        }
+        return [self.folderItems count];
     }
     
     return 0;
@@ -117,44 +134,56 @@ NSString * const kMultiSelectMove = @"moveAction";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    RepositoryNodeViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRepositoryNodeCellIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell...
-    CMISObject *fileObj = [[self.pagedFolders resultArray] objectAtIndex:[indexPath row]];
-    
-    cell.lblFileName.text = [fileObj name];
-    cell.lblDetails.text = formatDocumentDateFromDate([fileObj lastModificationDate]);
-    if ([fileObj.objectType isEqualToCaseInsensitiveString:kCMISPropertyObjectTypeIdValueFolder]) {
-        [cell.imgIcon setImage:[UIImage imageNamed:@"folder"]];
+    if (indexPath.row < [self.folderItems count]) {
+        RepositoryNodeViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kRepositoryNodeCellIdentifier forIndexPath:indexPath];
+        
+        // Configure the cell...
+        CMISObject *fileObj = [self.folderItems objectAtIndex:[indexPath row]];
+        
+        cell.lblFileName.text = [fileObj name];
+        cell.lblDetails.text = formatDocumentDateFromDate([fileObj lastModificationDate]);
+        if ([fileObj.objectType isEqualToCaseInsensitiveString:kCMISPropertyObjectTypeIdValueFolder]) {
+            [cell.imgIcon setImage:[UIImage imageNamed:@"folder"]];
+        }else {
+            [cell.imgIcon setImage:imageForFilename([fileObj name])];
+        }
+        
+        return cell;
     }else {
-        [cell.imgIcon setImage:imageForFilename([fileObj name])];
+        return _loadMoreCell;
     }
     
-    return cell;
+    return nil;
 }
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    CMISObject *fileObj = [[self.pagedFolders resultArray] objectAtIndex:[indexPath row]];
-    
-    if ([tableView isEditing]) {
-        [self.multiSelectToolbar userDidSelectItem:fileObj atIndexPath:indexPath];
-    }else {
-        if ([fileObj.objectType isEqualToCaseInsensitiveString:kCMISPropertyObjectTypeIdValueFolder]) {
-            [self loadFolderChildren:(CMISFolder*)fileObj];
-        }else {
-            //Preview Document
-            [self previewItem:fileObj];
-        }
+    if (indexPath.row < [self.folderItems count]) {
+        CMISObject *fileObj = [self.folderItems objectAtIndex:[indexPath row]];
         
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if ([tableView isEditing]) {
+            [self.multiSelectToolbar userDidSelectItem:fileObj atIndexPath:indexPath];
+        }else {
+            if ([fileObj.objectType isEqualToCaseInsensitiveString:kCMISPropertyObjectTypeIdValueFolder]) {
+                [self loadFolderChildren:(CMISFolder*)fileObj];
+            }else {
+                //Preview Document
+                [self previewItem:fileObj];
+            }
+            
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
+    }else if(![tableView isEditing]) {  //don't load more items when editing
+        [self loadMoreItems];
     }
 }
 
 - (void) tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-    CMISObject *fileObj = [[self.pagedFolders resultArray] objectAtIndex:[indexPath row]];
-    
-    if ([tableView isEditing]) {
-        [self.multiSelectToolbar userDidDeselectItem:fileObj atIndexPath:indexPath];
+    if (indexPath.row < [self.folderItems count]) {
+        CMISObject *fileObj = [self.folderItems objectAtIndex:[indexPath row]];
+        
+        if ([tableView isEditing]) {
+            [self.multiSelectToolbar userDidDeselectItem:fileObj atIndexPath:indexPath];
+        }
     }
 }
 
@@ -238,7 +267,8 @@ NSString * const kMultiSelectMove = @"moveAction";
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
         }else {
-            [self setPagedFolders:results];
+            _folderItems = nil;
+            [self savePagedResult:results];
         }
         [self endRefreshing];
     }];
@@ -250,11 +280,37 @@ NSString * const kMultiSelectMove = @"moveAction";
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
         }else {
-            [self setPagedFolders:results];
+            _folderItems = nil;
+            [self savePagedResult:results];
         }
         [self stopHUD];
         [self.tableView reloadData];
     }];
+}
+
+- (void) loadMoreItems {
+    if (!self.pagedFolders.hasMoreItems) {
+        return;
+    }
+    [self startHUD];
+    [self.pagedFolders fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
+        [self stopHUD];
+        if (error) {
+            ODSLogError(@"fetchNextPageWithCompletionBlock:%@", error);
+        }else {
+            [self savePagedResult:results];
+        }
+    }];
+}
+
+- (void) savePagedResult:(CMISPagedResult*) pagedResults {
+    if (self.folderItems == nil) {
+        self.folderItems = [NSMutableArray array];
+    }
+    
+    [self.folderItems addObjectsFromArray:pagedResults.resultArray];
+    _pagedFolders = pagedResults;
+    [self.tableView reloadData];
 }
 
 #pragma mark -
@@ -382,34 +438,36 @@ NSString * const kMultiSelectMove = @"moveAction";
             self.imagePickerController = [[UIImagePickerController alloc] init];
         }
         
-        if (IS_IPAD)
-        {
-            UIViewController *pickerContainer = [[UIViewController alloc] init];
-            
-            [pickerContainer setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-            [self.imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
-            [self.imagePickerController setMediaTypes:[UIImagePickerController availableMediaTypesForSourceType:self.imagePickerController.sourceType]];
-            [self.imagePickerController setDelegate:self];
-            [pickerContainer.view addSubview:self.imagePickerController.view];
-            
-            [self presentModalViewControllerHelper:pickerContainer];
-            [self.popover setPopoverContentSize:self.imagePickerController.view.frame.size animated:YES];
-            [self.popover setPassthroughViews:[NSArray arrayWithObjects:[[UIApplication sharedApplication] keyWindow], self.imagePickerController.view, nil]];
-            
-            CGRect rect = self.popover.contentViewController.view.frame;
-            self.imagePickerController.view.frame = rect;
-            NSLog(@"frame=====%f,%f,%f,%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);            
-        }
-        else
-        {
-            
-            [self.imagePickerController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-            [self.imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
-            [self.imagePickerController setMediaTypes:[UIImagePickerController availableMediaTypesForSourceType:self.imagePickerController.sourceType]];
-            [self.imagePickerController setDelegate:self];
-            
-            [self presentModalViewControllerHelper:self.imagePickerController];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (IS_IPAD)
+            {
+                UIViewController *pickerContainer = [[UIViewController alloc] init];
+                
+                [pickerContainer setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+                [self.imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
+                [self.imagePickerController setMediaTypes:[UIImagePickerController availableMediaTypesForSourceType:self.imagePickerController.sourceType]];
+                [self.imagePickerController setDelegate:self];
+                [pickerContainer.view addSubview:self.imagePickerController.view];
+                
+                [self presentModalViewControllerHelper:pickerContainer];
+                [self.popover setPopoverContentSize:self.imagePickerController.view.frame.size animated:YES];
+                [self.popover setPassthroughViews:[NSArray arrayWithObjects:[[UIApplication sharedApplication] keyWindow], self.imagePickerController.view, nil]];
+                
+                CGRect rect = self.popover.contentViewController.view.frame;
+                self.imagePickerController.view.frame = rect;
+                NSLog(@"frame=====%f,%f,%f,%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);            
+            }
+            else
+            {
+                
+                [self.imagePickerController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+                [self.imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
+                [self.imagePickerController setMediaTypes:[UIImagePickerController availableMediaTypesForSourceType:self.imagePickerController.sourceType]];
+                [self.imagePickerController setDelegate:self];
+                
+                [self presentModalViewControllerHelper:self.imagePickerController];
+            }
+        });
     }
     else if ([buttonLabel isEqualToString:NSLocalizedString(@"add.actionsheet.create-folder", @"Create Folder")])
     {
@@ -549,11 +607,13 @@ NSString * const kMultiSelectMove = @"moveAction";
     }
     else if([buttonLabel isEqualToString:NSLocalizedString(@"add.actionsheet.upload-document", @"Upload Document from Saved Docs")]) 
     {
-//        SavedDocumentPickerController *picker = [[SavedDocumentPickerController alloc] initWithMultiSelection:YES];
-//        [picker setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-//        [picker setDelegate:self];
-//        
-//        [self presentModalViewControllerHelper:picker];
+        SavedDocumentPickerController *picker = [[SavedDocumentPickerController alloc] initWithMultiSelection:YES];
+        [picker setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+        [picker setDelegate:self];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentModalViewControllerHelper:picker];
+        });
     }
 }
 
@@ -576,35 +636,41 @@ NSString * const kMultiSelectMove = @"moveAction";
     }
     else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.download", @"Download")]){
         if (_selectedItem) {
-            NSString *downloadMessage  = [NSString stringWithFormat:@"%@ %@", [_selectedItem name], NSLocalizedString(@"download.progress.starting", @"Download starting...")];
-            SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
-                                                                inView:activeView()
-                                                               message:downloadMessage
-                                                                 title:@""];
-            notice.displayTime = 3.0;
-            [notice show];
-            [[DownloadManager sharedManager] queueRepositoryItems:[NSArray arrayWithObject:_selectedItem] withAccountUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier andTenantId:nil];
+            //check if the file have already downloaded
+            if (isFileDownloaded(_selectedItem)) {
+                NSString *downloadMessage  = [NSString stringWithFormat:@"%@ %@", [_selectedItem name], NSLocalizedString(@"dwonload.ismanaged", @"have already downloaded.")];
+                SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
+                                                                    inView:activeView()
+                                                                   message:downloadMessage
+                                                                     title:@""];
+                notice.displayTime = 3.0;
+                [notice show];
+            }else {
+                NSString *downloadMessage  = [NSString stringWithFormat:@"%@ %@", [_selectedItem name], NSLocalizedString(@"download.progress.starting", @"Download starting...")];
+                SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
+                                                                    inView:activeView()
+                                                                   message:downloadMessage
+                                                                     title:@""];
+                notice.displayTime = 3.0;
+                [notice show];
+                [[DownloadManager sharedManager] queueRepositoryItems:[NSArray arrayWithObject:_selectedItem] withAccountUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier andTenantId:nil];
+            }
         }
     }
-//        else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.createlink", @"Create Download Link")]) {
-//        if (_selectedItem) {
-//            CreateLinkViewController *createLinkController = [[CreateLinkViewController alloc] initWithRepositoryItem:_selectedItem accountUUID:self.selectedAccountUUID];
-//            if ([self.folderItems item]) {
-//                createLinkController.linkCreateURL = [NSURL URLWithString:[[LinkRelationService shared] hrefForHierarchyNavigationLinkRelation:HierarchyNavigationLinkRelationDown  cmisService:@"Children" cmisObject:[self.folderItems item]]];
-//            }else {
-//                createLinkController.linkCreateURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/children?id=%@",[[[AlfrescoUtils sharedInstanceForAccountUUID:self.selectedAccountUUID] serviceDocumentURL] absoluteString], [self.folderItems repoInfo].repositoryId, [self.folderItems repoInfo].repositoryId]];
-//            }
-//            
-//            createLinkController.delegate = self;
-//            if (IS_IPAD) {
-//                [createLinkController setModalPresentationStyle:UIModalPresentationFormSheet];
-//                [IpadSupport presentModalViewController:createLinkController withNavigation:self.navigationController];
-//            }else {
-//                //[self.navigationController pushViewController:createLinkController animated:YES];
-//                [IpadSupport presentModalViewController:createLinkController withNavigation:self.navigationController];
-//            }
-//        }
-//    }
+    else if ([buttonLabel isEqualToString:NSLocalizedString(@"operation.pop.menu.createlink", @"Create Download Link")]) {
+        if (_selectedItem) {
+            CreateLinkViewController *createLinkController = [[CreateLinkViewController alloc] initWithRepositoryItem:_selectedItem parentItem:self.folder accountUUID:self.selectedAccountUUID];
+            
+            createLinkController.delegate = self;
+            createLinkController.viewTitle = NSLocalizedString(@"create-link.view.title", @"Create Link");
+            if (IS_IPAD) {
+                [createLinkController setModalPresentationStyle:UIModalPresentationFormSheet];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [IpadSupport presentModalViewController:createLinkController withNavigation:self.navigationController];
+            });
+        }
+    }
 }
 
 - (void)processDeleteActionSheetWithButtonTitle:(NSString *)buttonLabel
@@ -619,6 +685,7 @@ NSString * const kMultiSelectMove = @"moveAction";
 {
     [self setEditing:editing animated:YES];
 }
+
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     // Multi-select: we toggle this here to maintain the swipe-to-delete ability
@@ -633,11 +700,13 @@ NSString * const kMultiSelectMove = @"moveAction";
     
     if (editing)
     {
+        [_loadMoreCell setSelectionStyle:UITableViewCellSelectionStyleNone];
         [self.multiSelectToolbar didEnterMultiSelectMode];
         [self loadRightBarForEditMode:YES];
     }
     else
     {
+        [_loadMoreCell setSelectionStyle:UITableViewCellSelectionStyleDefault];
         [self.multiSelectToolbar didLeaveMultiSelectMode];
         [self loadRightBarItem];
     }
@@ -835,6 +904,55 @@ NSString * const kMultiSelectMove = @"moveAction";
 - (void)createFolder:(CreateFolderViewController *)createFolder succeededForName:(NSString *)folderName {
     displayInformationMessage([NSString stringWithFormat:NSLocalizedString(@"create-folder.success", @"Created folder"), folderName]);
     [self reloadDataSource];
+}
+
+#pragma mark - SavedDocumentPickerDelegate
+
+- (void)savedDocumentPicker:(SavedDocumentPickerController *)picker didPickDocuments:(NSArray *)documents {
+    ODSLogDebug(@"User selected the documents %@", documents);
+    
+    //Hide popover on iPad
+    [self dismissModalViewControllerHelper:NO];
+    
+    if([documents count] == 1)
+    {
+        LocalDocument *doc = [documents lastObject];
+        NSURL *documentURL = [NSURL URLWithString:doc.documentURL];
+        UploadInfo *uploadInfo = [[UploadInfo alloc] init];
+        [uploadInfo setUploadFileURL:documentURL];
+        [uploadInfo setUploadType:UploadFormTypeDocument];
+        [uploadInfo setFilename:[doc docName]];
+        [uploadInfo setSelectedAccountUUID:[self selectedAccountUUID]];
+        [uploadInfo setFolderName:[self.folder name]];
+        [uploadInfo setTargetFolderIdentifier:[self.folder identifier]];
+        [uploadInfo setRepositoryIdentifier:[self repositoryIdentifier]];
+        [uploadInfo setExtension:[[doc docName] pathExtension]];
+        [self loadUploadSingleItemForm:uploadInfo];
+    }
+    else if([documents count] > 1)
+    {
+        NSMutableArray *uploadItems = [NSMutableArray arrayWithCapacity:[documents count]];
+        for(LocalDocument *doc in documents)
+        {
+            UploadInfo *uploadInfo = [[UploadInfo alloc] init];
+            [uploadInfo setUploadFileURL:[NSURL URLWithString:doc.documentURL]];
+            [uploadInfo setUploadType:UploadFormTypeDocument];
+            [uploadInfo setFilename:[doc docName]];
+            [uploadInfo setSelectedAccountUUID:[self selectedAccountUUID]];
+            [uploadInfo setFolderName:[self.folder name]];
+            [uploadInfo setTargetFolderIdentifier:[self.folder identifier]];
+            [uploadInfo setRepositoryIdentifier:[self repositoryIdentifier]];
+            [uploadInfo setExtension:[[doc docName] pathExtension]];
+            [uploadItems addObject:uploadInfo];
+        }
+        
+        [self loadUploadMultiItemsForm:uploadItems andUploadType:UploadFormTypeMultipleDocuments];
+    }
+}
+
+- (void)savedDocumentPickerDidCancel:(SavedDocumentPickerController *)picker
+{
+    [self dismissModalViewControllerHelper:YES];
 }
 
 #pragma mark -
@@ -1182,11 +1300,20 @@ NSString * const kMultiSelectMove = @"moveAction";
     if ([name isEqual:kMultiSelectDownload])
     {
         NSString *downloadMessage = nil;
-        if ([selectedItems count] == 1) {
+        NSMutableArray *itemToDownload = [NSMutableArray array];
+        
+        for (CMISObject *item in selectedItems) {
+            if (!isFileDownloaded(item)) {
+                [itemToDownload addObject:item];
+            }
+        }
+        if ([itemToDownload count] == 0) {
+            downloadMessage  = NSLocalizedString(@"dwonload.selected.items.ismanaged", @"All selected items have already downloaded.");
+        }else if ([itemToDownload count] == 1) {
             CMISObject *item = [selectedItems objectAtIndex:0];
             downloadMessage = [NSString stringWithFormat:@"%@ %@", [item name], NSLocalizedString(@"download.progress.starting", @"Download starting...")];
         }else {
-            downloadMessage = [NSString stringWithFormat:@"%d %@", [selectedItems count], NSLocalizedString(@"download.progress.files.starting", @"files Download starting...")];
+            downloadMessage = [NSString stringWithFormat:@"%lu %@", (unsigned long)[selectedItems count], NSLocalizedString(@"download.progress.files.starting", @"files Download starting...")];
         }
         
         SystemNotice *notice = [SystemNotice systemNoticeWithStyle:SystemNoticeStyleInformation
@@ -1195,7 +1322,10 @@ NSString * const kMultiSelectMove = @"moveAction";
                                                              title:@""];
         notice.displayTime = 3.0;
         [notice show];
-        [[DownloadManager sharedManager] queueRepositoryItems:selectedItems withAccountUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier andTenantId:nil];
+        
+        if ([itemToDownload count] > 0) {
+            [[DownloadManager sharedManager] queueRepositoryItems:itemToDownload withAccountUUID:self.selectedAccountUUID withRepositoryID:self.repositoryIdentifier andTenantId:nil];
+        }
         [self setEditing:NO];
     }
     else if ([name isEqual:kMultiSelectDelete])
@@ -1219,8 +1349,8 @@ NSString * const kMultiSelectMove = @"moveAction";
     LocalFileManager *downloadManager = [LocalFileManager sharedInstance];
     PreviewCacheManager *previewManager = [PreviewCacheManager sharedManager];
     NSDictionary *previewInfo = [previewManager downloadInfoFromCache:item];
-    NSString *fileKey = [LocalFileManager objectIDFromFileObject:item];//
-    if ([downloadManager downloadExistsForObjectID:fileKey]) {   //use downloaded data
+    NSString *fileKey = [LocalFileManager downloadKeyWithObject:item];//
+    if ([downloadManager downloadExistsForKey:fileKey]) {   //use downloaded data
         [self showDocument:item withPath:[FileUtils pathToSavedFile:fileKey]];
     }else if ([previewManager previewFileExists:item] && previewInfo) {
         [self showDocument:item withPath:[previewInfo objectForKey:@"path"]];

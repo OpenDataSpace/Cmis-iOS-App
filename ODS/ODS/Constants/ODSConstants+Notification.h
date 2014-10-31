@@ -92,6 +92,11 @@ extern NSString * const kNotificationSessionCleared;
 //
 extern NSString * const kNotificationTaskCompleted;
 
+//
+// Reload Settings from bundle
+//
+extern NSString * const kNotificationReloadSettings;
+
 
 @interface ODSConstants_Notification : NSObject
 

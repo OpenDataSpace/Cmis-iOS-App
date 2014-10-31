@@ -103,7 +103,7 @@
 - (NSString *)xmlPropertiesElements
 {
     NSMutableString *properties = [NSMutableString string];
-    [properties appendString:@"<cmisra:object><cmis:properties>"];
+    [properties appendString:@"<cmisra:object  xmlns:cmis=\"http://docs.oasis-open.org/ns/cmis/core/200908/\"><cmis:properties>"];
     
     // TODO: support for multi valued properties
     for (id propertyKey in self.cmisProperties.propertiesDictionary)

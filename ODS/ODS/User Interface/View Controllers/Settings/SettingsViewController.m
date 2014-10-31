@@ -47,6 +47,8 @@ static NSString * const kDeleteCacheModelIdentifier = @"DeleteCacheModelIdentifi
     
     [self setDirWatcher:[DirectoryWatcher watchFolderWithPath:[self directoryPreviewCache]
                                                      delegate:self]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:kNotificationReloadSettings object:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -272,6 +274,13 @@ static NSString * const kDeleteCacheModelIdentifier = @"DeleteCacheModelIdentifi
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (actionSheet.tag == kAlertTagCleanCache && buttonIndex == 0) { //clean cache
         [self cleanPreviewCache];
+    }
+}
+
+- (void) handleNotification:(NSNotification*) noti {
+    if ([noti.name isEqualToCaseInsensitiveString:kNotificationReloadSettings]) {
+        [self createSettingItems];
+        [self.tableView reloadData];
     }
 }
 @end

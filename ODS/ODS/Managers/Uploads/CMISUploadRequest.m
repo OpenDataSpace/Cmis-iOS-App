@@ -151,6 +151,9 @@
 
 //mimetype from file extension
 - (NSString*) mimeTypeFromFileExtension {
+    if (self.uploadInfo.extension == nil) {
+       return @"application/octet-stream";
+    }
     //get mimetype from file extension
     CFStringRef pathExtension = (__bridge_retained CFStringRef)self.uploadInfo.extension;
     CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);

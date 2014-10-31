@@ -212,6 +212,15 @@
     return footerBackground;
 }
 
+- (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    FolderTableViewDataSource *dataSource = (FolderTableViewDataSource *)[tableView dataSource];
+    NSString *key = [[dataSource sectionKeys] objectAtIndex:indexPath.section];
+    
+    if ([key isEqualToString:kDownloadedFilesSection]) {
+        
+    }
+}
+
 #pragma mark - DirectoryWatcherDelegate methods
 
 - (void)directoryDidChange:(DirectoryWatcher *)folderWatcher
@@ -223,7 +232,7 @@
      */
     if (!folderDataSource.editing)
     {
-        ODSLogDebug(@"Reloading favorites tableview");
+        ODSLogDebug(@"Reloading downloads tableview");
         [folderDataSource refreshData];
         [self.tableView reloadData];
         [self selectCurrentRow];

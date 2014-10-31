@@ -45,7 +45,7 @@ NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
 //check the file is exists
 - (BOOL) previewFileExists:(CMISObject*) item {
     NSDictionary *fileInfo = [self readPreviewFileMetadata];
-    if (fileInfo && [fileInfo objectForKey:[LocalFileManager objectIDFromFileObject:item]]) {
+    if (fileInfo && [fileInfo objectForKey:[LocalFileManager downloadKeyWithObject:item]]) {
         return YES;
     }
     
@@ -56,7 +56,7 @@ NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
 - (NSDictionary*) downloadInfoFromCache:(CMISObject*) item {
     NSDictionary *fileInfo = [self readPreviewFileMetadata];
     
-    return [fileInfo objectForKey:[LocalFileManager objectIDFromFileObject:item]];
+    return [fileInfo objectForKey:[LocalFileManager downloadKeyWithObject:item]];
 }
 
 //cache new file
@@ -93,7 +93,7 @@ NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
     }
     
     CMISObject *item = [info repositoryItem];
-    NSString *fileID = [LocalFileManager objectIDFromFileObject:item];
+    NSString *fileID = [LocalFileManager downloadKeyWithObject:item];
     
     NSMutableDictionary *tempDownloadInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:destination, @"path", info.repositoryItem.name, @"title", nil];
     [[self readPreviewFileMetadata] setObject:tempDownloadInfo forKey:fileID];
@@ -139,34 +139,15 @@ NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
 
 //generate cache file path
 - (NSString*) generateCachePath:(CMISObject*) item {
-    NSString *newName = @"";
     
-    NSString *fileExtension = [item.name pathExtension];
-    if (fileExtension == nil || [fileExtension isEqualToString:@""])
-    {
-        newName = [LocalFileManager objectIDFromFileObject:item];
-    }
-    else
-    {
-        newName = [NSMutableString stringWithFormat:@"%@.%@", [LocalFileManager objectIDFromFileObject:item], fileExtension];
-    }
+    NSString *newName = [LocalFileManager downloadKeyWithObject:item];
     
     return [FileUtils pathToCacheFile: newName];
 }
 
 //generate temp file path
 - (NSString*) generateTempPath:(CMISObject*) item {
-    NSString *newName = @"";
-    
-    NSString *fileExtension = [item.name pathExtension];
-    if (fileExtension == nil || [fileExtension isEqualToString:@""])
-    {
-        newName = [LocalFileManager objectIDFromFileObject:item];
-    }
-    else
-    {
-        newName = [NSMutableString stringWithFormat:@"%@.%@", [LocalFileManager objectIDFromFileObject:item], fileExtension];
-    }
+    NSString *newName = [LocalFileManager downloadKeyWithObject:item];
     
     return [FileUtils pathToTempFile:newName];
 }

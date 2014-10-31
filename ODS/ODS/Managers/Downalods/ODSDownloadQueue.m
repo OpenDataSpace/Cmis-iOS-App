@@ -8,13 +8,22 @@
 
 #import "ODSDownloadQueue.h"
 #import "CMISDownloadFileRequest.h"
-
+#import "DownloadInfo.h"
 
 @interface ODSDownloadQueue()
 @property (assign) int requestsCount;
+@property (assign) long long bytesOfFinished;
+@property (assign) float progress;
 @end
 
 @implementation ODSDownloadQueue
+@synthesize bytesDownloadedSoFar = _bytesDownloadedSoFar;
+@synthesize totalBytesToDownload = _totalBytesToDownload;
+@synthesize bytesOfFinished = _bytesOfFinished;
+@synthesize requestsCount = _requestsCount;
+@synthesize downloadProgressDelegate = _downloadProgressDelegate;
+@synthesize delegate = _delegate;
+@synthesize progress = _progress;
 
 #pragma mark -
 #pragma mark - Init
@@ -42,6 +51,8 @@
 {
     [self setBytesDownloadedSoFar:0];
     [self setTotalBytesToDownload:0];
+    [self setBytesOfFinished:0];
+    [self setProgress:0.0];
     [super cancelAllOperations];
 }
 
@@ -57,6 +68,7 @@
     
     [self setTotalBytesToDownload:[self totalBytesToDownload] + [request totalBytes]];
     
+    ODSLogDebug(@"download total bytes:%lu", self.totalBytesToDownload);
     
     [request setQueue:self];
     
@@ -75,6 +87,7 @@
 - (void)requestFinished:(CMISDownloadFileRequest *)request
 {
     [self setRequestsCount:[self requestsCount]-1];
+    self.bytesOfFinished += request.totalBytes;
     if ([self requestDidFinishSelector]) {
         [[self delegate] performSelector:[self requestDidFinishSelector] withObject:request];
     }
@@ -88,6 +101,7 @@
 - (void)requestFailed:(CMISDownloadFileRequest *)request
 {
     [self setRequestsCount:[self requestsCount]-1];
+    self.bytesOfFinished += request.downloadedBytes;
     if ([self requestDidFailSelector]) {
         [[self delegate] performSelector:[self requestDidFailSelector] withObject:request];
     }
@@ -99,6 +113,29 @@
 }
 
 - (void)request:(CMISDownloadFileRequest *)request downloadedBytes:(long long)bytes {
-    //update bytes downloaded
+    [self performSelectorInBackground:@selector(updateDownloadProgress) withObject:self];
+}
+
+- (void) updateDownloadProgress {
+    dispatch_main_sync_safe(^{
+        UIProgressView *uploadIndicator = (UIProgressView *)_downloadProgressDelegate;
+        if (uploadIndicator) {
+            //update bytes downloaded
+            long long downloadingBytes = 0;
+            NSArray *operations = [self operations];
+            for (CMISDownloadFileRequest *operation in operations ) {
+                if (operation.downloadInfo.downloadStatus != DownloadInfoStatusDownloaded) {
+                    downloadingBytes += operation.downloadedBytes;
+                }
+            }
+            _bytesDownloadedSoFar = downloadingBytes + _bytesOfFinished;
+            _progress = (_bytesDownloadedSoFar)*1.0f/_totalBytesToDownload;
+            if (_totalBytesToDownload == 0 || _bytesDownloadedSoFar == 0) {
+                ODSLogDebug(@"download progress:%lu ------ %lu ==== %f", _bytesDownloadedSoFar, _totalBytesToDownload, _progress);
+            }
+            
+            [uploadIndicator setProgress:_progress];
+        }
+    });
 }
 @end

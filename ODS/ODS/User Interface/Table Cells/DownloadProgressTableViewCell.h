@@ -12,12 +12,13 @@
 
 extern NSString * const kDownloadProgressCellIdentifier;
 
-@interface DownloadProgressTableViewCell : UITableViewCell
+@interface DownloadProgressTableViewCell : UITableViewCell <UIAlertViewDelegate>
 @property (nonatomic, weak) IBOutlet    UILabel     *labelFileName;
 @property (nonatomic, weak) IBOutlet    UILabel     *labelDownloadInfo;
 @property (nonatomic, weak) IBOutlet    UILabel     *labelDownloadStatus;
 @property (nonatomic, weak) IBOutlet    UIImageView *imgFileIcon;
 @property (nonatomic, weak) IBOutlet UIProgressView *progressBar;
+@property (nonatomic, strong) UIAlertView *alertView;
 
 @property (nonatomic, strong) DownloadInfo *downloadInfo;
 @end

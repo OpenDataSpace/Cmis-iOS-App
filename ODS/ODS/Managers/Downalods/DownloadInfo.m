@@ -75,7 +75,7 @@
     
     if (repositoryItem != nil) //TODO: Have the same cmis object id on server?
     {
-        [self setTempFilePath:[FileUtils pathToTempFile:[LocalFileManager objectIDFromFileObject:_repositoryItem withRepositoryId:_repositoryIdentifier]]];
+        [self setTempFilePath:[FileUtils pathToTempFile:[LocalFileManager downloadKeyWithObject:_repositoryItem]]];
     }
 }
 

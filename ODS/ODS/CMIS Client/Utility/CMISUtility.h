@@ -13,7 +13,7 @@
 @class CMISObject;
 @class CMISRequest;
 @class CMISOperationContext;
-
+@class CMISProperties;
 
 @interface CMISUtility : NSObject
 + (NSArray*) filterRepositories:(NSArray*) repos;
@@ -26,4 +26,7 @@
 
 /* Rename File or Folder */
 + (void) renameWithItem:(CMISObject*) item newName:(NSString*) newName withCompletionBlock:(void (^)(CMISObject *object, NSError *error))completionBlock;
+
+/* Dictionary to CMIS Properties */
++ (CMISProperties*) linkParametersToCMISProperties:(NSDictionary*) param;
 @end

@@ -26,6 +26,7 @@
 "no.document.selected.text" = "No Document Selected";
 
 /* Documents View */
+"load.more.cell.title" = "Load More...";
 "relative.date.just-now" = "just now";
 "relative.date.less-than-a-minute-ago" = "less than a minute ago";
 "relative.date.one-minute-ago" = "1 minute ago";
@@ -110,6 +111,7 @@
 "download.progress.starting" = "Download starting ...";
 "download.progress.successed" = "Download finished.";
 "dwonload.ismanaged" = "have already downloaded.";
+"dwonload.selected.items.ismanaged" = "All selected items have already downloaded.";
 "download.progress.files.starting" = " files download starting ...";
 "download.progress.failed" = "Failed to download";
 "download.progress.stopAll" = "Stop All";
@@ -183,6 +185,19 @@
 "more.item.account" = "Manage Accounts";
 "more.item.about" = "About";
 "more.item.upload" = "Manage Uploads";
+
+/* create links view */
+"create-link.view.title" = "Create Link";
+"create-link.fields.email" = "Email";
+"create-link.fields.subject" = "Subject";
+"create-link.fields.expirationdate" = "Expiration Date";
+"create-link.fields.password" = "Password";
+"create-link.fields.message" = "Message";
+"create-link.placeholder.required" = "Required";
+"create-link.placeholder.optional" = "Optional";
+"creating.link" = "Creating link...";
+"create-link.success" = "Craete link successful.";
+"create-link.failure" = "Failed to create link.";
 
 /* Actions Title */
 "add.actionsheet.create-folder" = "Create Folder";

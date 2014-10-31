@@ -68,6 +68,7 @@ shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerController
 
 @property (nonatomic) BOOL shouldChangeStatusBarStyle;
 @property (nonatomic) BOOL shouldShowSavedPhotosOnTop;
+@property (nonatomic) BOOL shouldShowPhotosWithLocationOnly;
 @property (nonatomic) NSUInteger maximumNumberOfPhotosToBeSelected;
 
 @property (nonatomic, ag_weak) id delegate;
@@ -80,7 +81,11 @@ shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerController
 
 @property (nonatomic, readonly) AGImagePickerControllerSelectionMode selectionMode;
 
+@property (nonatomic, assign) BOOL userIsDenied;
+
 + (ALAssetsLibrary *)defaultAssetsLibrary;
+
++ (AGImagePickerController *)sharedInstance:(id)delegate;
 
 - (id)initWithDelegate:(id)delegate;
 - (id)initWithFailureBlock:(AGIPCDidFail)failureBlock
@@ -92,6 +97,8 @@ maximumNumberOfPhotosToBeSelected:(NSUInteger)maximumNumberOfPhotosToBeSelected
 shouldChangeStatusBarStyle:(BOOL)shouldChangeStatusBarStyle
 toolbarItemsForManagingTheSelection:(NSArray *)toolbarItemsForManagingTheSelection
 andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop;
+
+- (void)showFirstAssetsController;
 
 @end
 

@@ -24,7 +24,7 @@
 
 #pragma mark - Utilities
 
-//#define IS_IPAD()                                                               ([[UIDevice currentDevice] respondsToSelector:@selector(userInterfaceIdiom)] && \
+#define IS_IPAD()                                                               ([[UIDevice currentDevice] respondsToSelector:@selector(userInterfaceIdiom)] && \
 [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
 #pragma mark - Constants
@@ -50,8 +50,8 @@
 #define AGIPC_ITEMS_PER_ROW_IPAD_PORTRAIT                                       8
 #define AGIPC_ITEMS_PER_ROW_IPAD_LANDSCAPE                                      12
 
-#define AGIPC_ITEM_WIDTH                                                        75.f
-#define AGIPC_ITEM_HEIGHT                                                       75.f
+#define AGIPC_ITEM_WIDTH                                                        (fmin([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)>320?88.f:75.f)
+#define AGIPC_ITEM_HEIGHT                                                       AGIPC_ITEM_WIDTH
 
 #define AGIPC_ITEM_SIZE                                                         CGSizeMake(AGIPC_ITEM_WIDTH, AGIPC_ITEM_HEIGHT)
 

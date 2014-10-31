@@ -74,6 +74,11 @@ NSString * const kImageUIButtonBarBadgeError = @"ui-button-bar-badge-error.png";
  */
 CGFloat const kDefaultTableCellHeight = 60.0f;
 
+/**
+ * System Preference Keys
+ */
+NSString * const kPreferenceApplicationFirstRun = @"FirstRun";
+
 @implementation ODSConstants
 
 @end

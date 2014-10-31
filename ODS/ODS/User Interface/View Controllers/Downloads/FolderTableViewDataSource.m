@@ -34,6 +34,7 @@
 #import "SessionKeychainManager.h"
 #import "AccountManager.h"
 #import "DownloadMetadata.h"
+#import "LocalDocument.h"
 
 NSString * const kDownloadManagerSection = @"DownloadManager";
 NSString * const kDownloadedFilesSection = @"DownloadedFiles";
@@ -173,11 +174,6 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
         NSString *modDateString = formatDocumentDateFromDate(modificationDate);
 		
         DownloadMetadata *metadata = [self.downloadsMetadata objectForKey:[fileURLString lastPathComponent]];
-
-        /**
-         * mhatfield: 06 June 2012
-         * Pulling the displayed filename from the metadata could show two files with the same name. Confusing for the user?
-         */
         
         if (metadata)
         {
@@ -188,8 +184,6 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
             title = [fileURLString lastPathComponent];
         }
         
-		// !!!: Check if we got an error and handle gracefully
-        // TODO: Needs to be localized
 		details = [NSString stringWithFormat:@"%@ • %@", modDateString, [FileUtils stringForLongFileSize:fileSize]];
 		iconImage = imageForFilename(title);
         
@@ -230,7 +224,7 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
     SEL rendererSelector = nil;
 
     NSString *key = [self.sectionKeys objectAtIndex:indexPath.section];
-    NSArray *contents = [self.sectionContents objectForKey:key];
+    NSArray *contents = [[self.sectionContents objectForKey:key] copy];  //TODO:use copy to fix beyond array bound?
     id cellContents = [contents objectAtIndex:indexPath.row];
     
     if ([key isEqualToString:kDownloadManagerSection])
@@ -270,13 +264,13 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
 {
 	ODSLogDebug(@"Deleted the cell: %d", indexPath.row);
     NSURL *fileURL = [self.children objectAtIndex:indexPath.row];
-    NSString *filename = [fileURL lastPathComponent];  //filename is repositoryId + cmisobjcetId
-	BOOL fileExistsInFavorites = [[LocalFileManager sharedInstance] downloadExistsForObjectID:filename];
+    NSString *filename = [fileURL lastPathComponent];  //filename is cmisobjcetId_filename
+	BOOL fileExistsInFavorites = [[LocalFileManager sharedInstance] downloadExistsForKey:filename];
     [self setEditing:YES];
     
 	if (fileExistsInFavorites)
     {
-        [[LocalFileManager sharedInstance] removeDownloadInfoForFileObjectID:filename];
+        [[LocalFileManager sharedInstance] removeDownloadInfoForKey:filename];
 		ODSLogDebug(@"Removed File '%@'", filename);
     }
     
@@ -418,7 +412,7 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
 //                }
 				[self.children addObject:fileURL];
                 
-                NSDictionary *downloadInfo = [[LocalFileManager sharedInstance] downloadInfoForDocumentWithID:[fileURL lastPathComponent]];
+                NSDictionary *downloadInfo = [[LocalFileManager sharedInstance] downloadInfoForDocumentWithKey:[fileURL lastPathComponent]];
                 
                 if (downloadInfo)
                 {
@@ -472,7 +466,15 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
     NSMutableArray *selectedURLs = [NSMutableArray arrayWithCapacity:[selectedIndexes count]];
     for (NSIndexPath *indexPath in selectedIndexes)
     {
-        [selectedURLs addObject:[self.children objectAtIndex:indexPath.row]];
+        NSURL *fileURL = [self.children objectAtIndex:indexPath.row];
+        NSString *fileName;
+        DownloadMetadata *metadata = [self.downloadsMetadata objectForKey:[fileURL lastPathComponent]];
+        if (metadata) {
+            fileName = metadata.filename;
+        }else {
+            fileName = [fileURL lastPathComponent];
+        }
+        [selectedURLs addObject:[LocalDocument loacalDocumentWithUrl:[fileURL absoluteString] docName:fileName]];
     }
     
     return [NSArray arrayWithArray:selectedURLs];
@@ -482,8 +484,8 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
 
 - (void)downloadQueueChanged:(NSNotification *)notification
 {
-    [self refreshData];
-    [self.currentTableView reloadData];
+//    [self refreshData];
+//    [self.currentTableView reloadData];
 }
 
 @end

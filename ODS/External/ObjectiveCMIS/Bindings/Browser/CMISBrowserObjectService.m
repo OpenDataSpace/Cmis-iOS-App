@@ -714,4 +714,49 @@
     return cmisRequest;
 }
 
+- (CMISRequest*) createLinkWithProperties:(CMISProperties*) properties
+                           sourceFolderId:(NSString*) sourceFolderId
+                          completionBlock:(void (^)(NSString *objectId, NSError *error))completionBlock {
+    // Validate params
+    if (!properties) {
+        CMISLogError(@"Must provide link properties");
+        completionBlock(nil, [CMISErrors createCMISErrorWithCode:kCMISErrorCodeInvalidArgument detailedDescription:nil]);
+        return nil;
+    }
+    
+    // build URL
+    NSString *objectUrl = [self retrieveObjectUrlForObjectWithId:sourceFolderId];
+    
+    // prepare form data
+    CMISBroswerFormDataWriter *formData = [[CMISBroswerFormDataWriter alloc] initWithAction:kCMISBrowserJSONActionCreateItem];
+    [formData addPropertiesParameters:properties];
+    [formData addSuccinctFlag:true];
+    
+    
+    CMISRequest *cmisRequest = [[CMISRequest alloc] init];
+    
+    // send
+    [self.bindingSession.networkProvider invokePOST:[NSURL URLWithString:objectUrl]
+                                            session:self.bindingSession
+                                               body:formData.body
+                                            headers:formData.headers
+                                        cmisRequest:cmisRequest
+                                    completionBlock:^(CMISHttpResponse *httpResponse, NSError *error) {
+                                        if ((httpResponse.statusCode == 200 || httpResponse.statusCode == 201) && httpResponse.data) {
+                                            CMISBrowserTypeCache *typeCache = [[CMISBrowserTypeCache alloc] initWithRepositoryId:self.bindingSession.repositoryId bindingService:self];
+                                            [CMISBrowserUtil objectDataFromJSONData:httpResponse.data typeCache:typeCache completionBlock:^(CMISObjectData *objectData, NSError *error) {
+                                                if (error) {
+                                                    completionBlock(nil, error);
+                                                } else {
+                                                    completionBlock(objectData.identifier, nil);
+                                                }
+                                            }];
+                                        } else {
+                                            completionBlock(nil, error);
+                                        }
+                                    }];
+    
+    return cmisRequest;
+}
+
 @end

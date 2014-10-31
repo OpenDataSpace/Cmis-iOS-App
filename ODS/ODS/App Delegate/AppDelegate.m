@@ -27,11 +27,12 @@ static NSArray *unsupportedDevices;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
     NSString *buildTime = [NSString stringWithFormat:NSLocalizedString(@"about.build.date.time", @"Build: %s %s (%@.%@)"), __DATE__, __TIME__,
                            [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
                            [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
     ODSLogInfo(@"%@ %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"], buildTime);
+    
+    [self registerDefaultsFromSettingsBundle];
     
     //Initial UI from storyboard
     UIStoryboard *mainStoryboard = instanceMainStoryboard();
@@ -99,7 +100,7 @@ static NSArray *unsupportedDevices;
     {
         [[TVOutManager sharedInstance] stopTVOut];
     }
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationReloadSettings object:nil]; //reload settings
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
@@ -144,6 +145,46 @@ static NSArray *unsupportedDevices;
     BOOL unsupported = [unsupportedDevices containsObject:[device platform]];
     
     return unsupported;
+}
+
+- (void)registerDefaultsFromSettingsBundle
+{
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:kPreferenceApplicationFirstRun])
+    {
+        // This is the first run, we need to remove all the "past" user defaults and init them again
+        [self resetUserPreferencesToDefault];
+        [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:kPreferenceApplicationFirstRun];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)resetUserPreferencesToDefault
+{
+    ODSLogDebug(@"Resetting User Preferences to default");
+    NSString *settingsBundlePath = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"];
+    if(!settingsBundlePath)
+    {
+        ODSLogError(@"Could not find Settings.bundle");
+        return;
+    }
+    
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[settingsBundlePath stringByAppendingPathComponent:@"Root.plist"]];
+    NSArray *preferences = [settings objectForKey:@"PreferenceSpecifiers"];
+    
+    for(NSDictionary *prefSpecification in preferences)
+    {
+        NSString *key = [prefSpecification objectForKey:@"Key"];
+        if(key)
+        {
+            NSString *settingType = [prefSpecification objectForKey:@"Type"];
+            if ([settingType isEqualToCaseInsensitiveString:@"PSToggleSwitchSpecifier"]) {
+                [[ODSUserDefaults standardUserDefaults] setBool:[[prefSpecification objectForKey:@"DefaultValue"] boolValue] forKey:key];
+            }else if ([settingType isEqualToCaseInsensitiveString:@"PSMultiValueSpecifier"]) {
+                [[ODSUserDefaults standardUserDefaults] setBool:[[prefSpecification objectForKey:@"DefaultValue"] integerValue] forKey:key];
+            }
+        }
+    }
+    
 }
 
 #pragma mark -

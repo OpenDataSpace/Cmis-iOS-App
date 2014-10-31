@@ -10,6 +10,7 @@
 #import "CMISDownloadFileRequest.h"
 #import "DownloadInfo.h"
 #import "LocalFileManager.h"
+#import "CMISDocument.h"
 
 @interface AbstractDownloadManager()
 @property (nonatomic, strong, readwrite) ODSDownloadQueue *downloadQueue;
@@ -96,8 +97,10 @@
     [_allDownloads setObject:downloadInfo forKey:downloadInfo.cmisObjectId];
     
     CMISDownloadFileRequest *request = [CMISDownloadFileRequest cmisDownloadRequestWithDownloadInfo:downloadInfo];
+    
+    CMISDocument *docObject = (CMISDocument*) downloadInfo.repositoryItem;
 
-    [request setTotalBytes:0];
+    [request setTotalBytes:docObject.contentStreamLength];
     [request setDownloadInfo:downloadInfo];
     [downloadInfo setDownloadStatus:DownloadInfoStatusActive];
     [downloadInfo setDownloadRequest:request];
@@ -255,5 +258,4 @@
     [downloadInfo setDownloadStatus:DownloadInfoStatusFailed];
     [downloadInfo setError:error];
 }
-
 @end

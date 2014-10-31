@@ -32,12 +32,12 @@ NSString * const MetadataFileName = @"DownloadMetadata.plist";
     return self;
 }
 
-- (BOOL) downloadExistsForObjectID:(NSString *)objectID {
-    return [[NSFileManager defaultManager] fileExistsAtPath:[FileUtils pathToSavedFile:objectID]];
+- (BOOL) downloadExistsForKey:(NSString *)key {
+    return [[NSFileManager defaultManager] fileExistsAtPath:[FileUtils pathToSavedFile:key]];
 }
 
 - (BOOL) downloadExistsForFileObject:(CMISObject*) fileObj {
-    return [[NSFileManager defaultManager] fileExistsAtPath:[LocalFileManager objectIDFromFileObject:fileObj]];
+    return [[NSFileManager defaultManager] fileExistsAtPath:[LocalFileManager downloadKeyWithObject:fileObj]];
 }
 
 
@@ -91,30 +91,30 @@ NSString * const MetadataFileName = @"DownloadMetadata.plist";
     return key;
 }
 
-- (NSDictionary *)downloadInfoForDocumentWithID:(NSString *)objectID {
+- (NSDictionary *)downloadInfoForDocumentWithKey:(NSString *)key {
     [self readMetadata];
     
-    return [downloadMetadata objectForKey:objectID];
+    return [downloadMetadata objectForKey:key];
 }
 
-- (BOOL)removeDownloadInfoForFileObjectID:(NSString *)objectID {
-    NSDictionary *previousInfo = [[self readMetadata] objectForKey:objectID];
+- (BOOL)removeDownloadInfoForKey:(NSString *)key {
+    NSDictionary *previousInfo = [[self readMetadata] objectForKey:key];
     
-    if ([FileUtils moveFileToTemporaryFolder:[FileUtils pathToSavedFile:objectID]])
+    if ([FileUtils moveFileToTemporaryFolder:[FileUtils pathToSavedFile:key]])
     {
         // If we can get an objectId, then notify interested parties that the file has moved
         NSString *objectId = [previousInfo objectForKey:@"objectId"];
         if (objectId)
         {
             NSDictionary *userInfo = @{@"objectId": objectId,
-                                       @"newPath": [FileUtils pathToTempFile:objectID]
+                                       @"newPath": [FileUtils pathToTempFile:key]
                                        };
             [[NSNotificationCenter defaultCenter] postDocumentUpdatedNotificationWithUserInfo:userInfo];
         }
         
         if (previousInfo)
         {
-            [[self readMetadata] removeObjectForKey:objectID];
+            [[self readMetadata] removeObjectForKey:key];
             
             if (![self writeMetadata])
             {
@@ -195,19 +195,11 @@ NSString * const MetadataFileName = @"DownloadMetadata.plist";
     return sharedObject;
 }
 
-+ (NSString*) objectIDFromFileObject:(CMISObject*) fileObj {
-    return [LocalFileManager objectIDFromFileObject:fileObj withRepositoryId:nil];
++ (NSString*) downloadKeyWithObjectID:(NSString*) cmisObjectId withFileName:(NSString*) fileName {
+    return [NSString stringWithFormat:@"%@_%@", cmisObjectId, fileName];
 }
 
-+ (NSString*) objectIDFromFileObject:(CMISObject*) fileObj withRepositoryId:(NSString*)repositoryId {
-    if (repositoryId) {
-        return [NSString stringWithFormat:@"%@_%@_%@", repositoryId, fileObj.identifier, fileObj.name];
-    }else if([fileObj session] && fileObj.session.sessionParameters.repositoryId) {
-        return [NSString stringWithFormat:@"%@_%@_%@", repositoryId, fileObj.session.sessionParameters.repositoryId, fileObj.name];
-    }
-    
-    ODSLogDebug(@"failed to get object id for file: %@", fileObj.name);
-    
-    return nil;
++ (NSString*) downloadKeyWithObject:(CMISObject*) fileObj {
+    return [LocalFileManager downloadKeyWithObjectID:fileObj.identifier withFileName:fileObj.name];
 }
 @end

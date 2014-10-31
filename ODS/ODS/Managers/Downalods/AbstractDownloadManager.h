@@ -46,8 +46,6 @@
 // Queue multiple downloads
 - (void)queueDownloadInfoArray:(NSArray *)downloadInfos;
 
-- (void)queueFinished:(ODSDownloadQueue *)queue;
-
 // Remove a download
 - (void)clearDownload:(NSString *)cmisObjectId;
 
@@ -69,4 +67,6 @@
 - (void)requestFinished:(CMISDownloadFileRequest *)request;
 - (void)requestFailed:(CMISDownloadFileRequest *)request;
 - (void)queueFinished:(ODSDownloadQueue *)queue;
+
+- (void)setQueueProgressDelegate:(id)progressDelegate;
 @end

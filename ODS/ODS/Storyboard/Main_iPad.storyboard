@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="93m-si-bnL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="93m-si-bnL">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--More-->
@@ -133,14 +133,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="308" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="mae-xB-qZy">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mae-xB-qZy" id="99d-NA-p52">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="u95-T4-hW7" id="mhU-uj-vJ1"/>
                             <outlet property="delegate" destination="u95-T4-hW7" id="TIv-kl-jPY"/>
@@ -268,24 +260,6 @@
             </objects>
             <point key="canvasLocation" x="1406" y="1070"/>
         </scene>
-        <!--About View Controller-->
-        <scene sceneID="vaZ-k9-CcI">
-            <objects>
-                <viewController storyboardIdentifier="AboutViewControllerIdentifier" id="4ph-Eq-Pa3" customClass="AboutViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="W1K-06-Xa5"/>
-                        <viewControllerLayoutGuide type="bottom" id="uos-em-FLh"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="izM-gP-Aby">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="vqV-ZT-4xT" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="544" y="2167"/>
-        </scene>
         <!--Document View Controller-->
         <scene sceneID="6go-dG-4tv">
             <objects>
@@ -311,11 +285,11 @@
                                     <action selector="playButtonTapped:" destination="uR6-0L-N2W" eventType="touchUpInside" id="kBy-r6-G2a"/>
                                 </connections>
                             </button>
-                            <webView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lO5-MD-X13" customClass="CustomWebView">
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lO5-MD-X13" customClass="CustomWebView">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </webView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOY-cA-HyX">
+                            <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOY-cA-HyX">
                                 <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="Exu-Az-AOL"/>
@@ -328,7 +302,7 @@
                             <constraint firstAttribute="centerY" secondItem="fsJ-oG-l4J" secondAttribute="centerY" id="Oj5-T7-GJp"/>
                             <constraint firstAttribute="bottom" secondItem="MOY-cA-HyX" secondAttribute="bottom" id="SLk-Cy-5nN"/>
                             <constraint firstItem="MOY-cA-HyX" firstAttribute="leading" secondItem="3tx-xG-JqH" secondAttribute="leading" id="aqy-0U-Zlx"/>
-                            <constraint firstAttribute="bottom" secondItem="lO5-MD-X13" secondAttribute="bottom" constant="44" id="fr2-vF-6TV"/>
+                            <constraint firstAttribute="bottom" secondItem="lO5-MD-X13" secondAttribute="bottom" id="fr2-vF-6TV"/>
                             <constraint firstItem="lO5-MD-X13" firstAttribute="top" secondItem="3tx-xG-JqH" secondAttribute="top" id="hw5-23-lS4"/>
                             <constraint firstAttribute="trailing" secondItem="MOY-cA-HyX" secondAttribute="trailing" id="iDP-xb-jII"/>
                             <constraint firstItem="lO5-MD-X13" firstAttribute="leading" secondItem="3tx-xG-JqH" secondAttribute="leading" id="tMu-So-9K6"/>
@@ -346,6 +320,318 @@
             </objects>
             <point key="canvasLocation" x="544" y="3307"/>
         </scene>
+        <!--About View Controller-->
+        <scene sceneID="bdE-LB-dhS">
+            <objects>
+                <viewController storyboardIdentifier="AboutViewControllerIdentifier" id="NG7-Ht-34M" customClass="AboutViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0UR-ja-Bjc"/>
+                        <viewControllerLayoutGuide type="bottom" id="Lnw-Yd-FBw"/>
+                    </layoutGuides>
+                    <scrollView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" id="rWE-cX-SI9">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rJr-fl-ntQ" userLabel="Gradient View">
+                                <rect key="frame" x="35" y="390" width="698" height="265"/>
+                                <subviews>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="ODS uses following third party libraries" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="TGY-sI-kEW">
+                                        <rect key="frame" x="14" y="6" width="670" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hqH-Va-ngL">
+                                        <rect key="frame" x="28" y="38" width="162" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="MKNumberBadgeView">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dh1-UG-0er">
+                                        <rect key="frame" x="28" y="71" width="184" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="AGImagePickerController">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b4y-6u-pfW">
+                                        <rect key="frame" x="28" y="104" width="123" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="GenericKeychain">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckj-kE-lHZ">
+                                        <rect key="frame" x="28" y="135" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="ISO8601Parser">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="5" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oea-ok-c1E">
+                                        <rect key="frame" x="28" y="169" width="191" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="EGOTableViewPullRefresh">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="6" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vHy-Ru-Du5">
+                                        <rect key="frame" x="28" y="199" width="139" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="TTTAttributedLabel">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="19" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2rX-H3-Wg9">
+                                        <rect key="frame" x="548" y="199" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="GoogleToolbox">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="8" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7XF-RT-QQf">
+                                        <rect key="frame" x="303" y="38" width="163" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="MGSplitViewController">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="9" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hZ2-zt-DOC">
+                                        <rect key="frame" x="303" y="71" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="BarButtonBadge">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="11" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9m3-HM-QfK">
+                                        <rect key="frame" x="303" y="135" width="151" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="IFGenericTableViews">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="10" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bCa-Kh-iJO">
+                                        <rect key="frame" x="303" y="104" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="MD5">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="14" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3PS-GG-nJD">
+                                        <rect key="frame" x="548" y="38" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="TVOutManager">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="17" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bTS-Sz-COd">
+                                        <rect key="frame" x="548" y="135" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Reachability">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="16" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lmk-QR-fgu">
+                                        <rect key="frame" x="548" y="104" width="123" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="MBProgressHUD">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="15" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GCK-MG-vbx">
+                                        <rect key="frame" x="548" y="71" width="127" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="DirectoryWatcher">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="18" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vf8-Wj-2nv">
+                                        <rect key="frame" x="548" y="169" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="WEPopover">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="13" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eCf-13-LVr">
+                                        <rect key="frame" x="303" y="199" width="121" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="SBJSON">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" tag="12" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bZB-lr-sxg">
+                                        <rect key="frame" x="303" y="169" width="124" height="37"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="ASIHTTPRequest">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" text="(build info)" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="MCM-nP-War">
+                                        <rect key="frame" x="187" y="234" width="300" height="31"/>
+                                        <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <color key="shadowColor" cocoaTouchSystemColor="lightTextColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" button="YES" staticText="YES"/>
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="698" id="90B-fF-29H"/>
+                                    <constraint firstAttribute="height" constant="265" id="IoA-Lw-wrT"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mvw-o6-Ngc">
+                                <rect key="frame" x="249" y="42" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="U1i-dS-LqZ"/>
+                                    <constraint firstAttribute="width" constant="240" id="kwn-wZ-66b"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="Logo-240">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonPressed:" destination="NG7-Ht-34M" eventType="touchUpInside" id="v03-BG-o38"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EJB-EV-EQH">
+                                <rect key="frame" x="88" y="161" width="629" height="162"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="DeJ-PP-86c" userLabel="aboutZiaText" colorLabel="IBBuiltInLabel-Red">
+                                        <rect key="frame" x="20" y="19" width="589" height="85"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                        </accessibility>
+                                        <string key="text">Copyright (C) 2011-2012 Zia Consulting, Inc. 
+Copyright (C) 2011-2012  Alfresco, Inc.
+Copyright(C) 2013-2014 The Open DataSpace Project.</string>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wb4-C6-feN">
+                                        <rect key="frame" x="259" y="112" width="130" height="43"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="130" id="UCF-Yz-DCK"/>
+                                            <constraint firstAttribute="height" constant="43" id="gEM-TP-XX1"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="LogoCP-130">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="buttonPressed:" destination="NG7-Ht-34M" eventType="touchUpInside" id="byS-d9-LvW"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="DeJ-PP-86c" firstAttribute="top" secondItem="EJB-EV-EQH" secondAttribute="top" constant="19" id="3F4-ej-RbP"/>
+                                    <constraint firstAttribute="height" constant="162" id="8Kc-cy-BGm"/>
+                                    <constraint firstItem="DeJ-PP-86c" firstAttribute="leading" secondItem="EJB-EV-EQH" secondAttribute="leading" constant="20" id="av3-M8-Lnn"/>
+                                    <constraint firstAttribute="bottom" secondItem="wb4-C6-feN" secondAttribute="bottom" constant="7" id="u3J-Lf-nQk"/>
+                                    <constraint firstAttribute="trailing" secondItem="DeJ-PP-86c" secondAttribute="trailing" constant="20" id="v4t-Ua-eLM"/>
+                                    <constraint firstAttribute="width" constant="629" id="vem-vE-YV1"/>
+                                    <constraint firstAttribute="trailing" secondItem="wb4-C6-feN" secondAttribute="trailing" constant="240" id="xLa-Tk-rwL"/>
+                                    <constraint firstItem="wb4-C6-feN" firstAttribute="leading" secondItem="EJB-EV-EQH" secondAttribute="leading" constant="259" id="xxs-Vu-PWE"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="EJB-EV-EQH" secondAttribute="centerX" id="0aa-pv-Vcw"/>
+                            <constraint firstItem="EJB-EV-EQH" firstAttribute="top" secondItem="rWE-cX-SI9" secondAttribute="top" constant="161" id="QHL-Gn-5Xw"/>
+                            <constraint firstAttribute="centerX" secondItem="rJr-fl-ntQ" secondAttribute="centerX" id="cf7-kX-oC7"/>
+                            <constraint firstItem="Mvw-o6-Ngc" firstAttribute="top" secondItem="rWE-cX-SI9" secondAttribute="top" constant="42" id="oh8-AG-6PP"/>
+                            <constraint firstAttribute="centerX" secondItem="Mvw-o6-Ngc" secondAttribute="centerX" id="tTS-LL-v34"/>
+                            <constraint firstItem="rJr-fl-ntQ" firstAttribute="top" secondItem="rWE-cX-SI9" secondAttribute="top" constant="390" id="xDc-F5-dyJ"/>
+                        </constraints>
+                    </scrollView>
+                    <connections>
+                        <outlet property="buildTimeLabel" destination="MCM-nP-War" id="fyW-Aa-Iw3"/>
+                        <outlet property="smallZiaButton" destination="wb4-C6-feN" id="Wf9-YD-VUp"/>
+                        <outlet property="ziaLogoButton" destination="Mvw-o6-Ngc" id="SL7-W0-l6Y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ekO-dY-VnC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="544" y="4464"/>
+        </scene>
         <!--Split View Controller-->
         <scene sceneID="t9a-Jq-gt3">
             <objects>
@@ -359,8 +645,44 @@
             </objects>
             <point key="canvasLocation" x="-505.60000000000002" y="503.4666666666667"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="eII-Zu-N2m">
+            <objects>
+                <viewController id="whm-gp-9Y5" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ypg-gJ-Hw4"/>
+                        <viewControllerLayoutGuide type="bottom" id="tku-1o-qr4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="cxx-Eg-fBf">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZVN-nd-TWd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="4HS-uB-wog">
+            <objects>
+                <viewController id="zcm-wR-ew2" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ziL-b1-3V5"/>
+                        <viewControllerLayoutGuide type="bottom" id="69w-3n-eqx"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="5rF-Vm-w0N">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="28J-kk-XEk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
+        <image name="Logo-240" width="240" height="149"/>
+        <image name="LogoCP-130" width="130" height="43"/>
         <image name="no-document-selected" width="200" height="200"/>
         <image name="settings" width="31" height="32"/>
         <image name="tabDoc" width="30" height="30"/>

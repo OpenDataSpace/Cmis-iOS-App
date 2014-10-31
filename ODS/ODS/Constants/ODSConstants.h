@@ -73,6 +73,11 @@ extern NSString * const kImageUIButtonBarBadgeError;
  */
 extern CGFloat const kDefaultTableCellHeight;
 
+/**
+ * System Preference Keys
+ */
+extern NSString * const kPreferenceApplicationFirstRun;
+
 @interface ODSConstants : NSObject
 
 @end

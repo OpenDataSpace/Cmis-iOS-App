@@ -66,6 +66,10 @@ NSString * const kNotificationSessionCleared = @"kNotificationSessionCleared";
 
 NSString * const kNotificationTaskCompleted = @"kNotificationTaskCompleted";
 
+//
+// Reload Settings from bundle
+//
+extern NSString * const kNotificationReloadSettings = @"kNotificationReloadSettings";
 
 @implementation ODSConstants_Notification
 

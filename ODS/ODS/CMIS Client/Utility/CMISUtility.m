@@ -11,6 +11,10 @@
 #import "CMISFolder.h"
 #import "CMISConstants.h"
 #import "CMISOperationContext.h"
+#import "CMISProperties.h"
+#import "CMISPropertyData.h"
+#import "CMISConstants+ODS.h"
+#import "NSString+SHA.h"
 
 @implementation CMISUtility
 
@@ -82,6 +86,36 @@
             completionBlock(object, error);
         }
     }];
+}
+
+/* Dictionary to CMIS Properties */
++ (CMISProperties*) linkParametersToCMISProperties:(NSDictionary*) params {
+    CMISProperties *properties = [[CMISProperties alloc] init];
+    NSArray *allKeys = [params allKeys];
+    
+    for (NSString *key in allKeys) {
+        id param = [params objectForKey:key];
+        if (param != nil) {
+            if ([param isKindOfClass:[NSString class]]) {
+                if ([key isEqualToCaseInsensitiveString:kCMISPropertyGDSPasswordId]) {
+                    [properties addProperty:[CMISPropertyData createPropertyForId:key stringValue:[NSString SHA256String:param]]];
+                }else {
+                    [properties addProperty:[CMISPropertyData createPropertyForId:key stringValue:param]];
+                }
+            }else if ([param isKindOfClass:[NSDate class]]) {
+                [properties addProperty:[CMISPropertyData createPropertyForId:key dateTimeValue:param]];
+            }else if ([param isKindOfClass:[NSArray class]] && [key isEqualToCaseInsensitiveString:kCMISPropertyGDSObjectIdsId]) {  //gds:objectIds
+                [properties addProperty:[CMISPropertyData createPropertyForId:key arrayValue:param type:CMISPropertyTypeId]];
+            }
+        }        
+    }
+    
+    [properties addProperty:[CMISPropertyData createPropertyForId:@"cmis:objectTypeId" idValue:@"cmis:item"]];
+    //[properties addProperty:[CMISPropertyData createPropertyForId:@"cmis:secondaryObjectTypeIds" idValue:@"gds:downloadLink"]];
+    [properties addProperty:[CMISPropertyData createPropertyForId:@"cmis:secondaryObjectTypeIds" arrayValue:[NSArray arrayWithObjects:@"gds:downloadLink", @"cmis:rm_clientMgtRetention", nil] type:CMISPropertyTypeString]];
+    
+    
+    return properties;
 }
 
 @end

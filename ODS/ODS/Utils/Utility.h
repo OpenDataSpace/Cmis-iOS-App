@@ -110,3 +110,5 @@ typedef NS_ENUM(NSUInteger, APIKey)
 };
 
 NSString *externalAPIKey(APIKey apiKey);
+
+BOOL isFileDownloaded(CMISObject* fileObj);

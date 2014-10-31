@@ -20,7 +20,7 @@ extern NSString * const  kMoveTargetTypeFolder;
 
 @property (nonatomic, copy) NSString *viewTitle;
 @property (nonatomic, copy) NSString *selectedAccountUUID;
-@property (nonatomic, strong) NSArray *folderItems;
+@property (nonatomic, strong) NSMutableArray *folderItems;
 
 @property (nonatomic, copy) NSString    *itemType;  //repo or folder
 

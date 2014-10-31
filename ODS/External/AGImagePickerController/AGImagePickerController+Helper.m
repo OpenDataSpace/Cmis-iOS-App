@@ -193,7 +193,11 @@
     CGFloat width = bounds.size.width;
     
     if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-        width = bounds.size.height;
+        // modified by springox(20141024)
+        //width = bounds.size.height;
+        if (bounds.size.width < bounds.size.height) {
+            width = bounds.size.height;
+        }
     }
     
     CGFloat x = 0, y = 0;

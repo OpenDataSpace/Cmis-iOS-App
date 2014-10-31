@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class MKNumberBadgeView;
+
 extern NSString * const kDownloadFailureSummaryCellIdentifier;
 
 @interface DownloadFailureSummaryTableViewCell : UITableViewCell
-
+@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
+@property (nonatomic, weak) IBOutlet MKNumberBadgeView *badgeView;
 @end

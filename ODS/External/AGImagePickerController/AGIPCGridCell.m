@@ -18,7 +18,7 @@
 @interface AGIPCGridCell ()
 {
 	NSArray *_items;
-    AGImagePickerController *_imagePickerController;
+    __ag_weak AGImagePickerController *_imagePickerController;
 }
 
 @end
@@ -31,17 +31,39 @@
 
 - (void)setItems:(NSArray *)items
 {
-    if (_items != items)
+    @synchronized (self)
     {
-        for (AGIPCGridItem *view in _items)//[self subviews])
+        if (_items != items)
         {
-            if ([view isKindOfClass:[AGIPCGridItem class]]){                
+            for (AGIPCGridItem *gridItem in items) {
+                [gridItem removeFromSuperview];
+            }
+            
+            for (UIView *view in [self.contentView subviews])
+            {
                 [view removeFromSuperview];
             }
+            
+            _items = items;
+
+            for (AGIPCGridItem *gridItem in _items)
+            {
+                [self.contentView addSubview:gridItem];
+            }
         }
-        
-        _items = items;
     }
+}
+
+- (NSArray *)items
+{
+    NSArray *array = nil;
+    
+    @synchronized (self)
+    {
+        array = _items;
+    }
+    
+    return array;
 }
 
 #pragma mark - Object Lifecycle
@@ -54,8 +76,12 @@
         self.imagePickerController = imagePickerController;
 		self.items = items;
         
-        UIView *emptyView = [[UIView alloc] init];
-        self.backgroundView = emptyView;
+        // modified by springox(20141012)
+        //UIView *emptyView = [[UIView alloc] init];
+        //self.backgroundView = emptyView;
+        
+        self.contentView.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor clearColor];
 	}
 	
 	return self;
@@ -66,18 +92,25 @@
 - (void)layoutSubviews
 {
     CGRect frame = self.imagePickerController.itemRect;
-    CGFloat leftMargin = frame.origin.x;
     
-	for (AGIPCGridItem *gridItem in self.items)
-    {	
-		[gridItem setFrame:frame];
-        UITapGestureRecognizer *selectionGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:gridItem action:@selector(tap)];
+    //CGRect contentFrame = self.contentView.frame;
+    CGRect contentFrame = self.bounds;
+    contentFrame.size.height = ceilf(frame.origin.y) + ceilf(frame.size.height);
+    self.contentView.frame = contentFrame;
+    
+    CGFloat leftMargin = frame.origin.x;
+    for (AGIPCGridItem *gridItem in self.items)
+    {
+        // Load image with asset when layout grid items. springox(20131218)
+        [gridItem loadImageFromAsset];
+        
+        [gridItem setFrame:frame];
+        UITapGestureRecognizer *selectionGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:gridItem action:@selector(tap:)];
         selectionGestureRecognizer.numberOfTapsRequired = 1;
-		[gridItem addGestureRecognizer:selectionGestureRecognizer];
-		[self addSubview:gridItem];
-		
-		frame.origin.x = frame.origin.x + frame.size.width + leftMargin;
-	}
+        [gridItem addGestureRecognizer:selectionGestureRecognizer];
+        
+        frame.origin.x = frame.origin.x + frame.size.width + leftMargin;
+    }
 }
 
 @end

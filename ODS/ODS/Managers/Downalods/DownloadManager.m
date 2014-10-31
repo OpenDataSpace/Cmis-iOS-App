@@ -91,10 +91,10 @@
     
     // we'll move the file from temp path to document folder.
     LocalFileManager *manager = [LocalFileManager sharedInstance];
-    NSString *fileObjectId = [LocalFileManager objectIDFromFileObject:downloadInfo.repositoryItem withRepositoryId:downloadInfo.repositoryIdentifier];
+    NSString *fileKey = [LocalFileManager downloadKeyWithObject:downloadInfo.repositoryItem];
 
     
-    [manager setDownload:downloadInfo.downloadMetadata.downloadInfo forKey:fileObjectId withFilePath:downloadInfo.tempFilePath];
+    [manager setDownload:downloadInfo.downloadMetadata.downloadInfo forKey:fileKey withFilePath:downloadInfo.tempFilePath];
     
     ODSLogTrace(@"Successful download for file %@ with cmisObjectId %@", downloadInfo.repositoryItem.name, downloadInfo.cmisObjectId);
     

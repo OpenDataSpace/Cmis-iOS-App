@@ -247,4 +247,12 @@
                          skipCount:(NSNumber *)skipCount
                    completionBlock:(void (^)(NSArray *renditions, NSError *error))completionBlock;
 
+/**
+ * create link of the given object.
+ * completionBlock returns NSError nil if successful
+ */
+- (CMISRequest*) createLinkWithProperties:(CMISProperties*) properties
+                           sourceFolderId:(NSString*) sourceFolderId
+                          completionBlock:(void (^)(NSString *objectId, NSError *error))completionBlock;
+
 @end

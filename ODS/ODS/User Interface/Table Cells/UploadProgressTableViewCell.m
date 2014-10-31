@@ -95,7 +95,9 @@
 
 - (void)setUploadInfo:(UploadInfo *)uploadInfo
 {
-    [_uploadInfo.uploadRequest setUploadProgressDelegate:nil];
+    if (_uploadInfo.uploadRequest) {
+        [_uploadInfo.uploadRequest setUploadProgressDelegate:nil];
+    }
     _uploadInfo = uploadInfo;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.labelFileName setText:[uploadInfo completeFileName]];

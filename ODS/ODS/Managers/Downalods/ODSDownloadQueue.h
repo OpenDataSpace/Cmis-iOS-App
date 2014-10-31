@@ -13,8 +13,8 @@
 
 @property (assign, nonatomic) id delegate;
 
-@property (assign) unsigned long long bytesDownloadedSoFar;
-@property (assign) unsigned long long totalBytesToDownload;
+@property (assign, nonatomic) unsigned long long bytesDownloadedSoFar;
+@property (assign, nonatomic) unsigned long long totalBytesToDownload;
 
 @property (assign, nonatomic) id    downloadProgressDelegate;
 
@@ -32,4 +32,5 @@
 - (void)requestStarted:(CMISDownloadFileRequest *)request;
 - (void)requestFinished:(CMISDownloadFileRequest *)request;
 - (void)requestFailed:(CMISDownloadFileRequest *)request;
+- (void)request:(CMISDownloadFileRequest *)request downloadedBytes:(long long)bytes;
 @end
