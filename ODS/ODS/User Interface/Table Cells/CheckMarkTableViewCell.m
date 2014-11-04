@@ -9,6 +9,7 @@
 #import "CheckMarkTableViewCell.h"
 
 @implementation CheckMarkTableViewCell
+@synthesize selectedIndex = _selectedIndex;
 
 - (void)awakeFromNib {
     // Initialization code
@@ -21,6 +22,7 @@
 }
 
 - (void) setSelectedIndex:(NSInteger)selectedIndex {
+    _selectedIndex = selectedIndex;
     [self.detailTextLabel setText:[self.checkOptions objectAtIndex:selectedIndex]];
 }
 

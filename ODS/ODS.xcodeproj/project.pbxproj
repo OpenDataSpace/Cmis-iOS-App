@@ -215,6 +215,8 @@
 		2D06F1F119D14CA400788C4C /* CheckMarkTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D06F1EF19D14CA300788C4C /* CheckMarkTableViewCell.m */; };
 		2D06F1F219D14CA400788C4C /* CheckMarkTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2D06F1F019D14CA300788C4C /* CheckMarkTableViewCell.xib */; };
 		2D06F1F519D14DBF00788C4C /* CheckMarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D06F1F419D14DBF00788C4C /* CheckMarkViewController.m */; };
+		2D2C57571A03283B0097198E /* LogoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D2C57561A03283B0097198E /* LogoManager.m */; };
+		2D2C575A1A05D6210097198E /* LogoFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D2C57591A05D6210097198E /* LogoFile.m */; };
 		2D37C7E219FE3C37006B0050 /* AGImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D37C7E119FE3C37006B0050 /* AGImagePreviewController.m */; };
 		2D3C518919ECB54700AB22AD /* CertificateDocumentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C518719ECB54700AB22AD /* CertificateDocumentFilter.m */; };
 		2D3C518C19ECBEFC00AB22AD /* DownloadFailureTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C518B19ECBEFC00AB22AD /* DownloadFailureTableViewCell.m */; };
@@ -730,6 +732,10 @@
 		2D06F1F019D14CA300788C4C /* CheckMarkTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckMarkTableViewCell.xib; sourceTree = "<group>"; };
 		2D06F1F319D14DBF00788C4C /* CheckMarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckMarkViewController.h; sourceTree = "<group>"; };
 		2D06F1F419D14DBF00788C4C /* CheckMarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckMarkViewController.m; sourceTree = "<group>"; };
+		2D2C57551A03283B0097198E /* LogoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogoManager.h; sourceTree = "<group>"; };
+		2D2C57561A03283B0097198E /* LogoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogoManager.m; sourceTree = "<group>"; };
+		2D2C57581A05D6210097198E /* LogoFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogoFile.h; sourceTree = "<group>"; };
+		2D2C57591A05D6210097198E /* LogoFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogoFile.m; sourceTree = "<group>"; };
 		2D37C7E019FE3C37006B0050 /* AGImagePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGImagePreviewController.h; sourceTree = "<group>"; };
 		2D37C7E119FE3C37006B0050 /* AGImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGImagePreviewController.m; sourceTree = "<group>"; };
 		2D3C518619ECB54700AB22AD /* CertificateDocumentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateDocumentFilter.h; sourceTree = "<group>"; };
@@ -1480,6 +1486,7 @@
 		2D06F0D919CB11DB00788C4C /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				2D2C57541A03283B0097198E /* Logo */,
 				2DA051B119F7873D009153FA /* AppUrl */,
 				2D4D8BDD19EFF6F700733F67 /* Preview */,
 				2D7CAA2A19EBA24100FFF811 /* Connectivity */,
@@ -1845,6 +1852,17 @@
 			path = Uploads;
 			sourceTree = "<group>";
 		};
+		2D2C57541A03283B0097198E /* Logo */ = {
+			isa = PBXGroup;
+			children = (
+				2D2C57551A03283B0097198E /* LogoManager.h */,
+				2D2C57561A03283B0097198E /* LogoManager.m */,
+				2D2C57581A05D6210097198E /* LogoFile.h */,
+				2D2C57591A05D6210097198E /* LogoFile.m */,
+			);
+			path = Logo;
+			sourceTree = "<group>";
+		};
 		2D3C518D19ECC25500AB22AD /* Popover Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2104,6 +2122,11 @@
 					2D06ED4919CB0C5E00788C4C = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = YKM59CY382;
+						SystemCapabilities = {
+							com.apple.DataProtection = {
+								enabled = 1;
+							};
+						};
 					};
 					2D06ED6219CB0C5E00788C4C = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -2206,6 +2229,7 @@
 				2D06F18719CC27E900788C4C /* CustomTableViewController.m in Sources */,
 				2D06F0B119CB101D00788C4C /* CMISStandardUntrustedSSLAuthenticationProvider.m in Sources */,
 				2D06F08819CB101D00788C4C /* CMISItemTypeDefinition.m in Sources */,
+				2D2C57571A03283B0097198E /* LogoManager.m in Sources */,
 				2D06F11D19CB169400788C4C /* NSArray+Utils.m in Sources */,
 				2D06F0CF19CB101D00788C4C /* SystemNotice.m in Sources */,
 				2D6AE81419D7A11B000B7180 /* AccountStatusViewController.m in Sources */,
@@ -2308,6 +2332,7 @@
 				2D06F14E19CBC53000788C4C /* AccountInfo.m in Sources */,
 				2D06F0B319CB101D00788C4C /* CMISDateUtil.m in Sources */,
 				2D06F0C319CB101D00788C4C /* SDImageCache.m in Sources */,
+				2D2C575A1A05D6210097198E /* LogoFile.m in Sources */,
 				2D06F15519CBC53000788C4C /* NSUserDefaults+Accounts.m in Sources */,
 				2DAB0D0F19FF656900A0442C /* CreateLinkViewController.m in Sources */,
 				2D06F1A419CE72C500788C4C /* RepositoriesViewController.m in Sources */,

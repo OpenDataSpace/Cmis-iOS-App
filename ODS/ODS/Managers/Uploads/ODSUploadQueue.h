@@ -36,4 +36,5 @@
 - (void)requestStarted:(CMISUploadRequest *)request;
 - (void)requestFinished:(CMISUploadRequest *)request;
 - (void)requestFailed:(CMISUploadRequest *)request;
+- (void)request:(CMISUploadRequest *)request didSendBytes:(long long)bytes;
 @end

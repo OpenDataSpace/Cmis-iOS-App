@@ -30,4 +30,5 @@
 
 - (NSURL *)serviceDocumentURL;
 
+- (NSURL *)serviceAtomDocumentURL;
 @end

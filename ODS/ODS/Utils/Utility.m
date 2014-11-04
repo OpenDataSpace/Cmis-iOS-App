@@ -32,6 +32,7 @@
 #import "DetailNavigationController.h"
 #import "DownloadManager.h"
 #import "LocalFileManager.h"
+#import "CMISStandardUntrustedSSLAuthenticationProvider.h"
 
 #import <sys/xattr.h>
 
@@ -195,7 +196,12 @@ CMISSessionParameters * getSessionParametersWithAccountInfo(AccountInfo* acctInf
     }
     
     params.username  = [acctInfo username];
+    
     params.password = [acctInfo password];
+    
+    if ([acctInfo.protocol isEqualToCaseInsensitiveString:kFDHTTPS_Protocol] && !userPrefValidateSSLCertificate()) {
+        params.authenticationProvider = [[CMISStandardUntrustedSSLAuthenticationProvider alloc] initWithUsername:[acctInfo username] password:[acctInfo password]];
+    }
     
     if (repoIdentifier) {
         params.repositoryId = repoIdentifier;
@@ -236,14 +242,14 @@ void stopSpinner()
 
 #pragma mark -
 #pragma mark Settings Utility
-BOOL userPrefShowHiddenFiles()  //TODO: not implement
+BOOL userPrefShowHiddenFiles()
 {
-	return YES;//[[FDKeychainUserDefaults standardUserDefaults] boolForKey:kSettingsShowHiddenFilesIdentifier];
+	return [[ODSUserDefaults standardUserDefaults] boolForKey:kSettingsShowHiddenFilesIdentifier];
 }
 
 BOOL userPrefValidateSSLCertificate()
 {
-	return NO;//[[FDKeychainUserDefaults standardUserDefaults] boolForKey:kSettingsValidateSSLCertIdentifier];
+	return [[ODSUserDefaults standardUserDefaults] boolForKey:kSettingsValidateSSLCertIdentifier];
 }
 
 #pragma mark -
@@ -290,8 +296,8 @@ NSString *changeStringDateToFormat(NSString *stringDate, NSString *currentFormat
 		return @"";
 	}
 	
-    NSDateFormatter *currentFormatter = [[NSDateFormatter alloc] init]; //TODO: not implement
-    BOOL useRelativeDate = YES;//[[FDKeychainUserDefaults standardUserDefaults] boolForKey:@"useRelativeDate"];
+    NSDateFormatter *currentFormatter = [[NSDateFormatter alloc] init];
+    BOOL useRelativeDate = [[ODSUserDefaults standardUserDefaults] boolForKey:@"useRelativeDate"];
     [currentFormatter setFormatterBehavior:NSDateFormatterBehavior10_4];
     [currentFormatter setDateFormat:currentFormat];
     NSDate *date = [currentFormatter dateFromString:stringDate];

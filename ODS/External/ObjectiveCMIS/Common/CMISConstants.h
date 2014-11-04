@@ -125,6 +125,7 @@ extern NSString * const kCMISParameterReturnVersion;
 extern NSString * const kCMISParameterTypeId;
 extern NSString * const kCMISParameterStatement;
 extern NSString * const kCMISParameterSearchAllVersions;
+extern NSString * const kCMISParameterDepth;
 
 // Parameter Values
 extern NSString * const kCMISParameterValueTrue;

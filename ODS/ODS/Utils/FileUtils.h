@@ -59,6 +59,7 @@
 + (NSString *)pathToConfigFile:(NSString *)filename;
 + (NSString *)pathToCacheFile:(NSString*)filename;
 + (NSString *)sizeOfSavedFile:(NSString *)filename;
++ (NSString *)pathToLogoFile:(NSString*) filename accountUUID:(NSString*) acctUUID;
 
 + (NSString *)stringForLongFileSize:(long)size;
 + (NSString *)stringForUnsignedLongLongFileSize:(unsigned long long)size;

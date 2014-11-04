@@ -103,6 +103,14 @@
  *
  */
 - (CMISRequest*)createLinkWithProperties:(CMISProperties *)properties completionBlock:(void (^)(NSString *objectId, NSError *error))completionBlock;
+
+/**
+ * Retrieves the descendants of this folder as a paged result using the provided operation context.
+ *
+ * The completionBlock will return paged results with instances of CMISObject or nil if unsuccessful.
+ */
+//TODO: don't use this method via browser binding protocol
+- (CMISRequest*)retrieveDescendantsWithOperationContext:(CMISOperationContext *)operationContext completionBlock:(void (^)(CMISPagedResult *result, NSError *error))completionBlock;
 @end
 
 

@@ -143,7 +143,7 @@ NSString * const kCMISExceptionVersioning              = @"versioning";
 
 - (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
 {
-    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];//[self.authenticationProvider canAuthenticateAgainstProtectionSpace:protectionSpace];
+    return [self.authenticationProvider canAuthenticateAgainstProtectionSpace:protectionSpace];
 }
 
 
@@ -155,19 +155,7 @@ NSString * const kCMISExceptionVersioning              = @"versioning";
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
-    //[self.authenticationProvider didReceiveAuthenticationChallenge:challenge];
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){
-        ODSLogDebug(@"didReceiveAuthenticationChallenge %@ %zd", [[challenge protectionSpace] authenticationMethod], (ssize_t) [challenge previousFailureCount]);
-        
-        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){
-            
-            [[challenge sender]  useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-            
-            [[challenge sender]  continueWithoutCredentialForAuthenticationChallenge: challenge];
-            
-        }
-        [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
-    }
+    [self.authenticationProvider didReceiveAuthenticationChallenge:challenge];
 }
 
 

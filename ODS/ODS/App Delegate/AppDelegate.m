@@ -182,6 +182,7 @@ static NSArray *unsupportedDevices;
             }else if ([settingType isEqualToCaseInsensitiveString:@"PSMultiValueSpecifier"]) {
                 [[ODSUserDefaults standardUserDefaults] setBool:[[prefSpecification objectForKey:@"DefaultValue"] integerValue] forKey:key];
             }
+            [[ODSUserDefaults standardUserDefaults] synchronize];
         }
     }
     

@@ -45,6 +45,7 @@ static NSString * const kDeleteCacheModelIdentifier = @"DeleteCacheModelIdentifi
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self.navigationItem setTitle:NSLocalizedString(@"settings.view.title", @"Settings")];
     
+    
     [self setDirWatcher:[DirectoryWatcher watchFolderWithPath:[self directoryPreviewCache]
                                                      delegate:self]];
     
@@ -54,6 +55,7 @@ static NSString * const kDeleteCacheModelIdentifier = @"DeleteCacheModelIdentifi
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self createSettingItems];
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -221,11 +223,13 @@ static NSString * const kDeleteCacheModelIdentifier = @"DeleteCacheModelIdentifi
     }
     
     [[ODSUserDefaults standardUserDefaults] setBool:cell.switchButton.on forKey:cell.modelIdentifier];
+    [[ODSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void) selectCheckMarkOption:(NSInteger) index withCell:(CheckMarkTableViewCell*) cell {
     [cell setSelectedIndex:index];
     [[ODSUserDefaults standardUserDefaults] setInteger:index forKey:cell.modelIdentifier];
+    [[ODSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark -

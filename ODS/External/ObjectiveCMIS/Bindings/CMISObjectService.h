@@ -255,4 +255,7 @@
                            sourceFolderId:(NSString*) sourceFolderId
                           completionBlock:(void (^)(NSString *objectId, NSError *error))completionBlock;
 
+- (CMISRequest*) loadLinkForFileWithId:(NSString*) fileId 
+                      completionBlock:(void (^)(NSString *link, NSError *error))completionBlock;
+
 @end

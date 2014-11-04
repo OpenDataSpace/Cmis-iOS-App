@@ -33,6 +33,7 @@
 @property (nonatomic, assign) BOOL includePathSegments;
 @property (nonatomic, assign) int maxItemsPerPage;
 @property (nonatomic, assign) int skipCount;
+@property (nonatomic, assign) int depth;
 
 /**
  * creates a default operationContext instance. The defaults are

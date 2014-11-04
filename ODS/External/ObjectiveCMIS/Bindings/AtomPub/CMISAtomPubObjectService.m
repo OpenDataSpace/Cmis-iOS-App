@@ -799,4 +799,18 @@
     return request;
 }
 
+- (CMISRequest*)loadLinkForFileWithId:(NSString*) fileId
+                      completionBlock:(void (^)(NSString *link, NSError *error))completionBlock {
+    CMISRequest *request = [[CMISRequest alloc] init];
+    
+    // find the down links
+    [self loadLinkForObjectId:fileId
+                     relation:kCMISLinkEditMedia
+                         type:nil
+                  cmisRequest:request
+              completionBlock:completionBlock];
+    
+    return request;
+}
+
 @end

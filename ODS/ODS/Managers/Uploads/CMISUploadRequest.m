@@ -83,7 +83,6 @@
                             [self uploadFailed];
                         }
                     } progressBlock:^(unsigned long long bytesUploaded, unsigned long long bytesTotal){
-                        ODSLogDebug(@"bytesUploaded:%llu -- bytesTotal:%llu,  fileSize:%lu", bytesUploaded, bytesTotal, [self fileSize]);
                         [self didSendBytes:bytesUploaded total:bytesTotal];
                     }];
                 }
@@ -178,8 +177,7 @@
     self.sentBytes = bytes;
     self.totalBytes = bytesTotal;
     if (self.queue) {
-        //[self performSelector:@selector(request:didSendBytes:) onTarget:&uploadQueue withObject:self amount:&value callerToRetain:self];
-        //[_queue request:self didSendBytes:value];
+        [_queue request:self didSendBytes:bytes];
     }
 
     if ([self uploadProgressDelegate]) {

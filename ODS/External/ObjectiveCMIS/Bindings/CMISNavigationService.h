@@ -72,4 +72,19 @@
                  completionBlock:(void (^)(NSArray *parents, NSError *error))completionBlock;
 
 
+/**
+ * Retrieves the descendants for the given object identifier.
+ * completionBlock returns object list or nil if unsuccessful
+ */
+- (CMISRequest*)retrieveDescendants:(NSString *)objectId
+                         orderBy:(NSString *)orderBy
+                          filter:(NSString *)filter
+                   relationships:(CMISIncludeRelationship)relationships
+                 renditionFilter:(NSString *)renditionFilter
+         includeAllowableActions:(BOOL)includeAllowableActions
+              includePathSegment:(BOOL)includePathSegment
+                       skipCount:(NSNumber *)skipCount
+                        maxItems:(NSNumber *)maxItems
+                           depth:(NSNumber*) depth
+                 completionBlock:(void (^)(CMISObjectList *objectList, NSError *error))completionBlock;
 @end

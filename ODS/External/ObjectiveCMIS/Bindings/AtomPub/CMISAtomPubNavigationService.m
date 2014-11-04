@@ -44,7 +44,7 @@
     CMISRequest *request = [[CMISRequest alloc] init];
     [self loadLinkForObjectId:objectId
                      relation:kCMISLinkRelationDown
-                         type:kCMISMediaTypeChildren
+                         type:kCMISMediaTypeDescendants//kCMISMediaTypeChildren
                   cmisRequest:request
               completionBlock:^(NSString *downLink, NSError *error) {
                           if (error) {
@@ -62,7 +62,8 @@
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment value:(includePathSegment ? @"true" : @"false") urlString:downLink];
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
-                          
+                          downLink = [CMISURLUtil urlStringByAppendingParameter:@"depth" value:@"-1" urlString:downLink];
+                  
                           // execute the request
                           [self.bindingSession.networkProvider invokeGET:[NSURL URLWithString:downLink]
                                                                  session:self.bindingSession
@@ -222,6 +223,82 @@
                 }
             }];
     }];
+    return request;
+}
+
+/**
+ * Retrieves the descendants for the given object identifier.
+ * completionBlock returns object list or nil if unsuccessful
+ */
+- (CMISRequest*)retrieveDescendants:(NSString *)objectId
+                            orderBy:(NSString *)orderBy
+                             filter:(NSString *)filter
+                      relationships:(CMISIncludeRelationship)relationships
+                    renditionFilter:(NSString *)renditionFilter
+            includeAllowableActions:(BOOL)includeAllowableActions
+                 includePathSegment:(BOOL)includePathSegment
+                          skipCount:(NSNumber *)skipCount
+                           maxItems:(NSNumber *)maxItems
+                              depth:(NSNumber*) depth
+                    completionBlock:(void (^)(CMISObjectList *objectList, NSError *error))completionBlock {
+    // Get Down link
+    CMISRequest *request = [[CMISRequest alloc] init];
+    [self loadLinkForObjectId:objectId
+                     relation:kCMISLinkRelationDown
+                         type:kCMISMediaTypeDescendants
+                  cmisRequest:request
+              completionBlock:^(NSString *downLink, NSError *error) {
+                  if (error) {
+                      CMISLogError(@"Could not retrieve down link: %@", error.description);
+                      completionBlock(nil, error);
+                      return;
+                  }
+                  
+                  // Add optional params (CMISUrlUtil will not append if the param name or value is nil)
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterFilter value:filter urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterOrderBy value:orderBy urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeAllowableActions value:(includeAllowableActions ? @"true" : @"false") urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment value:(includePathSegment ? @"true" : @"false") urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterDepth value:[depth stringValue] urlString:downLink];
+                  
+                  // execute the request
+                  [self.bindingSession.networkProvider invokeGET:[NSURL URLWithString:downLink]
+                                                         session:self.bindingSession
+                                                     cmisRequest:request
+                                                 completionBlock:^(CMISHttpResponse *httpResponse, NSError *error) {
+                                                     if (httpResponse) {
+                                                         if (httpResponse.data == nil) {
+                                                             NSError *error = [CMISErrors createCMISErrorWithCode:kCMISErrorCodeConnection
+                                                                                              detailedDescription:nil];
+                                                             completionBlock(nil, error);
+                                                             return;
+                                                         }
+                                                         
+                                                         // Parse the feed (containing entries for the children) you get back
+                                                         CMISAtomFeedParser *parser = [[CMISAtomFeedParser alloc] initWithData:httpResponse.data];
+                                                         NSError *internalError = nil;
+                                                         if ([parser parseAndReturnError:&internalError]) {
+                                                             NSString *nextLink = [parser.linkRelations linkHrefForRel:kCMISLinkRelationNext];
+                                                             
+                                                             CMISObjectList *objectList = [[CMISObjectList alloc] init];
+                                                             objectList.hasMoreItems = (nextLink != nil);
+                                                             objectList.numItems = parser.numItems;
+                                                             objectList.objects = parser.entries;
+                                                             completionBlock(objectList, nil);
+                                                         } else {
+                                                             NSError *error = [CMISErrors cmisError:internalError cmisErrorCode:kCMISErrorCodeRuntime];
+                                                             completionBlock(nil, error);
+                                                         }
+                                                     } else {
+                                                         completionBlock(nil, error);
+                                                     }
+                                                 }];
+              }];
+    
     return request;
 }
 

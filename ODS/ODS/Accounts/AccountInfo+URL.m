@@ -35,4 +35,9 @@
     return [NSURL URLWithString:urlString];
 }
 
+- (NSURL *)serviceAtomDocumentURL {
+    NSString *urlString = [NSString stringWithFormat:@"%@://%@:%@%@", self.protocol, self.hostname, self.port, @"/cmis/atom11"];
+    return [NSURL URLWithString:urlString];
+}
+
 @end

@@ -130,9 +130,6 @@
             }
             _bytesDownloadedSoFar = downloadingBytes + _bytesOfFinished;
             _progress = (_bytesDownloadedSoFar)*1.0f/_totalBytesToDownload;
-            if (_totalBytesToDownload == 0 || _bytesDownloadedSoFar == 0) {
-                ODSLogDebug(@"download progress:%lu ------ %lu ==== %f", _bytesDownloadedSoFar, _totalBytesToDownload, _progress);
-            }
             
             [uploadIndicator setProgress:_progress];
         }

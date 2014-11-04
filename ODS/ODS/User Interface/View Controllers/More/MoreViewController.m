@@ -5,7 +5,7 @@
 //  Created by bdt on 9/21/14.
 //  Copyright (c) 2014 Open Data Space. All rights reserved.
 //
-
+#import "UIImageView+WebCache.h"
 #import "MoreViewController.h"
 
 #import "MoreTableViewCell.h"
@@ -13,16 +13,26 @@
 #import "ManageAccountsViewController.h"
 #import "AboutViewController.h"
 #import "UploadsViewController.h"
+#import "LogoManager.h"
+#import "AccountManager.h"
 
 static NSString * const kModelManageAccountsIdentifier = @"ModelManageAccountsIdentifier";
 static NSString * const kModelManageUploadsIdentifier = @"ModelManageUploadsIdentifier";
 static NSString * const kModelAboutIdentifier = @"ModelAboutIdentifier";
 
 @interface MoreViewController ()
-@property (nonatomic, strong) NSMutableArray    *itemsOfMore;
 @end
 
 @implementation MoreViewController
+- (void) awakeFromNib {
+    //set notification for update logo
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotification:) name:kNotificationUpdateLogos object:nil];
+    //upload notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadQueueChanged:) name:kNotificationUploadQueueChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAccountListUpdated:) name:kNotificationAccountListUpdated object:nil];
+    
+    [self updateTabItemBadge];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,6 +44,7 @@ static NSString * const kModelAboutIdentifier = @"ModelAboutIdentifier";
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self.navigationItem setTitle:NSLocalizedString(@"more.view.title", @"More")];
     [self createItemsOfMore];
+    [self updateTabItemBadge];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -44,8 +55,8 @@ static NSString * const kModelAboutIdentifier = @"ModelAboutIdentifier";
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.itemsOfMore) {
-        return [self.itemsOfMore count];
+    if (self.tableSections) {
+        return [[self.tableSections objectAtIndex:section] count];
     }
     
     return 0;
@@ -53,11 +64,13 @@ static NSString * const kModelAboutIdentifier = @"ModelAboutIdentifier";
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.itemsOfMore objectAtIndex:indexPath.row];;
+    NSMutableArray *moreItems = [self.tableSections objectAtIndex:indexPath.section];
+    return [moreItems objectAtIndex:indexPath.row];;
 }
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    MoreTableViewCell *cellSelected = [self.itemsOfMore objectAtIndex:indexPath.row];
+    NSMutableArray *moreItems = [self.tableSections objectAtIndex:indexPath.section];
+    MoreTableViewCell *cellSelected = [moreItems objectAtIndex:indexPath.row];
     
     if ([[cellSelected modelIdentifier] isEqualToCaseInsensitiveString:kModelManageAccountsIdentifier]) { //Manage Accounts
         ManageAccountsViewController *manageAccountsController = [[ManageAccountsViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -78,8 +91,9 @@ static NSString * const kModelAboutIdentifier = @"ModelAboutIdentifier";
 }
 
 - (void) createItemsOfMore {
-    if (self.itemsOfMore == nil) {
-        self.itemsOfMore = [NSMutableArray array];
+    if (self.tableSections == nil) {
+        self.tableSections = [NSMutableArray array];
+        NSMutableArray *moreItems = [NSMutableArray array];
         
         MoreTableViewCell *cell = (MoreTableViewCell*)[self createTableViewCellFromNib:@"MoreTableViewCell"];
         
@@ -87,25 +101,80 @@ static NSString * const kModelAboutIdentifier = @"ModelAboutIdentifier";
         [cell.labelTitle setText:NSLocalizedString(@"more.item.account", @"Manage Accounts")];
         [cell.cellIcon setImage:[UIImage imageNamed:@"accounts-more"]];
         [cell setModelIdentifier:kModelManageAccountsIdentifier];
-        [self.itemsOfMore addObject:cell];
+        [moreItems addObject:cell];
         
         //uploads cell
         if ([[UploadsManager sharedManager] allUploads] > 0) {
             cell = (MoreTableViewCell*)[self createTableViewCellFromNib:@"MoreTableViewCell"];
             [cell.labelTitle setText:NSLocalizedString(@"more.item.upload", @"Manage Accounts")];
-            [cell.cellIcon setImage:[UIImage imageNamed:@"cloud"]];
+            [cell.cellIcon setImage:[UIImage imageNamed:@"manage_uploads"]];
             [cell setModelIdentifier:kModelManageUploadsIdentifier];
-            [self.itemsOfMore addObject:cell];
+            [moreItems addObject:cell];
         }
         
         //about cell
         cell = (MoreTableViewCell*)[self createTableViewCellFromNib:@"MoreTableViewCell"];
         [cell.labelTitle setText:NSLocalizedString(@"more.item.about", @"Manage Accounts")];
-        [cell.cellIcon setImage:[UIImage imageNamed:@"about-more"]];
+        //[cell.cellIcon setImage:[UIImage imageNamed:@"about-more"]];
+        [cell.cellIcon setImageWithURL:[[LogoManager shareManager] getLogoURLByName:KLogoAboutMore] placeholderImage:[UIImage imageNamed:KLogoAboutMore]];
         [cell setModelIdentifier:kModelAboutIdentifier];
-        [self.itemsOfMore addObject:cell];
+        [moreItems addObject:cell];
         
+        [self.tableSections addObject:moreItems];
     }
 }
 
+#pragma mark -
+#pragma mark Handle Notification
+
+- (void) handleNotification:(NSNotification*) noti {
+    if ([noti.name isEqualToString:kNotificationUpdateLogos]) {
+        MoreTableViewCell *aboutCell = (MoreTableViewCell*)[self findeCellByModeIdentifier:kModelAboutIdentifier];
+        if (aboutCell) {
+            [aboutCell.cellIcon setImageWithURL:[[LogoManager shareManager] getLogoURLByName:KLogoAboutMore] placeholderImage:[UIImage imageNamed:KLogoAboutMore]];
+        }
+    }
+}
+
+- (void)updateTabItemBadge
+{
+    NSArray *errorAccounts = [[AccountManager sharedManager] errorAccounts];
+    NSArray *failedUploads = [[UploadsManager sharedManager] failedUploads];
+    NSInteger activeCount = [[[UploadsManager sharedManager] activeUploads] count];
+    MoreTableViewCell *manageAccountsCell = (MoreTableViewCell*)[self findeCellByModeIdentifier:kModelManageAccountsIdentifier];
+    MoreTableViewCell *manageUploadsCell = (MoreTableViewCell*)[self findeCellByModeIdentifier:kModelManageUploadsIdentifier];
+    if([failedUploads count] > 0 || [errorAccounts count] > 0)
+    {
+        [[self.navigationController tabBarItem]  setBadgeValue:@"!"];
+        if ([errorAccounts count] > 0 &&  manageAccountsCell) {
+            [manageAccountsCell.statusIcon setImage:[UIImage imageNamed:kImageUIButtonBarBadgeError]];
+        }
+        
+        if ([failedUploads count] > 0 && manageUploadsCell) {
+            [manageUploadsCell.statusIcon setImage:[UIImage imageNamed:kImageUIButtonBarBadgeError]];
+        }
+    }
+    else if (activeCount > 0)
+    {
+        [[self.navigationController tabBarItem]  setBadgeValue:[NSString stringWithFormat:@"%d", activeCount]];
+    }
+    else
+    {
+        [[self.navigationController tabBarItem]  setBadgeValue:nil];
+        [manageAccountsCell.statusIcon setImage:nil];
+        [manageUploadsCell.statusIcon setImage:nil];
+    }
+}
+
+- (void)handleAccountListUpdated:(NSNotification *)notification
+{
+    [self updateTabItemBadge];
+}
+
+- (void)uploadQueueChanged:(NSNotification *)notification
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateTabItemBadge];
+    });
+}
 @end

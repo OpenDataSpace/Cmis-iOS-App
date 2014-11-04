@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
-        <!--More-->
+        <!--More View Controller-->
         <scene sceneID="3VH-nF-jDI">
             <objects>
                 <tableViewController id="JPe-EF-oez" customClass="MoreViewController" sceneMemberID="viewController">
@@ -18,7 +18,7 @@
                             <outlet property="delegate" destination="JPe-EF-oez" id="STU-cl-Ur5"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="More" id="OVC-z5-M00"/>
+                    <navigationItem key="navigationItem" id="OVC-z5-M00"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="A0T-ob-zQa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

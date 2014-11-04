@@ -102,7 +102,14 @@ NSString * const kDownloadProgressCellIdentifier = @"DownloadProgressCellIdentif
     CMISDownloadFileRequest *request = _downloadInfo.downloadRequest;
     [request setDownloadProgressDelegate:self];
     
-    [self.labelDownloadInfo setText:NSLocalizedString(@"download.progress.starting", @"Download starting...")];
+    float bytesDownloaded = request.downloadedBytes;
+    bytesDownloaded = MAX(0, bytesDownloaded);
+    float totalBytesToDownload = request.totalBytes;
+    
+    NSString *label = [NSString stringWithFormat:NSLocalizedString(@"download.progress.details", @"%@ of %@"),
+                       [FileUtils stringForLongFileSize:bytesDownloaded],
+                       [FileUtils stringForLongFileSize:totalBytesToDownload]];
+    [self.labelDownloadInfo setText:label];
     [self.labelDownloadInfo setFont:[UIFont systemFontOfSize:12.0f]];
     [self.labelDownloadInfo setTextColor:[UIColor blackColor]];
     [self setAccessoryView:[self makeCloseDisclosureButton]];
@@ -172,7 +179,7 @@ NSString * const kDownloadProgressCellIdentifier = @"DownloadProgressCellIdentif
     NSString *label = [NSString stringWithFormat:NSLocalizedString(@"download.progress.details", @"%@ of %@"),
                        [FileUtils stringForLongFileSize:bytesDownloaded],
                        [FileUtils stringForLongFileSize:totalBytesToDownload]];
-    [self.labelDownloadStatus setText:label];
+    [self.labelDownloadInfo setText:label];
 }
 
 #pragma mark - Notification methods

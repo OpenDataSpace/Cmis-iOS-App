@@ -43,7 +43,7 @@
     [self.progressView setHidden:YES];
     
     [self.labelUploadStatus setText:NSLocalizedString(@"Waiting to upload...", @"")];
-    //[self setAccessoryView:[self makeCloseDisclosureButton]];
+    [self setAccessoryView:[self makeCloseDisclosureButton]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     [self setNeedsLayout];
     [self setNeedsDisplay];
@@ -57,7 +57,7 @@
     [self.progressView setHidden:YES];
     
     [self.labelUploadStatus setText:NSLocalizedString(@"upload.finished", @"")];
-    //[self setAccessoryView:[self makeCloseDisclosureButton]];
+    [self setAccessoryView:[self makeCloseDisclosureButton]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     [self setNeedsLayout];
     [self setNeedsDisplay];
@@ -71,7 +71,7 @@
     [self.progressView setHidden:NO];
     [self.progressView setProgress:0];
     
-    //[self setAccessoryView:[self makeCloseDisclosureButton]];
+    [self setAccessoryView:[self makeCloseDisclosureButton]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     [self setNeedsLayout];
     [self setNeedsDisplay];
@@ -85,7 +85,7 @@
     [self.labelUploadStatus setTextColor:[UIColor redColor]];
     [self.labelFileName setTextColor:[UIColor lightGrayColor]];
     
-    //[self setAccessoryView:[self makeFailureDisclosureButton]];
+    [self setAccessoryView:[self makeFailureDisclosureButton]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     [self.labelUploadStatus setText:NSLocalizedString(@"Failed to Upload", @"")];
@@ -132,5 +132,46 @@
     {
         [self setUploadInfo:uploadInfo];
     }
+}
+
+#pragma mark - Handling the Accessory View
+- (UIButton *)makeFailureDisclosureButton
+{
+    UIImage *errorBadgeImage = [UIImage imageNamed:kImageUIButtonBarBadgeError];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setFrame:CGRectMake(0, 0, errorBadgeImage.size.width, errorBadgeImage.size.height)];
+    [button setBackgroundImage:errorBadgeImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(accessoryButtonTapped:withEvent:) forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+- (UIButton *)makeCloseDisclosureButton
+{
+    UIImage *buttonImage = [UIImage imageNamed:@"stop-transfer"];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setFrame:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
+    [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(accessoryButtonTapped:withEvent:) forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+- (UIButton *)makeDetailDisclosureButton
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoDark];
+    [button addTarget:self action:@selector(accessoryButtonTapped:withEvent:) forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+- (void)accessoryButtonTapped:(UIControl *)button withEvent:(UIEvent *)event
+{
+    UITableView *tableView = (UITableView *) self.superview;
+    if (![tableView isKindOfClass:[UITableView class]]) {  //add this fixed for ios7
+        tableView = (UITableView *) tableView.superview;
+    }
+    NSIndexPath * indexPath = [tableView indexPathForRowAtPoint:[[[event touchesForView:button] anyObject] locationInView:tableView]];
+    if ( indexPath == nil )
+        return;
+    
+    [tableView.delegate tableView:tableView accessoryButtonTappedForRowWithIndexPath:indexPath];
 }
 @end

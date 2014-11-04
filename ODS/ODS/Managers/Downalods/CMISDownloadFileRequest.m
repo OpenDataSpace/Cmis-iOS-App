@@ -113,8 +113,8 @@
 }
 
 - (void) didDownloadedBytes:(long long)bytes total:(unsigned long long) bytesTotal {
-    self.downloadedBytes = bytes;
-    self.totalBytes = bytesTotal;
+    self.downloadedBytes = bytes;  //total bytes is zero
+    //self.totalBytes = bytesTotal;
     if (self.queue) {
         [_queue request:self downloadedBytes:self.downloadedBytes];
     }

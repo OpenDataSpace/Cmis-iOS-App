@@ -51,7 +51,7 @@
 "operation.pop.menu.move"="Move";
 "operation.pop.menu.download"="Download";
 "operation.pop.menu.link" = "Link Management";
-"operation.pop.menu.createlink" = "Create Downlaod Link";
+"operation.pop.menu.createlink" = "Create Download Link";
 
 "confirm.delete.prompt.title" = "Warning";
 "confirm.delete.prompt.message" = "Are you sure to delete file %@?";
@@ -239,6 +239,27 @@
 "audiorecord.play" = "Play";
 "audiorecord.stop" = "Stop";
 "audiorecord.record" = "Record";
+
+"uploads.cancelAll.title" = "Uploads";
+"uploads.cancelAll.body" = "Would you like to cancel all active uploads?";
+"uploads.cancel.body" = "Would you like to cancel this upload?";
+"uploads.progress.label" = "Uploading %d %@, %@ left";
+"uploads.failed.label" = "%d %@ failed to upload";
+"uploads.items.singular" = "item";
+"uploads.items.plural" = "items";
+"uploads.retry.cannotRetry" = "The upload has permanently failed. Please start the upload again.";
+"Waiting to upload..." = "Waiting to upload...";
+"Failed to Upload" = "Failed Upload";
+"Close" = "Close";
+"Clear" = "Clear";
+"Dismiss" = "Dismiss";
+"Retry" = "Retry";
+"Retry All" = "Retry All";
+"failed-uploads.title" = "1 Failed Upload";
+"failed-uploads.title.plural" = "%d Failed Uploads";
+"failed-uploads.detailSubtitle" = "Uploading to: %@";
+"failed-uploads.cell.clear-list" = "Clear List";
+"upload.failureDetail.title" = "Failed Upload";
 
 /* Metadata view */
 "metadata.group.header.general" = "General";

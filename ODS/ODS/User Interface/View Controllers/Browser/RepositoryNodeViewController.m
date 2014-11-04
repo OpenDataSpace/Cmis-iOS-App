@@ -51,8 +51,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 }
 @property (nonatomic, strong) CustomTableViewCell *loadMoreCell;
 @property (nonatomic, strong) CMISRequest   *currentPreviewRequest;
-//@property (nonatomic, strong) CMISObject    *currentPreviewItem;
-//@property (nonatomic, strong) NSString      *previewItemDownloadPath;
 @end
 
 @implementation RepositoryNodeViewController
@@ -63,6 +61,15 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 @synthesize loadMoreCell = _loadMoreCell;
 
 - (void) dealloc {
+    if (self.popover) {
+        [self dismissPopover];
+        self.popover.delegate = nil;
+    }
+    if (self.actionSheet) {
+        [self.actionSheet dismissWithClickedButtonIndex:self.actionSheet.cancelButtonIndex animated:YES];
+        self.actionSheet.delegate = nil;
+    }
+    [self setEditing:NO];
     [self cancelPreview];
     [self.multiSelectToolbar removeFromSuperview];
 }
@@ -308,7 +315,16 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         self.folderItems = [NSMutableArray array];
     }
     
-    [self.folderItems addObjectsFromArray:pagedResults.resultArray];
+    if (userPrefShowHiddenFiles()) {
+        [self.folderItems addObjectsFromArray:pagedResults.resultArray];
+    }else {
+        for (CMISObject *item in pagedResults.resultArray) {
+            if ([item.name hasPrefix:@"."]) {
+                continue;
+            }
+            [self.folderItems addObject:item];
+        }
+    }
     _pagedFolders = pagedResults;
     [self.tableView reloadData];
 }

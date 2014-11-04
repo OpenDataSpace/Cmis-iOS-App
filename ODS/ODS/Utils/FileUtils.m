@@ -366,6 +366,27 @@
 	return [FileUtils stringForLongFileSize:[[attrs objectForKey:NSFileSize] longValue]];
 }
 
++ (NSString *)pathToLogoFile:(NSString*) filename accountUUID:(NSString*) acctUUID {
+    NSString *configDir = [NSTemporaryDirectory() stringByAppendingPathComponent:acctUUID];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL isDirectory;
+    
+    if (![fileManager fileExistsAtPath:configDir isDirectory:&isDirectory] || !isDirectory)
+    {
+        NSError *error = nil;
+        [fileManager createDirectoryAtPath:configDir withIntermediateDirectories:NO attributes:nil error:&error];
+        
+        if (error)
+        {
+            ODSLogError(@"Error creating the %@ folder: %@", acctUUID, [error description]);
+            return  nil;
+        }
+    }
+    
+    NSString *path = [configDir stringByAppendingPathComponent:filename];
+    return path;
+}
+
 + (NSString *)stringForLongFileSize:(long)size
 {
 	float floatSize = size;

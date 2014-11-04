@@ -44,6 +44,10 @@
     _documentFilter = nil;
 }
 
+- (void) awakeFromNib {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadQueueChanged:) name:kNotificationDownloadQueueChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(detailViewControllerChanged:) name:kDetailViewControllerChangedNotification object:nil];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -59,6 +63,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self.folderDatasource refreshData];
     [self.tableView reloadData];
     [self selectCurrentRow];
 }
@@ -85,9 +90,6 @@
     // start monitoring the document directory…
     [self setDirWatcher:[DirectoryWatcher watchFolderWithPath:[self applicationDocumentsDirectory]
                                                      delegate:self]];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadQueueChanged:) name:kNotificationDownloadQueueChanged object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(detailViewControllerChanged:) name:kDetailViewControllerChangedNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -111,6 +113,7 @@
             ActiveDownloadsViewController *viewController = [[ActiveDownloadsViewController alloc] init];
             [viewController setTitle:NSLocalizedString(@"download.summary.title", @"In Progress")];
             [self.navigationController pushViewController:viewController animated:YES];
+            ODSLogTrace(@"in progress downloads.....");
         }
         else if ([cellType isEqualToString:kDownloadFailureSummaryCellIdentifier])
         {
@@ -350,6 +353,8 @@
     else
     {
         [self.navigationController.tabBarItem setBadgeValue:nil];
+        [self.folderDatasource refreshData];
+        [self.tableView reloadData];
     }
 }
 @end

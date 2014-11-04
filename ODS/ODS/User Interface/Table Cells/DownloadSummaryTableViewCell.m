@@ -26,6 +26,8 @@ NSString * const kDownloadSummaryCellIdentifier = @"DownloadSummaryCellIdentifie
      [FileUtils stringForLongFileSize:0]];
     [self.labelProgress setText:label];
     
+    [self updateUploadCount];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadChanged:) name:kNotificationDownloadStarted object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadChanged:) name:kNotificationDownloadFinished object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadChanged:) name:kNotificationDownloadFailed object:nil];
@@ -57,8 +59,6 @@ NSString * const kDownloadSummaryCellIdentifier = @"DownloadSummaryCellIdentifie
     
     float bytesLeft = manager.downloadQueue.totalBytesToDownload - manager.downloadQueue.bytesDownloadedSoFar;//MAX(0, (1 - newProgress) * manager.downloadQueue.totalBytesToDownload);
     
-    ODSLogDebug(@"download :%lu------ %lu ==== %f",manager.downloadQueue.totalBytesToDownload, manager.downloadQueue.bytesDownloadedSoFar, newProgress);
-    
     NSString *label = [NSString stringWithFormat:NSLocalizedString(@"download.summary.details", @"%@ remaining"),
                        [FileUtils stringForLongFileSize:bytesLeft]];
     [self.labelProgress setText:label];
@@ -68,6 +68,10 @@ NSString * const kDownloadSummaryCellIdentifier = @"DownloadSummaryCellIdentifie
 
 - (void)downloadChanged:(NSNotification *)notification
 {
+    [self updateUploadCount];
+}
+
+- (void) updateUploadCount {
     NSArray *activeDownloads = [[DownloadManager sharedManager] activeDownloads];
     [self.downloadsBadge setValue:[activeDownloads count]];
 }

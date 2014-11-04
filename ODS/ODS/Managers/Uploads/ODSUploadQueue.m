@@ -11,9 +11,14 @@
 
 @interface ODSUploadQueue()
 @property (assign) int requestsCount;
+@property (assign) long long bytesOfFinished;
+@property (assign) float progress;
 @end
 
 @implementation ODSUploadQueue
+@synthesize requestsCount = _requestsCount;
+@synthesize bytesOfFinished = _bytesOfFinished;
+@synthesize progress = _progress;
 
 #pragma mark -
 #pragma mark - Init
@@ -42,6 +47,7 @@
 {
     [self setBytesUploadedSoFar:0];
     [self setTotalBytesToUpload:0];
+    [self setBytesOfFinished:0];
     [super cancelAllOperations];
 }
 
@@ -75,6 +81,7 @@
 - (void)requestFinished:(CMISUploadRequest *)request
 {
     [self setRequestsCount:[self requestsCount]-1];
+    self.bytesOfFinished += request.totalBytes;
     if ([self requestDidFinishSelector]) {
         [[self delegate] performSelector:[self requestDidFinishSelector] withObject:request];
     }
@@ -88,6 +95,7 @@
 - (void)requestFailed:(CMISUploadRequest *)request
 {
     [self setRequestsCount:[self requestsCount]-1];
+    self.bytesOfFinished += request.sentBytes;
     if ([self requestDidFailSelector]) {
         [[self delegate] performSelector:[self requestDidFailSelector] withObject:request];
     }
@@ -102,13 +110,27 @@
 }
 
 - (void)request:(CMISUploadRequest *)request didSendBytes:(long long)bytes {
-    [self setBytesUploadedSoFar:[self bytesUploadedSoFar]+bytes];
-    if ([self uploadProgressDelegate]) {
-        id uploadProgressDelegate = self.uploadProgressDelegate;
-//        if (uploadProgressDelegate) {
-//            [ODSBaseRequest updateProgressIndicator:&uploadProgressDelegate withProgress:[self bytesUploadedSoFar] ofTotal:[self totalBytesToUpload]];
-//        }
-    }
+    [self performSelectorInBackground:@selector(updateUploadProgress) withObject:self];
+}
+
+- (void) updateUploadProgress {
+    dispatch_main_sync_safe(^{
+        UIProgressView *uploadIndicator = (UIProgressView *)_uploadProgressDelegate;
+        if (uploadIndicator) {
+            //update bytes downloaded
+            long long uploadedBytes = 0;
+            NSArray *operations = [self operations];
+            for (CMISUploadRequest *operation in operations ) {
+                if (operation.uploadInfo.uploadStatus != UploadInfoStatusUploaded) {
+                    uploadedBytes += operation.sentBytes;
+                }
+            }
+            _bytesUploadedSoFar = uploadedBytes + _bytesOfFinished;
+            _progress = (_bytesUploadedSoFar)*1.0f/_totalBytesToUpload;
+            
+            [uploadIndicator setProgress:_progress];
+        }
+    });
 }
 
 @end

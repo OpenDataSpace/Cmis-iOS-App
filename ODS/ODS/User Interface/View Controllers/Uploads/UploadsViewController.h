@@ -8,6 +8,12 @@
 
 #import "CustomTableViewController.h"
 
-@interface UploadsViewController : CustomTableViewController
+@class UploadInfo;
+@class UploadProgressTableViewCell;
 
+@interface UploadsViewController : CustomTableViewController <UIPopoverControllerDelegate,UIActionSheetDelegate, UIAlertViewDelegate>
+
+@property (nonatomic, strong) UploadInfo *uploadToDismiss;
+@property (nonatomic, strong) UploadProgressTableViewCell *uploadToCancel;
+@property (nonatomic, strong) UIPopoverController *popover;
 @end

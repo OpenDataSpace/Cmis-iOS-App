@@ -11,6 +11,7 @@
 #import "AccountViewCell.h"
 #import "RepositoriesViewController.h"
 #import "AccountInfo+URL.h"
+#import "LogoManager.h"
 
 #import "CMISSession.h"
 #import "CMISBrowserBinding.h"
@@ -117,6 +118,9 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
             [repositoryController setViewTitle:[acctInfo vendor]];
             [repositoryController setRepositories:[CMISUtility filterRepositories:repos]];
             [repositoryController setSessionParameters:params];
+            //set account uuid for logo manager
+            [[LogoManager shareManager] setCurrentActiveAccount:[acctInfo uuid]];
+            [[LogoManager shareManager] setLogoInfo:repos accountUUID:acctInfo.uuid];
             [self.navigationController pushViewController:repositoryController animated:YES];
         }
     }];
@@ -133,7 +137,7 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
     
     NSString *uuidToBrowse = [[notification userInfo] objectForKey:@"accountUUID"];
     AccountInfo *accountInfo = [[AccountManager sharedManager] accountInfoForUUID:uuidToBrowse];
-    
+    [self.navigationController popToRootViewControllerAnimated:NO];
     [self loadRepositoriesWithAccount:accountInfo];
     
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {  //to fix ios6 have no such property

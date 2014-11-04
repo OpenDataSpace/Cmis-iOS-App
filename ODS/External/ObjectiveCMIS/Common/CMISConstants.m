@@ -137,6 +137,7 @@ NSString * const kCMISParameterReturnVersion = @"returnVersion";
 NSString * const kCMISParameterTypeId = @"typeId";
 NSString * const kCMISParameterStatement = @"statement";
 NSString * const kCMISParameterSearchAllVersions = @"searchAllVersions";
+NSString * const kCMISParameterDepth = @"depth";
 
 // Parameter Values
 NSString * const kCMISParameterValueTrue = @"true";
