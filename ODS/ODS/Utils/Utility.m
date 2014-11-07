@@ -252,6 +252,10 @@ BOOL userPrefValidateSSLCertificate()
 	return [[ODSUserDefaults standardUserDefaults] boolForKey:kSettingsValidateSSLCertIdentifier];
 }
 
+BOOL userPrefResetOnNextStart(void) {
+    return [[ODSUserDefaults standardUserDefaults] boolForKey:kSettingsResetOnNextStartIdentifier];
+}
+
 #pragma mark -
 #pragma mark Date Utility
 NSDate*dateFromIso(NSString *isoDate)

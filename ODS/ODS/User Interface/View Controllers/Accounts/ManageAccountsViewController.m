@@ -13,7 +13,6 @@
 #import "AccountStatusViewController.h"
 
 static NSString * const kManageAccountsCellIdentifier = @"ManageAccountsCellIdentifier";
-static NSString * const kNoAccountsCellIdentifier = @"NoAccountsCellIdentifier";
 
 @interface ManageAccountsViewController ()
 

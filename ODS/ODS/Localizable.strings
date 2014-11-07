@@ -136,6 +136,12 @@
 "documentview.action.review" = "Send for review";
 "documentview.action.review.defaulttext" = "Review";
 
+"documentview.preview.failure.title" = "";
+"documentview.preview.failure.message" = "Failed to preview the document";
+
+"documentview.delete.confirmation.title" = "";
+"documentview.delete.confirmation.message" = "Do you want to remove this document from your Downloads?";
+
 /* Email */
 "email.body.link" = "Link to %@";
 "email.footer.text" = "Sent from my document repository using ODS+, the native iPhone CMIS client";
@@ -181,6 +187,13 @@
 "account.protocol.https.on" = "On";
 "account.protocol.https.off" = "Off";
 
+"accountdetails.alert.delete.title" = "Delete Account";
+"accountdetails.alert.delete.confirm" = "Are you sure you want to remove this account?";
+
+"authenticationFailureMessageForAccount" = "Please check your username and password.";
+
+/* Authentication Failure Title Text 'Authentication Failure' */
+"authenticationFailureTitle" = "Authentication Failure";
 /* More View */
 "more.item.account" = "Manage Accounts";
 "more.item.about" = "About";
@@ -298,3 +311,9 @@
 
 /* Please wait... */
 "pleaseWaitMessage" = "Please wait...";
+
+/* Settings related strings */
+"settings.appResetConfirmation.title" = "App Reset Confirmation";
+"settings.appResetConfirmation.message" = "Are you sure you want to reset the application? This will remove all data, reset the app settings, will remove all accounts and cannot be undone";
+"library.access.denied.alert.title" = "Access Denied";
+"library.access.denied.alert.message" = "You have been denied access to the library, please turn on location services for ODS by going to device settings.";

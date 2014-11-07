@@ -460,15 +460,15 @@
 }
 
 // add by springox(20141023)
-- (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem   //TODO:Exception with iOS8
+- (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem   
 {
-//    ALAsset *asset = gridItem.asset;
-//    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-//    AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
-//    preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-//    [self.navigationController presentViewController:preController animated:YES completion:^{
-//        // do nothing
-//    }];
+    ALAsset *asset = gridItem.asset;
+    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+    AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
+    preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self.navigationController presentViewController:preController animated:YES completion:^{
+        // do nothing
+    }];
 }
 
 #pragma mark - Notifications

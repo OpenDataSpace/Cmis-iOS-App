@@ -14,8 +14,12 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UEu-eA-KYq">
-                        <rect key="frame" x="20" y="41" width="77" height="49"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UEu-eA-KYq">
+                        <rect key="frame" x="20" y="41" width="100" height="49"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="100" id="YoB-9v-NAb"/>
+                            <constraint firstAttribute="height" constant="49" id="vCK-4e-1xa"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
@@ -28,13 +32,12 @@
                     </textView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="SDZ-8f-KjW" secondAttribute="trailing" constant="20" id="9NJ-mB-oPh"/>
-                    <constraint firstItem="SDZ-8f-KjW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="CnS-bL-L2j"/>
-                    <constraint firstAttribute="bottom" secondItem="SDZ-8f-KjW" secondAttribute="bottom" constant="7" id="NtZ-jr-tC4"/>
-                    <constraint firstItem="SDZ-8f-KjW" firstAttribute="width" secondItem="UEu-eA-KYq" secondAttribute="width" id="O5b-0O-rM6"/>
-                    <constraint firstItem="UEu-eA-KYq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="41" id="fiC-7y-QY0"/>
-                    <constraint firstItem="UEu-eA-KYq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="kod-1i-K8X"/>
-                    <constraint firstAttribute="bottom" secondItem="UEu-eA-KYq" secondAttribute="bottom" constant="41" id="nPy-J8-ynl"/>
+                    <constraint firstAttribute="bottom" secondItem="SDZ-8f-KjW" secondAttribute="bottom" constant="7" id="9NT-yf-Ti8"/>
+                    <constraint firstItem="UEu-eA-KYq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="41" id="NQ9-df-y1W"/>
+                    <constraint firstItem="UEu-eA-KYq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="ZXY-xM-5GF"/>
+                    <constraint firstAttribute="trailing" secondItem="SDZ-8f-KjW" secondAttribute="trailing" constant="20" id="ZbR-g2-x9b"/>
+                    <constraint firstItem="SDZ-8f-KjW" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="121" id="nMW-vS-yDB"/>
+                    <constraint firstItem="SDZ-8f-KjW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="vsa-Tu-bXn"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

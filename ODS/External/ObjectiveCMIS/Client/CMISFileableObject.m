@@ -60,9 +60,4 @@
                                   }];
 }
 
-
-- (CMISRequest*)loadLinkForFileWithId:(NSString*) fileId 
-                      completionBlock:(void (^)(NSString *link, NSError *error))completionBlock {
-    return [self.binding.objectService loadLinkForFileWithId:fileId completionBlock:completionBlock];
-}
 @end

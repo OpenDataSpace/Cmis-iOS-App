@@ -99,6 +99,7 @@
     [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
         if (error != nil) {
             ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             [self setRepositories:[CMISUtility filterRepositories:repos]];
         }
@@ -122,12 +123,14 @@
                 if (error) {
                     [self stopHUD];
                     ODSLogError(@"%@", error);
+                    [CMISUtility handleCMISRequestError:error];
                 }else {
                     rootFolder = folder;
                     [folder retrieveChildrenWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
                         [self stopHUD];
                         if (error) {
                             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
+                            [CMISUtility handleCMISRequestError:error];
                         }else {
                             RepositoryNodeViewController *repoNodeController = [[RepositoryNodeViewController alloc] initWithStyle:UITableViewStylePlain];
                             [repoNodeController setFolder:rootFolder];

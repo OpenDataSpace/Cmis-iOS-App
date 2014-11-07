@@ -62,6 +62,7 @@ void stopSpinner(void);
 //Settings utility
 BOOL userPrefShowHiddenFiles(void);
 BOOL userPrefValidateSSLCertificate(void);
+BOOL userPrefResetOnNextStart(void);
 
 //Date Functions
 NSDate *dateFromIso(NSString *isoDate);

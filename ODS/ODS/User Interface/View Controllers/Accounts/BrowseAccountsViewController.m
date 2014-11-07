@@ -49,6 +49,7 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
     activeAccounts = nil;
     [[self navigationItem] setTitle:NSLocalizedString(@"browse.accounts.view.title", @"Accounts")];
     [self.tableView registerNib:[UINib nibWithNibName:@"AccountViewCell" bundle:nil] forCellReuseIdentifier:kBrowseAccountsCellIdentifier];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kNoAccountsCellIdentifier];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleBrowseDocuments:)
                                                  name:kBrowseDocumentsNotification object:nil];
 }
@@ -71,28 +72,43 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    if ([activeAccounts count] == 0) {
+        return 1;
+    }
     return [activeAccounts count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AccountViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kBrowseAccountsCellIdentifier forIndexPath:indexPath];
-    
     // Configure the cell...
-    AccountInfo *acctInfo = [activeAccounts objectAtIndex:[indexPath row]];
-    if (acctInfo) {        
-        [cell setAccountInfo:acctInfo];
+    if ([activeAccounts count] == 0) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kNoAccountsCellIdentifier forIndexPath:indexPath];
+        
+        [cell.textLabel setTextAlignment:NSTextAlignmentCenter];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        [cell.textLabel setText:NSLocalizedString(@"serverlist.cell.noaccounts", @"No Accounts")];
+        
+        return cell;
+    }else {
+        AccountViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kBrowseAccountsCellIdentifier forIndexPath:indexPath];
+        AccountInfo *acctInfo = [activeAccounts objectAtIndex:[indexPath row]];
+        if (acctInfo) {        
+            [cell setAccountInfo:acctInfo];
+        }
+        return cell;
     }
     
-    return cell;
+    return nil;
 }
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AccountInfo *acctInfo = [activeAccounts objectAtIndex:[indexPath row]];
-    if (acctInfo) {
-        [self loadRepositoriesWithAccount:acctInfo];
+    if ([activeAccounts count] > 0) {
+        AccountInfo *acctInfo = [activeAccounts objectAtIndex:[indexPath row]];
+        if (acctInfo) {
+            [self loadRepositoriesWithAccount:acctInfo];
+        }
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -112,6 +128,7 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
         [self stopHUD];
         if (error != nil) {
             ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             RepositoriesViewController *repositoryController = [[RepositoriesViewController alloc] initWithStyle:UITableViewStylePlain];
             [repositoryController setSelectedAccountUUID:[acctInfo uuid]];

@@ -235,7 +235,7 @@ NSString * const kNotificationUpdateLogos = @"NOTIFICATION_UPDATE_LOGOS";
     }
     
     if ([items count] == 0 || [fileList count] == 0) {
-        return NO;
+        return YES;
     }
     
     //find any ios logo

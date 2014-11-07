@@ -54,4 +54,5 @@
 @property (nonatomic, strong) DeleteQueueProgressBar *deleteQueueProgressBar;
 @property (nonatomic, retain) MoveQueueProgressBar *moveQueueProgressBar;
 @property (nonatomic, retain) RenameQueueProgressBar *renameQueueProgressBar;
+
 @end

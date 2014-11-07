@@ -12,6 +12,7 @@
 #import "FileUtils.h"
 #import "FileProtectionManager.h"
 #import "LocalFileManager.h"
+#import "DownloadMetadata.h"
 
 NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
 
@@ -95,7 +96,9 @@ NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
     CMISObject *item = [info repositoryItem];
     NSString *fileID = [LocalFileManager downloadKeyWithObject:item];
     
-    NSMutableDictionary *tempDownloadInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:destination, @"path", info.repositoryItem.name, @"title", nil];
+    NSMutableDictionary *tempDownloadInfo = [info.downloadMetadata.downloadInfo mutableCopy];
+    [tempDownloadInfo setObject:[NSDate date] forKey:@"lastDownloadedDate"];
+    //NSMutableDictionary *tempDownloadInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:destination, @"path", info.repositoryItem.name, @"title", nil];
     [[self readPreviewFileMetadata] setObject:tempDownloadInfo forKey:fileID];
     
     if (![self writeMetadata])
@@ -103,6 +106,8 @@ NSString * const PreviewMetadataFileName = @"PreviewFilesMetadata.plist";
         ODSLogDebug(@"Cannot save the metadata plist");
         return NO;
     }
+    NSURL *fileURL = [NSURL fileURLWithPath:destination];
+    addSkipBackupAttributeToItemAtURL(fileURL);
     
     return YES;
 }

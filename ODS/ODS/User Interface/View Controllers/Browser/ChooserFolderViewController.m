@@ -68,6 +68,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
     [super viewWillAppear:animated];
     
     //load repo list first
+    [self.folderItems removeAllObjects];  //delete old folders
     if ([_itemType isEqualToString:kMoveTargetTypeRepo]) {
         [self loadRepositories];
     }else if ([_itemType isEqualToString:kMoveTargetTypeFolder]) {
@@ -150,6 +151,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
         [self stopHUD];
         if (error != nil) {
             ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             [self setFolderItems:[NSMutableArray arrayWithArray:[CMISUtility filterRepositories:repos]]];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -171,12 +173,14 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
                 if (error) {
                     [self stopHUD];
                     ODSLogError(@"%@", error);
+                    [CMISUtility handleCMISRequestError:error];
                 }else {
                     self.parentItem = folder;
                     [folder retrieveChildrenWithOperationContext:[CMISOperationContext defaultOperationContext] completionBlock:^(CMISPagedResult* results, NSError *error) {
                         if (error) {
                             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
                             [self stopHUD];
+                            [CMISUtility handleCMISRequestError:error];
                         }else {
                             [self loadMorePages:results];
                         }
@@ -193,6 +197,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
             [self stopHUD];
+            [CMISUtility handleCMISRequestError:error];
         }else {
             [self loadMorePages:results];
         }

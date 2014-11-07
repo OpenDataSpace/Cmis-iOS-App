@@ -44,7 +44,7 @@
     CMISRequest *request = [[CMISRequest alloc] init];
     [self loadLinkForObjectId:objectId
                      relation:kCMISLinkRelationDown
-                         type:kCMISMediaTypeDescendants//kCMISMediaTypeChildren
+                         type:kCMISMediaTypeChildren
                   cmisRequest:request
               completionBlock:^(NSString *downLink, NSError *error) {
                           if (error) {
@@ -62,7 +62,6 @@
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment value:(includePathSegment ? @"true" : @"false") urlString:downLink];
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
-                          downLink = [CMISURLUtil urlStringByAppendingParameter:@"depth" value:@"-1" urlString:downLink];
                   
                           // execute the request
                           [self.bindingSession.networkProvider invokeGET:[NSURL URLWithString:downLink]

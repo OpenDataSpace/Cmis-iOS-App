@@ -344,9 +344,9 @@ static NSString * const kLinkMessageModelIdentifier = @"message";
     NSDictionary *linkInfo =[NSDictionary dictionaryWithObjectsAndKeys:_emailAddress, kCMISPropertyGDSEmailAddressId,
                              _subject, kCMISPropertyGDSSubjectId,
                              _message, kCMISPropertyGDSMessageId,
-                             _password, kCMISPropertyGDSPasswordId,
                              dateSelected==nil?[NSDate date]:dateSelected, kCMISPropertyCmisExpirationDateId,
                              [NSArray arrayWithObjects:_repositoryItem.identifier, nil] , kCMISPropertyGDSObjectIdsId,
+                             _password, kCMISPropertyGDSPasswordId,
                              nil];
     
     CMISProperties *properties = [CMISUtility linkParametersToCMISProperties:linkInfo];

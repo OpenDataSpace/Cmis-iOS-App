@@ -217,7 +217,8 @@ NSString * const kCMISExceptionVersioning              = @"versioning";
 
 - (BOOL)checkStatusCodeForResponse:(CMISHttpResponse *)response httpRequestMethod:(CMISHttpRequestMethod)httpRequestMethod error:(NSError **)error
 {
-    if ([CMISLog sharedInstance].logLevel == CMISLogLevelTrace) {
+    if ([CMISLog sharedInstance].logLevel == CMISLogLevelTrace)
+    {
         CMISLogTrace(@"Response status code: %d", (int)response.statusCode);
         CMISLogTrace(@"Response body: %@", [[NSString alloc] initWithData:response.data encoding:NSUTF8StringEncoding]);
     }

@@ -32,9 +32,9 @@
     downloadMetadata.accountUUID = _selectedAccountUUID;
     downloadMetadata.tenantID = _tenantID;
     downloadMetadata.objectId = _repositoryItem.identifier;
+    downloadMetadata.repositoryId = _repositoryIdentifier;
 //    downloadMetadata.contentStreamMimeType = [_repositoryItem.properties objectForKey:@"cmis:contentStreamMimeType"]; // TODO Constants
 //    downloadMetadata.versionSeriesId = [NSString stringWithFormat:@"%d", _repositoryItem];
-//    downloadMetadata.repositoryId = repoInfo.repositoryId;
 //    downloadMetadata.metadata = self.repositoryItem;
 //    downloadMetadata.aspects = self.repositoryItem.aspects;
 //    downloadMetadata.describedByUrl = self.repositoryItem.describedByURL;

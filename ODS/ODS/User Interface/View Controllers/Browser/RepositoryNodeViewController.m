@@ -245,27 +245,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     [self showOperationMenu:fileObj withCell:cell];
     
 }
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
 #pragma mark -
 #pragma mark UIRefreshControl Handler
 - (void)refresh:(id)sender {
@@ -273,6 +253,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     [self.folder retrieveChildrenWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             _folderItems = nil;
             [self savePagedResult:results];
@@ -286,6 +267,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     [self.folder retrieveChildrenWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             _folderItems = nil;
             [self savePagedResult:results];
@@ -719,13 +701,16 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         [_loadMoreCell setSelectionStyle:UITableViewCellSelectionStyleNone];
         [self.multiSelectToolbar didEnterMultiSelectMode];
         [self loadRightBarForEditMode:YES];
+        [[self refreshControl] removeFromSuperview];
     }
     else
     {
         [_loadMoreCell setSelectionStyle:UITableViewCellSelectionStyleDefault];
         [self.multiSelectToolbar didLeaveMultiSelectMode];
         [self loadRightBarItem];
+        [self.view addSubview:[self refreshControl]];
     }
+    
 }
 
 - (void) presentModalViewControllerHelper:(UIViewController *)modalViewController
@@ -842,6 +827,9 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     BOOL mediaHasJustBeenCaptured = picker.sourceType == UIImagePickerControllerSourceTypeCamera;
     NSURL *mediaURL = [info objectForKey:UIImagePickerControllerReferenceURL];  //UIImagePickerControllerMediaURL
+    if (mediaURL == nil) {
+        mediaURL = [info objectForKey:UIImagePickerControllerMediaURL];
+    }
     [self dismissModalViewControllerHelper:NO];
     
     ODSLogDebug(@"Image picked from Photo Library with Location Services off/unavailable:%@ --- %@",mediaURL, [info objectForKey:UIImagePickerControllerMediaURL]);
@@ -867,6 +855,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         UploadInfo *videoUpload = [[UploadInfo alloc] init];
         [videoUpload setUploadFileURL:mediaURL];
         [videoUpload setUploadType:UploadFormTypeVideo];
+        [videoUpload setFilename:[mediaURL lastPathComponent]];
         
        //present upload video from
         [self loadUploadSingleItemForm:videoUpload];
@@ -886,6 +875,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         UploadInfo *uploadInfo = [[UploadInfo alloc] init];
         [uploadInfo setUploadFileURL:assetURL];
         [uploadInfo setUploadType:UploadFormTypePhoto];
+        [uploadInfo setFilename:[[asset defaultRepresentation] filename]];
         
         //present upload photo from
         [self loadUploadSingleItemForm:uploadInfo];
@@ -920,6 +910,17 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 - (void)createFolder:(CreateFolderViewController *)createFolder succeededForName:(NSString *)folderName {
     displayInformationMessage([NSString stringWithFormat:NSLocalizedString(@"create-folder.success", @"Created folder"), folderName]);
     [self reloadDataSource];
+}
+
+#pragma mark -
+#pragma mark Create Link Delegate medthods
+
+- (void)createLink:(CreateLinkViewController *)createLink succeededForName:(NSString *)linkName {
+    displayInformationMessage(NSLocalizedString(@"create-link.success", @"Created link"));
+}
+
+- (void)createLink:(CreateLinkViewController *)createLink failedForName:(NSString *)linkName {
+    displayErrorMessage(NSLocalizedString(@"create-link.failure", @"Failed to create link"));
 }
 
 #pragma mark - SavedDocumentPickerDelegate
@@ -1369,7 +1370,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     if ([downloadManager downloadExistsForKey:fileKey]) {   //use downloaded data
         [self showDocument:item withPath:[FileUtils pathToSavedFile:fileKey]];
     }else if ([previewManager previewFileExists:item] && previewInfo) {
-        [self showDocument:item withPath:[previewInfo objectForKey:@"path"]];
+        [self showDocument:item withPath:[previewManager generateCachePath:item]];
     }else {
         [self.tableView setAllowsSelection:NO];
         //We fetch the current repository items from the DataSource
@@ -1474,7 +1475,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     UIStoryboard *mainStoryboard = instanceMainStoryboard();
     DocumentViewController *doc = [mainStoryboard instantiateViewControllerWithIdentifier:@"DocumentControllerIdentifier"];
     [doc setCmisObjectId:item.identifier];
-    //    [doc setContentMimeType:info.repositoryItem];
+    //[doc setContentMimeType:info.repositoryItem];
     [doc setHidesBottomBarWhenPushed:YES];
     [doc setSelectedAccountUUID:self.selectedAccountUUID];
     [doc setTenantID:nil];

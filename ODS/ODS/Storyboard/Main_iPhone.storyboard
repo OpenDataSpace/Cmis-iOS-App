@@ -400,13 +400,13 @@ Copyright(C) 2013-2014 The Open DataSpace Project.</string>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="IX7-gf-PJg"/>
                                 </items>
                             </toolbar>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="99L-Zd-ZcB">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="99L-Zd-ZcB">
                                 <rect key="frame" x="261" y="262" width="72" height="72"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="72" id="Iiv-it-dQX"/>
                                     <constraint firstAttribute="width" constant="72" id="L2t-aW-Ckb"/>
                                 </constraints>
-                                <state key="normal" title="Button">
+                                <state key="normal" image="play-media">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
@@ -528,6 +528,7 @@ Copyright(C) 2013-2014 The Open DataSpace Project.</string>
     </scenes>
     <resources>
         <image name="LogoCP-130" width="130" height="43"/>
+        <image name="play-media" width="72" height="72"/>
         <image name="settings" width="31" height="32"/>
         <image name="tabDoc" width="30" height="30"/>
     </resources>

@@ -101,7 +101,7 @@ static NSInteger const kDataProtectionDialogTag = 0;
 
 - (BOOL)isFileProtectionEnabled
 {
-    NSString *dataProtectionEnabled = [[ODSUserDefaults standardUserDefaults] objectForKey:@"dataProtectionEnabled"];
+    NSString *dataProtectionEnabled = [[ODSUserDefaults standardUserDefaults] objectForKey:kSettingsDataProtectionIdentifier];
     return [dataProtectionEnabled boolValue];
 }
 

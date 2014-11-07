@@ -82,17 +82,6 @@
     }
 }
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 - (void) createUpoadSingleItemForm:(UploadInfo*) info uploadType:(UploadFormType) type {
     [self setUploadType:info.uploadType];
     [self setUploadInfo:info];
@@ -103,10 +92,9 @@
     
     [[nameCell lblTitle] setText:NSLocalizedString(@"uploadview.tablecell.name.label", @"Name")];
     [[nameCell textField] setPlaceholder:NSLocalizedString(@"uploadview.tablecell.name.placeholder", @"Enter a name")];
-    
+    self.nameTextField = nameCell.textField;
     [self.nameTextField addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventEditingChanged];
     [self.nameTextField setDelegate:self];
-    self.nameTextField = nameCell.textField;
     
     if ([info filename] != nil) {
         [self.nameTextField setText:[info completeFileName]];
@@ -291,6 +279,10 @@
             [self.videoPlayer play];
         }
     }
+}
+
+- (BOOL) enableRefreshController {
+    return NO;
 }
 
 #pragma mark -

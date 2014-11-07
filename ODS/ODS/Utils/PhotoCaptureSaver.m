@@ -55,8 +55,7 @@ NSString * const kDefaultImageExtension = @"jpg";
         [self setOriginalImage:[pickerInfo objectForKey:UIImagePickerControllerOriginalImage]];
         [self setMetadata:[pickerInfo objectForKey:UIImagePickerControllerMediaMetadata]];
         
-        if([CLLocationManager locationServicesEnabled])
-        {
+        if([CLLocationManager locationServicesEnabled]) {
             [self setLocationManager:[[[CLLocationManager alloc] init] autorelease]];
             [self.locationManager setDelegate:self];
         }
@@ -69,7 +68,9 @@ NSString * const kDefaultImageExtension = @"jpg";
     saved = NO;
     if(self.locationManager)
     {
+        dispatch_async(dispatch_get_main_queue(), ^{
         [self.locationManager startUpdatingLocation];
+            });
     }
     else 
     {

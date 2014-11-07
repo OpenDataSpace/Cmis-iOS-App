@@ -11,9 +11,12 @@
 #import "UIDeviceHardware.h"
 #import "Flurry.h"
 #import "AppUrlManager.h"
+#import "NSNotificationCenter+CustomNotification.h"
+#import "AccountManager.h"
 
 #import "DetailNavigationController.h"
 
+static NSInteger kAlertResetAccountTag = 0;
 /* TVOut unsupported Devices */
 static NSArray *unsupportedDevices;
 
@@ -88,6 +91,7 @@ static NSArray *unsupportedDevices;
         }
     }
 
+    [self detectReset];
     
     return YES;
 }
@@ -188,6 +192,23 @@ static NSArray *unsupportedDevices;
     
 }
 
+- (BOOL)detectReset {
+    // Reset Settings if toggled
+    if (userPrefResetOnNextStart())
+    {
+        ODSLogDebug(@"Reset Detected - Asking user for confirmation");
+        UIAlertView *resetConfirmation = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"settings.appResetConfirmation.title", @"App Reset Confirmation")
+                                                                    message:NSLocalizedString(@"settings.appResetConfirmation.message", @"Are you sure you want to reset the application? This will remove all data, reset the app settings, will remove all accounts and cannot be undone")
+                                                                   delegate:self
+                                                          cancelButtonTitle:NSLocalizedString(@"No", @"No")
+                                                          otherButtonTitles: NSLocalizedString(@"Yes", @"Yes"), nil];
+        [resetConfirmation setTag:kAlertResetAccountTag];
+        [resetConfirmation show];
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark -
 #pragma mark Class Initialize
 + (void)initialize
@@ -203,6 +224,32 @@ static NSArray *unsupportedDevices;
 - (void)presentModalViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     [self.window.rootViewController presentViewController:viewController animated:animated completion:NULL];
+}
+
+#pragma mark - Alert Confirmation
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == kAlertResetAccountTag)
+    {
+        if (buttonIndex == 1)
+        {
+            [self resetUserPreferencesToDefault];
+            
+            [[AccountManager sharedManager] saveAccounts:[NSMutableArray array]];
+            [[NSNotificationCenter defaultCenter] postAccountListUpdatedNotification:nil];
+            
+            //Returns to the placeholder controller for ipad
+            [IpadSupport clearDetailController];
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"reset"];
+            [[NSNotificationCenter defaultCenter] postAccountListUpdatedNotification:userInfo];
+        }
+        else
+        {
+            [[ODSUserDefaults standardUserDefaults] setBool:NO forKey:@"resetToDefault"];
+            [[ODSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
 }
 
 @end

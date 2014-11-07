@@ -188,7 +188,8 @@ NSString * const kDownloadedFilesSection = @"DownloadedFiles";
 		iconImage = imageForFilename(title);
         
         [cell setAccessoryType:UITableViewCellAccessoryNone];
-        [cell setAccessoryView:[self makeDetailDisclosureButton]];
+        [cell setAccessoryView:nil];
+        //[cell setAccessoryView:[self makeDetailDisclosureButton]];
         
         [tableView setAllowsSelection:YES];
 	} 

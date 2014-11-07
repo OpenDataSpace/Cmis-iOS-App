@@ -100,7 +100,8 @@ NSString * const MetadataFileName = @"DownloadMetadata.plist";
 - (BOOL)removeDownloadInfoForKey:(NSString *)key {
     NSDictionary *previousInfo = [[self readMetadata] objectForKey:key];
     
-    if ([FileUtils moveFileToTemporaryFolder:[FileUtils pathToSavedFile:key]])
+    NSFileManager *manager = [NSFileManager defaultManager];
+    if ([manager removeItemAtPath:[FileUtils pathToSavedFile:key] error:nil])
     {
         // If we can get an objectId, then notify interested parties that the file has moved
         NSString *objectId = [previousInfo objectForKey:@"objectId"];

@@ -123,31 +123,34 @@ NSInteger const kDismissFailedUploadPrompt = 3;
     return NO;
 }
 
-#pragma mark - NSNotificationCenter methods
-- (void)uploadQueueChanged:(NSNotification *) notification {
-    @synchronized(self.tableSections)
-    {
-        NSMutableArray *indexPaths = [NSMutableArray array];
-        NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
-        NSMutableArray *uploads = [self.tableSections objectAtIndex:0];
-        for (NSUInteger index = 0; index < [uploads count]; index++) {
-            UploadProgressTableViewCell *cellWrapper = [uploads objectAtIndex:index];
-            // We keep the cells for finished uploads and failed uploads
-            if (cellWrapper.uploadInfo && [cellWrapper.uploadInfo uploadStatus] != UploadInfoStatusUploaded && ![[UploadsManager sharedManager] isManagedUpload:cellWrapper.uploadInfo.uuid])
-            {
-                ODSLogTrace(@"We are displaying an upload that is not currently managed");
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-                [indexPaths addObject:indexPath];
-                [indexSet addIndex:index];
-            }
-        }
-        
-        if ([indexPaths count] > 0)
+- (void) updateQueue {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
+    NSMutableArray *uploads = [self.tableSections objectAtIndex:0];
+    for (NSUInteger index = 0; index < [uploads count]; index++) {
+        UploadProgressTableViewCell *cellWrapper = [uploads objectAtIndex:index];
+        // We remove the finished cells
+        if (cellWrapper.uploadInfo &&
+            [cellWrapper.uploadInfo uploadStatus] == UploadInfoStatusUploaded)// &&
+            //![[UploadsManager sharedManager] isManagedUpload:cellWrapper.uploadInfo.uuid])
         {
-            [uploads removeObjectsAtIndexes:indexSet];
-            [self.tableView reloadData];
+            ODSLogTrace(@"We are displaying an upload that is not currently managed");
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            [indexPaths addObject:indexPath];
+            [indexSet addIndex:index];
         }
     }
+    
+    if ([indexPaths count] > 0)
+    {
+        [uploads removeObjectsAtIndexes:indexSet];
+        [self.tableView reloadData];
+    }
+}
+
+#pragma mark - NSNotificationCenter methods
+- (void)uploadQueueChanged:(NSNotification *) notification {
+    [self performSelectorOnMainThread:@selector(updateQueue) withObject:self waitUntilDone:NO];
 }
 
 #pragma mark UIAlertView delegate methods
@@ -172,11 +175,14 @@ NSInteger const kDismissFailedUploadPrompt = 3;
             NSMutableArray *uploadCells = [self.tableSections objectAtIndex:0];
             if (uploadCells) {
                 NSUInteger indexToCancel = [uploadCells indexOfObject:uploadToCancel];
-                [uploadCells removeObjectAtIndex:indexToCancel];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:indexToCancel inSection:0];
-                [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                
-                [[UploadsManager sharedManager] clearUpload:uploadInfo.uuid];
+                if (indexToCancel != NSNotFound) {
+                    [uploadCells removeObjectAtIndex:indexToCancel];
+                    //NSIndexPath *indexPath = [NSIndexPath indexPathForRow:indexToCancel inSection:0];
+                    //[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    
+                    [[UploadsManager sharedManager] clearUpload:uploadInfo.uuid];
+                    [self.tableView reloadData];
+                }
             }
         }
         
@@ -203,6 +209,7 @@ NSInteger const kDismissFailedUploadPrompt = 3;
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
     [[UploadsManager sharedManager] clearUpload:self.uploadToDismiss.uuid];
+    [self.tableView reloadData];
 }
 
 #pragma mark - FailedUploadDetailViewController Delegate

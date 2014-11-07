@@ -79,6 +79,9 @@ CGFloat const kDefaultTableCellHeight = 60.0f;
  */
 NSString * const kPreferenceApplicationFirstRun = @"FirstRun";
 
+
+NSString * const kNoAccountsCellIdentifier = @"NoAccountsCellIdentifier";
+
 @implementation ODSConstants
 
 @end

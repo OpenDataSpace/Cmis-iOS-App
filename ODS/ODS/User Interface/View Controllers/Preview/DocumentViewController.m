@@ -26,7 +26,6 @@
 #import "DocumentViewController.h"
 #import "FileUtils.h"
 #import "Utility.h"
-//#import "FileDownloadManager.h"
 #import "TransparentToolbar.h"
 #import "MBProgressHUD.h"
 #import "BarButtonBadge.h"
@@ -38,13 +37,12 @@
 #import "ImageActionSheet.h"
 #import "MessageViewController.h"
 #import "TTTAttributedLabel.h"
-//#import "WEPopoverController.h"
 #import "ConnectivityManager.h"
-//#import "SaveBackMetadata.h"
 #import "DownloadInfo.h"
 #import "CustomLongPressGestureRecognizer.h"
 #import "DetailNavigationController.h"
 #import "FileProtectionManager.h"
+#import "LocalFileManager.h"
 
 #define kToolbarSpacerWidth 7.5f
 #define kFrameLoadCodeError 102
@@ -81,9 +79,7 @@ NSInteger const kGetCommentsCountTag = 6;
     _contentMimeType = nil;
     _fileMetadata = nil;
 	_documentToolbar = nil;
-	_favoriteButton = nil;
 	_webView = nil;
-    _likeBarButton = nil;
 	_docInteractionController = nil;
     _actionButton = nil;
     _actionSheet = nil;
@@ -377,6 +373,8 @@ NSInteger const kGetCommentsCountTag = 6;
     BOOL isAudio = isAudioExtension(url.pathExtension);
     BOOL isIWork = isIWorkExtension(url.pathExtension);
     
+    [[FileProtectionManager sharedInstance] completeProtectionForFileAtPath:path];
+    
     if (self.contentMimeType)
     {
         if (self.fileData)
@@ -389,6 +387,7 @@ NSInteger const kGetCommentsCountTag = 6;
             self.webView = nil;
             
             self.presentMediaViewController = YES;
+            
         }
         else if (isIWork)
         {
@@ -396,7 +395,7 @@ NSInteger const kGetCommentsCountTag = 6;
         }
         else
         {
-            [[FileProtectionManager sharedInstance] completeProtectionForFileAtPath:path];
+            //[[FileProtectionManager sharedInstance] completeProtectionForFileAtPath:path];
             NSData *requestData = [NSData dataWithContentsOfFile:path];
             [self.webView loadData:requestData MIMEType:self.contentMimeType textEncodingName:@"UTF-8" baseURL:url];
         }
@@ -418,7 +417,7 @@ NSInteger const kGetCommentsCountTag = 6;
         // Adding the height of the toolbar
         if (self.webView)
         {
-            self.webView.frame = self.view.frame;
+            self.webView.frame = self.view.frame;            
         }
     }
     
@@ -723,41 +722,17 @@ NSInteger const kGetCommentsCountTag = 6;
 }
 
 
-- (void)downloadButtonPressed
-{
-//    if ([[FileDownloadManager sharedInstance] downloadExistsForKey:self.fileName])
-//    {
-//        UIAlertView *overwritePrompt = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"documentview.overwrite.download.prompt.title", @"")
-//                                                                   message:NSLocalizedString(@"documentview.overwrite.download.prompt.message", @"Yes/No Question")
-//                                                                  delegate:self 
-//                                                         cancelButtonTitle:NSLocalizedString(@"No", @"No") 
-//                                                         otherButtonTitles:NSLocalizedString(@"Yes", @"Yes"), nil];
-//        
-//        [overwritePrompt setTag:kAlertViewOverwriteConfirmation];
-//        [overwritePrompt show];
-//    }
-//    else
-//    {
-//        [self saveFileLocally];
-//    }
+- (void)downloadButtonPressed {
+    [self saveFileLocally];
 }
 
 - (void)saveFileLocally 
 {
-    // FileDownloadManager only handles files in the temp folder, so we need to save the file there first
-    NSString *tempPath = [FileUtils pathToTempFile:self.fileName];
-    if (![tempPath isEqualToString:self.filePath])
-    {
-        [FileUtils saveFileFrom:self.filePath toDestination:tempPath overwriteExisting:YES];
+    LocalFileManager *fileMgr = [LocalFileManager sharedInstance];
+    NSString *fileKey = [LocalFileManager downloadKeyWithObjectID:_cmisObjectId withFileName:self.fileName];
+    if (![fileMgr downloadExistsForKey:fileKey]) {
+        [fileMgr setDownload:[self.fileMetadata downloadInfo] forKey:fileKey withFilePath:self.filePath];
     }
-//    
-//    FileDownloadManager *manager = [FileDownloadManager sharedInstance];
-//    [manager setOverwriteExistingDownloads:YES];
-//    NSString *filename = [[FileDownloadManager sharedInstance] setDownload:self.fileMetadata.downloadInfo forKey:self.fileName withFilePath:self.fileName];
-//
-//    // Since the file was moved from the temp path to the save file we want to update the file path to the one in the saved documents
-//    self.filePath = [FileUtils pathToSavedFile:filename];
-    
     displayInformationMessage(NSLocalizedString(@"documentview.download.confirmation.title", @"Document Saved"));
 }
 
@@ -779,20 +754,17 @@ NSInteger const kGetCommentsCountTag = 6;
 {
     switch (alertView.tag)
     {
-        case kAlertViewOverwriteConfirmation:
-        {
-            if (buttonIndex != alertView.cancelButtonIndex)
-            {
-                [self saveFileLocally];
-            }
-            break;
-        }
         case kAlertViewDeleteConfirmation:
         {
             if (buttonIndex != alertView.cancelButtonIndex)
             {
                 ODSLogDebug(@"User confirmed removal of file %@", self.fileName);
-                //[[FileDownloadManager sharedInstance] removeDownloadInfoForFilename:self.fileName];
+                LocalFileManager *fileMgr = [LocalFileManager sharedInstance];
+                NSString *fileKey = [LocalFileManager downloadKeyWithObjectID:_cmisObjectId withFileName:self.fileName];
+                if (![fileMgr downloadExistsForKey:fileKey]) {
+                    [fileMgr removeDownloadInfoForKey:fileKey];
+                }
+                //TODO:should we remove preview also?
             }
             break;
         }
@@ -896,6 +868,7 @@ NSInteger const kGetCommentsCountTag = 6;
     {
         [self performSelectorOnMainThread:@selector(previewLoadFailed) withObject:nil waitUntilDone:NO];
     }
+    [self.webView setHidden:YES];
     [self.webView setAlpha:1.0];
 }
 

@@ -15,6 +15,9 @@
 #import "CMISPropertyData.h"
 #import "CMISConstants+ODS.h"
 #import "NSString+SHA.h"
+#import "ConnectivityManager.h"
+#import "CMISErrors.h"
+#import "Utility.h"
 
 @implementation CMISUtility
 
@@ -110,12 +113,31 @@
         }        
     }
     
-    [properties addProperty:[CMISPropertyData createPropertyForId:@"cmis:objectTypeId" idValue:@"cmis:item"]];
-    //[properties addProperty:[CMISPropertyData createPropertyForId:@"cmis:secondaryObjectTypeIds" idValue:@"gds:downloadLink"]];
-    [properties addProperty:[CMISPropertyData createPropertyForId:@"cmis:secondaryObjectTypeIds" arrayValue:[NSArray arrayWithObjects:@"gds:downloadLink", @"cmis:rm_clientMgtRetention", nil] type:CMISPropertyTypeString]];
+    [properties addProperty:[CMISPropertyData createPropertyForId:kCMISPropertyObjectTypeId idValue:@"cmis:item"]];
+    [properties addProperty:[CMISPropertyData createPropertyForId:kCMISPropertySecondaryObjectTypeIds arrayValue:[NSArray arrayWithObjects:@"gds:downloadLink", @"cmis:rm_clientMgtRetention", nil] type:CMISPropertyTypeString]];
     
     
     return properties;
+}
+
+/* Handle CMIS request error message */
++ (void) handleCMISRequestError:(NSError*) theError {
+    dispatch_main_sync_safe(^{
+        if ([theError.domain isEqualToString:kCMISErrorDomainName])
+        {
+            if (theError.code == kCMISErrorCodePermissionDenied)
+            {
+                NSString *authenticationFailureMessageForAccount = NSLocalizedString(@"authenticationFailureMessageForAccount", @"Please check your username and password in the iPhone settings for ODS");
+                displayErrorMessageWithTitle(authenticationFailureMessageForAccount, NSLocalizedString(@"authenticationFailureTitle", @"Authentication Failure Title Text 'Authentication Failure'"));
+            }else {
+                displayErrorMessage([theError localizedFailureReason]);
+            }
+        }
+        else
+        {
+            ODSLogDebug(@"%@", theError);
+        }
+    });
 }
 
 @end

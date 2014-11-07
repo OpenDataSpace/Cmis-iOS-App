@@ -141,7 +141,7 @@
     TextFieldTableViewCell *cellPassword = (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
     [cellPassword.lblTitle setText:NSLocalizedString(@"accountdetails.fields.password", @"Password")];
     [cellPassword.textField setSecureTextEntry:YES];
-    [cellPassword.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.optional", @"optional")];
+    [cellPassword.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.required", @"required")];
     if ([self.acctInfo password] != nil && [[self.acctInfo password] length] > 0) {
         [cellPassword.textField setText:[self.acctInfo password]];
     }
@@ -220,6 +220,7 @@
 
 - (BOOL) validateAccountSettings {
     BOOL usernameValid = YES;
+    BOOL passwordValid = YES;
     BOOL serverValid = YES;
     BOOL portValid = YES;
     BOOL serviceDocValid = YES;
@@ -227,6 +228,7 @@
     
     
     NSString *username = [self.acctInfo username];
+    NSString *password = [self.acctInfo password];
     NSString *hostname = [self.acctInfo hostname];
     NSString *port = [self.acctInfo port];
     NSString *serviceDoc = [self.acctInfo serviceDocumentRequestPath];
@@ -238,8 +240,10 @@
     portValid = ([port rangeOfString:@"^[0-9]*$" options:NSRegularExpressionSearch].location == NSNotFound);
     serviceDocValid = ![serviceDoc isNotEmpty];
     vendorValid = ![vendor isNotEmpty];
+    passwordValid = ![password isNotEmpty];
     
-    return !usernameValid && !portValid && !serverValid && !serviceDocValid && !vendorValid;
+    
+    return !usernameValid && !portValid && !serverValid && !serviceDocValid && !vendorValid && !passwordValid;
 }
 
 - (void) saveTextFieldValue:(TextFieldTableViewCell*) cell {
@@ -307,6 +311,7 @@
         [self stopHUD];
         if (error != nil) {
             ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             [[AccountManager sharedManager] saveAccountInfo:self.acctInfo];
             dispatch_main_sync_safe(^{

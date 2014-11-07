@@ -46,8 +46,4 @@
 - (CMISRequest*)moveFromFolderWithId:(NSString *)sourceFolderId
                       toFolderWithId:(NSString *)targetFolderId
                      completionBlock:(void (^)(CMISObject *object, NSError *error))completionBlock;
-
-
-- (CMISRequest*)loadLinkForFileWithId:(NSString*) fileId
-                      completionBlock:(void (^)(NSString *link, NSError *error))completionBlock;
 @end

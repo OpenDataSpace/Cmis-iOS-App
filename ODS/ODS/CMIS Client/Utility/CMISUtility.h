@@ -29,4 +29,7 @@
 
 /* Dictionary to CMIS Properties */
 + (CMISProperties*) linkParametersToCMISProperties:(NSDictionary*) param;
+
+/* Handle CMIS request error message */
++ (void) handleCMISRequestError:(NSError*) theError;
 @end

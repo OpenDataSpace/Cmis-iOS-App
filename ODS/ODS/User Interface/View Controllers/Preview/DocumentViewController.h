@@ -51,8 +51,6 @@
 @property (nonatomic, strong) NSURLRequest *previewRequest;
 @property (nonatomic, assign) BOOL isDownloaded;
 @property (nonatomic, weak) IBOutlet UIToolbar *documentToolbar;
-@property (nonatomic, strong) ToggleBarButtonItemDecorator *favoriteButton;
-@property (nonatomic, strong) ToggleBarButtonItemDecorator *likeBarButton;
 @property (nonatomic, weak) IBOutlet CustomWebView *webView;
 @property (nonatomic, strong) UIDocumentInteractionController *docInteractionController;
 @property (nonatomic, strong) UIBarButtonItem *actionButton;
