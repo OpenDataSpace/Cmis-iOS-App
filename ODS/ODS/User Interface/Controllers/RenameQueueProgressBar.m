@@ -68,6 +68,7 @@
         [_progressAlert dismissWithClickedButtonIndex:1 animated:NO];
         if (error) {  //TODO:add tips
             ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error];
         }else {
             if (self.delegate && [self.delegate respondsToSelector:@selector(renameQueue:completedRename:)])
             {

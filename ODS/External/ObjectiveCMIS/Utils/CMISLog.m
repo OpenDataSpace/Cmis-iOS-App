@@ -38,7 +38,7 @@
     self = [super init];
     if (self)
     {
-        _logLevel = CMISLogLevelTrace;//logLevel;
+        _logLevel = logLevel;
     }
     return self;
 }

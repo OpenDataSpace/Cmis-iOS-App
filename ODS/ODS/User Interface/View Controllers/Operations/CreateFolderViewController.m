@@ -162,6 +162,8 @@ static NSString * const kCreateFolderCellIdentifier = @"CreateFolderCellIdentifi
             if (self.delegate && [self.delegate respondsToSelector:@selector(createFolder:failedForName:)])
             {
                 [self.delegate performSelector:@selector(createFolder:failedForName:) withObject:self withObject:self.folderName];
+            }else {
+                [CMISUtility handleCMISRequestError:error];
             }
         }else {
             [self dismissViewControllerAnimated:YES completion:^(void) {

@@ -125,11 +125,12 @@
     dispatch_main_sync_safe(^{
         if ([theError.domain isEqualToString:kCMISErrorDomainName])
         {
-            if (theError.code == kCMISErrorCodePermissionDenied)
+//            if (theError.code == kCMISErrorCodePermissionDenied)
+//            {
+//                NSString *authenticationFailureMessageForAccount = NSLocalizedString(@"authenticationFailureMessageForAccount", @"Please check your username and password in the iPhone settings for ODS");
+//                displayErrorMessageWithTitle(authenticationFailureMessageForAccount, NSLocalizedString(@"authenticationFailureTitle", @"Authentication Failure Title Text 'Authentication Failure'"));
+//            }else
             {
-                NSString *authenticationFailureMessageForAccount = NSLocalizedString(@"authenticationFailureMessageForAccount", @"Please check your username and password in the iPhone settings for ODS");
-                displayErrorMessageWithTitle(authenticationFailureMessageForAccount, NSLocalizedString(@"authenticationFailureTitle", @"Authentication Failure Title Text 'Authentication Failure'"));
-            }else {
                 displayErrorMessage([theError localizedFailureReason]);
             }
         }

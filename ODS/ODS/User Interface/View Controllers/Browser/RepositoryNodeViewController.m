@@ -1036,8 +1036,15 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
                             destructiveButtonTitle:nil
                             otherButtonTitles: nil];
     
-    [sheet addButtonWithTitle:NSLocalizedString(@"operation.pop.menu.delete", @"Delete")];
-    [sheet addButtonWithTitle:NSLocalizedString(@"operation.pop.menu.rename", @"Rename")];
+    
+    if (isAllowAction(selectedItem, CMISActionCanDeleteObject)) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"operation.pop.menu.delete", @"Delete")];
+    }
+    
+    if (isAllowAction(selectedItem, CMISActionCanUpdateProperties)) {
+        [sheet addButtonWithTitle:NSLocalizedString(@"operation.pop.menu.rename", @"Rename")];
+    }
+    
     if (isAllowAction(selectedItem, CMISActionCanMoveObject)) {
         [sheet addButtonWithTitle:NSLocalizedString(@"operation.pop.menu.move", @"Move")];
     }
