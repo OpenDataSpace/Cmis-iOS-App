@@ -132,6 +132,7 @@ static NSString * const kLinkMessageModelIdentifier = @"message";
     DateInputTableViewCell *dateCell = [[DateInputTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
     [dateCell.textLabel setText:NSLocalizedString(@"create-link.fields.expirationdate", @"ExpirationDate")];
     [dateCell setModelIdentifier:kLinkExpirationDateModelIdentifier];
+    [dateCell setMinDate:[NSDate date]];
     [dateCell setDelegate:self];
     
     [linkConf addObject:dateCell];

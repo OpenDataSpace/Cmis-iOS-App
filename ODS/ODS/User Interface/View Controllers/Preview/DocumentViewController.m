@@ -195,26 +195,26 @@ NSInteger const kGetCommentsCountTag = 6;
         CGFloat tabBarY = tabBarFrame.origin.y + offset;
         tabBarFrame.origin.y = tabBarY;
         self.documentToolbar.frame = tabBarFrame;
+    
+//        CGRect webViewFrame = self.webView.frame;
+//        CGFloat webViewHeight = webViewFrame.size.height+ offset;
+//        if (IOS7_OR_LATER) {
+//            if (isFullScreen) {  //to fix the status bar for ios7
+//                webViewHeight += 20;
+//            }else {
+//                webViewHeight -= 20;
+//            }
+//        }
+//        webViewFrame.size.height = webViewHeight;
+//        self.webView.frame = webViewFrame;
         
-        
-        CGRect webViewFrame = self.webView.frame;
-        CGFloat webViewHeight = webViewFrame.size.height+ offset;
-        if (IOS7_OR_LATER) {
-            if (isFullScreen) {  //to fix the status bar for ios7
-                webViewHeight += 20;
-            }else {
-                webViewHeight -= 20;
-            }
-        }
-        webViewFrame.size.height = webViewHeight;
-        self.webView.frame = webViewFrame;
         // Fade it in/out
         self.navigationController.navigationBar.alpha = isFullScreen ? 0 : 1;
         self.documentToolbar.alpha = isFullScreen ? 0 : 1;
         
         // Resize webview to be full screen / normal
-        [self.webView removeFromSuperview];
-        [self.view addSubview:self.webView];
+//        [self.webView removeFromSuperview];
+//        [self.view addSubview:self.webView];
     }
     
     [self.navigationController setNavigationBarHidden:isFullScreen animated:YES];
@@ -287,6 +287,16 @@ NSInteger const kGetCommentsCountTag = 6;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+    {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = NO;
+        self.modalPresentationCapturesStatusBarAppearance = NO;
+    }
+#endif
+    
     NSInteger spacersCount = 0;
     
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSyncObstaclesNotification:) name:kNotificationSyncObstacles object:nil];
@@ -718,6 +728,7 @@ NSInteger const kGetCommentsCountTag = 6;
     if (![self.docInteractionController presentOpenInMenuFromBarButtonItem:sender animated:YES])
     {
         displayErrorMessageWithTitle(NSLocalizedString(@"noAppsAvailableDialogMessage", @"There are no applications that are capable of opening this file on this device"), NSLocalizedString(@"noAppsAvailableDialogTitle", @"No Applications Available"));
+        [sender setEnabled:YES];
     }
 }
 

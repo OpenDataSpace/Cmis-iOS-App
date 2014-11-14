@@ -269,11 +269,10 @@
 		2D6AE81719D9543F000B7180 /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE81619D9543F000B7180 /* CustomTableViewCell.m */; };
 		2D6BAA0619E7B2D500C26CDC /* UploadProgressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BAA0419E7B2D500C26CDC /* UploadProgressTableViewCell.m */; };
 		2D6BAA0719E7B2D500C26CDC /* UploadProgressTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2D6BAA0519E7B2D500C26CDC /* UploadProgressTableViewCell.xib */; };
-		2D6BAA0A19E7C31000C26CDC /* UIColor+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6BAA0919E7C31000C26CDC /* UIColor+Theme.m */; };
+		2D6C5D931A14924600103D45 /* UIColor+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C5D921A14924600103D45 /* UIColor+Theme.m */; };
 		2D74317B1A00D2E0004A1E65 /* CMISConstants+ODS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D74317A1A00D2E0004A1E65 /* CMISConstants+ODS.m */; };
 		2D74317E1A01D490004A1E65 /* NSString+SHA.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D74317D1A01D490004A1E65 /* NSString+SHA.m */; };
 		2D7431811A0203D1004A1E65 /* LocalDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7431801A0203D1004A1E65 /* LocalDocument.m */; };
-		2D7CAA1A19EB9C5300FFF811 /* UIColor+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7CAA1919EB9C5300FFF811 /* UIColor+Theme.m */; };
 		2D7CAA2019EB9C8400FFF811 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7CAA1D19EB9C8400FFF811 /* DirectoryWatcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		2D7CAA2119EB9C8400FFF811 /* DITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7CAA1F19EB9C8400FFF811 /* DITableViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		2D7CAA2919EB9DCE00FFF811 /* libFlurry_5.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D7CAA2819EB9DCE00FFF811 /* libFlurry_5.2.0.a */; };
@@ -838,16 +837,14 @@
 		2D6BAA0319E7B2D500C26CDC /* UploadProgressTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadProgressTableViewCell.h; sourceTree = "<group>"; };
 		2D6BAA0419E7B2D500C26CDC /* UploadProgressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadProgressTableViewCell.m; sourceTree = "<group>"; };
 		2D6BAA0519E7B2D500C26CDC /* UploadProgressTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadProgressTableViewCell.xib; sourceTree = "<group>"; };
-		2D6BAA0819E7C31000C26CDC /* UIColor+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Theme.h"; sourceTree = "<group>"; };
-		2D6BAA0919E7C31000C26CDC /* UIColor+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Theme.m"; sourceTree = "<group>"; };
+		2D6C5D911A14924600103D45 /* UIColor+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Theme.h"; sourceTree = "<group>"; };
+		2D6C5D921A14924600103D45 /* UIColor+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Theme.m"; sourceTree = "<group>"; };
 		2D7431791A00D2E0004A1E65 /* CMISConstants+ODS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CMISConstants+ODS.h"; sourceTree = "<group>"; };
 		2D74317A1A00D2E0004A1E65 /* CMISConstants+ODS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CMISConstants+ODS.m"; sourceTree = "<group>"; };
 		2D74317C1A01D490004A1E65 /* NSString+SHA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SHA.h"; sourceTree = "<group>"; };
 		2D74317D1A01D490004A1E65 /* NSString+SHA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SHA.m"; sourceTree = "<group>"; };
 		2D74317F1A0203D1004A1E65 /* LocalDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalDocument.h; sourceTree = "<group>"; };
 		2D7431801A0203D1004A1E65 /* LocalDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalDocument.m; sourceTree = "<group>"; };
-		2D7CAA1819EB9C5300FFF811 /* UIColor+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Theme.h"; sourceTree = "<group>"; };
-		2D7CAA1919EB9C5300FFF811 /* UIColor+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Theme.m"; sourceTree = "<group>"; };
 		2D7CAA1C19EB9C8400FFF811 /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcher.h; sourceTree = "<group>"; };
 		2D7CAA1D19EB9C8400FFF811 /* DirectoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryWatcher.m; sourceTree = "<group>"; };
 		2D7CAA1E19EB9C8400FFF811 /* DITableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DITableViewController.h; sourceTree = "<group>"; };
@@ -1450,16 +1447,14 @@
 		2D06F0D719CB11DB00788C4C /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				2D6C5D911A14924600103D45 /* UIColor+Theme.h */,
+				2D6C5D921A14924600103D45 /* UIColor+Theme.m */,
 				2D74317C1A01D490004A1E65 /* NSString+SHA.h */,
 				2D74317D1A01D490004A1E65 /* NSString+SHA.m */,
 				2DA051C919F78ADB009153FA /* NSDictionary+URLEncoding.h */,
 				2DA051CA19F78ADB009153FA /* NSDictionary+URLEncoding.m */,
 				2DA051C619F78A8E009153FA /* NSURL+HTTPURLUtils.h */,
 				2DA051C719F78A8E009153FA /* NSURL+HTTPURLUtils.m */,
-				2D7CAA1819EB9C5300FFF811 /* UIColor+Theme.h */,
-				2D7CAA1919EB9C5300FFF811 /* UIColor+Theme.m */,
-				2D6BAA0819E7C31000C26CDC /* UIColor+Theme.h */,
-				2D6BAA0919E7C31000C26CDC /* UIColor+Theme.m */,
 				2D06F15F19CBC6A500788C4C /* NSNotificationCenter+CustomNotification.h */,
 				2D06F16019CBC6A500788C4C /* NSNotificationCenter+CustomNotification.m */,
 				2D06F11919CB169400788C4C /* NSArray+Utils.h */,
@@ -2116,7 +2111,7 @@
 		2D06ED4219CB0C5E00788C4C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Open Data Space";
 				TargetAttributes = {
 					2D06ED4919CB0C5E00788C4C = {
@@ -2302,6 +2297,7 @@
 				2D7CAA3A19EBB6E700FFF811 /* DownloadedFileTableViewCell.m in Sources */,
 				2D06F08219CB101D00788C4C /* CMISBrowserUtil.m in Sources */,
 				2D06F0CE19CB101D00788C4C /* UIImageView+WebCache.m in Sources */,
+				2D6C5D931A14924600103D45 /* UIColor+Theme.m in Sources */,
 				2D06F08919CB101D00788C4C /* CMISLinkCache.m in Sources */,
 				2D4851C419DF9D3B00911561 /* CMISUtility.m in Sources */,
 				2D06F09519CB101D00788C4C /* CMISFileableObject.m in Sources */,
@@ -2380,7 +2376,6 @@
 				2D6AE81719D9543F000B7180 /* CustomTableViewCell.m in Sources */,
 				2D06F05919CB101D00788C4C /* KeychainItemWrapper.m in Sources */,
 				2D06F08619CB101D00788C4C /* CMISDocumentTypeDefinition.m in Sources */,
-				2D6BAA0A19E7C31000C26CDC /* UIColor+Theme.m in Sources */,
 				2D06F0B719CB101D00788C4C /* CMISHttpDownloadRequest.m in Sources */,
 				2DA051CB19F78ADB009153FA /* NSDictionary+URLEncoding.m in Sources */,
 				2D06F09619CB101D00788C4C /* CMISFolder.m in Sources */,
@@ -2437,7 +2432,6 @@
 				2D06F06019CB101D00788C4C /* CMISAtomPubAclParser.m in Sources */,
 				2D06F1AB19CE773600788C4C /* MoreViewController.m in Sources */,
 				2D06F0CB19CB101D00788C4C /* UIImage+GIF.m in Sources */,
-				2D7CAA1A19EB9C5300FFF811 /* UIColor+Theme.m in Sources */,
 				2D06F0A219CB101D00788C4C /* CMISCreatablePropertyTypes.m in Sources */,
 				2D6AE80C19D3E869000B7180 /* UploadTableViewCell.m in Sources */,
 				2D06F0CD19CB101D00788C4C /* UIImage+WebP.m in Sources */,

@@ -218,10 +218,20 @@ static NSString * const kDeleteAccountCellModelIdentifier = @"DeleteAccountCellM
 - (void)handleAccountListUpdated:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
     NSString *type = [userInfo objectForKey:@"type"];
+    NSString *uuid = [[notification userInfo] objectForKey:@"uuid"];
     if (type && [type isEqualToString:kAccountUpdateNotificationEdit]) {
         self.acctInfo = [[AccountManager sharedManager] accountInfoForUUID:self.acctInfo.uuid];
         [self createAccountComponents];
         [self.tableView reloadData];
+    }else if ([type isEqualToString:kAccountUpdateNotificationDelete] && [[_acctInfo uuid] isEqualToString:uuid]) {
+        if (IS_IPAD)
+        {
+            [IpadSupport clearDetailController];
+        }
+        else
+        {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 

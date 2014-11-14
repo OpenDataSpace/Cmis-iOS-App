@@ -201,6 +201,10 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
         }else {
+            if (IS_IPAD)
+            {
+                [IpadSupport clearDetailController];
+            }
             RepositoryNodeViewController *repoNodeController = [[RepositoryNodeViewController alloc] initWithStyle:UITableViewStylePlain];
             [repoNodeController setFolder:folder];
             [repoNodeController setPagedFolders:results];
@@ -1126,7 +1130,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 {
     ChooserFolderViewController *chooseFolder = [[ChooserFolderViewController alloc] initWithAccountUUID:self.selectedAccountUUID];
     AccountInfo *accountInfo = [[AccountManager sharedManager] accountInfoForUUID:self.selectedAccountUUID];
-    chooseFolder.viewTitle = [accountInfo description];
+    chooseFolder.viewTitle = [accountInfo vendor];
     chooseFolder.itemType = kMoveTargetTypeRepo;
     chooseFolder.selectedDelegate = self;
     [chooseFolder setModalPresentationStyle:UIModalPresentationFormSheet];

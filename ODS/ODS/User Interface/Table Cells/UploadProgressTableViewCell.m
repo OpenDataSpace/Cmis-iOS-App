@@ -23,6 +23,8 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    [self setAccessoryView:nil];
+    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadChanged:) name:kNotificationUploadWaiting object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadChanged:) name:kNotificationUploadStarted object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadChanged:) name:kNotificationUploadFinished object:nil];

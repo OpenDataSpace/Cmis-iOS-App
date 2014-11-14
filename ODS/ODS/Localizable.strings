@@ -142,6 +142,34 @@
 "documentview.delete.confirmation.title" = "";
 "documentview.delete.confirmation.message" = "Do you want to remove this document from your Downloads?";
 
+/**/
+"noAppsAvailableDialogMessage" = "There are no applications that are capable of opening this file on this device";
+
+/**/
+"noAppsAvailableDialogTitle" = "No Applications Available";
+
+/**/
+"noContentWarningMessage" = "This document has no content";
+
+/**/
+"noContentWarningTitle" = "No Content";
+
+/**/
+"noSearchResultsMessage" = "No Results Found";
+
+/**/
+"noEmailSetupDialogTitle" = "Mail Setup";
+
+/**/
+"noEmailSetupDialogMessage" = "Mail is currently not setup on your device and is required to send emails";
+
+"documentview.download.confirmation.title" = "Download Saved";
+"documentview.download.confirmation.message" = "The document has been saved to your Downloads and is available for offline viewing";
+"documentview.download.noFilesToDownload" = "There are no documents to download";
+
+"documentview.delete.confirmation.title" = "";
+"documentview.delete.confirmation.message" = "Do you want to remove this document from your Downloads?";
+
 /* Email */
 "email.body.link" = "Link to %@";
 "email.footer.text" = "Sent from my document repository using ODS+, the native iPhone CMIS client";

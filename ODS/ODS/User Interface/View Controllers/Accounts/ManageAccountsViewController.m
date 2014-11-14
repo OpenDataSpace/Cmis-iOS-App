@@ -41,6 +41,10 @@ static NSString * const kManageAccountsCellIdentifier = @"ManageAccountsCellIden
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL) enableRefreshController {
+    return NO;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
