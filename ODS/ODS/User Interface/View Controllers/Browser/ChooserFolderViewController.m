@@ -31,13 +31,17 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
 @synthesize repositoryID = _repositoryID;
 @synthesize selectedDelegate = _selectedDelegate;
 @synthesize parentItem = _parentItem;
+@synthesize sourceFolder = _sourceFolder;
+@synthesize selectedItems = _selectedItems;
 
-- (id)initWithAccountUUID:(NSString *)uuid
+- (id)initWithAccountUUID:(NSString *)uuid  sourceFolder:(CMISFolder*) srcFolder selectedItems:(NSArray*) selectedItems
 {
     if (self = [super initWithStyle:UITableViewStylePlain])
     {
         _selectedAccountUUID = uuid;
         _folderItems = nil;
+        _sourceFolder = srcFolder;
+        _selectedItems = selectedItems;
     }
     return self;
 }
@@ -51,7 +55,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
     UIBarButtonItem *fixSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace        target:self action:nil];
     self.doneBtn = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"dialog.chooser.confirm", @"Choose") style:UIBarButtonItemStyleBordered target:self action:@selector(chooseButtonPress)];
     
-    if (_parentItem != nil) {
+    if (_parentItem != nil && ![self isSourceFolder:_parentItem]) {
         [self.doneBtn setEnabled:YES];
     }else {
         [self.doneBtn setEnabled:NO];
@@ -117,7 +121,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     CMISObject *item = [self.folderItems objectAtIndex:[indexPath row]];
     
-    ChooserFolderViewController *folderViewController = [[ChooserFolderViewController alloc] initWithAccountUUID:self.selectedAccountUUID];
+    ChooserFolderViewController *folderViewController = [[ChooserFolderViewController alloc] initWithAccountUUID:self.selectedAccountUUID sourceFolder:_sourceFolder selectedItems:_selectedItems];
     [folderViewController setItemType:kMoveTargetTypeFolder];
     
     
@@ -209,7 +213,7 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
     if (!pagedResult.hasMoreItems) {
         [self stopHUD];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.doneBtn setEnabled:YES];
+            [self.doneBtn setEnabled:![self isSourceFolder:_parentItem]];
             [self.tableView reloadData];
         });
         return;
@@ -230,10 +234,30 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
     }
     
     for (CMISObject *item in items) {
-        if (isCMISFolder(item)) {
+        if (isCMISFolder(item) && ![self isSelectedObject:item]) {
             [self.folderItems addObject:item];
         }
     }
+}
+
+- (BOOL) isSourceFolder:(CMISObject*) object {
+    if (object && [object.identifier isEqualToCaseInsensitiveString:_sourceFolder.identifier]) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL) isSelectedObject:(CMISObject*) object {
+    if (object) {
+        NSPredicate *uuidPredicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"identifier == '%@'", object.identifier]];
+        NSArray *array = [_selectedItems filteredArrayUsingPredicate:uuidPredicate];
+        if ([array count] > 0) {
+            return YES;
+        }
+    }
+   
+    return NO;
 }
 
 #pragma mark - ToolBar Button Actions

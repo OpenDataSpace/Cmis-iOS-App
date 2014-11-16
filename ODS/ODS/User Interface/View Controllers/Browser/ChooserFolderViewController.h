@@ -28,8 +28,11 @@ extern NSString * const  kMoveTargetTypeFolder;
 @property (nonatomic, copy) NSString *repositoryID;
 @property (nonatomic, strong) id parentItem;
 
+@property (nonatomic, strong) CMISFolder *sourceFolder;
+@property (nonatomic, strong) NSArray *selectedItems;
+
 @property (nonatomic, assign) id <ChooserFolderDelegate> selectedDelegate;
 
 
-- (id)initWithAccountUUID:(NSString *)uuid;
+- (id)initWithAccountUUID:(NSString *)uuid sourceFolder:(CMISFolder*) srcFolder selectedItems:(NSArray*) selectedItems;
 @end

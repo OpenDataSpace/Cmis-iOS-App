@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -30,7 +30,7 @@
                     <constraint firstAttribute="trailing" secondItem="mEV-EZ-nvX" secondAttribute="trailing" constant="20" id="H1e-PQ-KJY"/>
                     <constraint firstItem="Try-V5-biF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="71" id="XwN-S5-y7R"/>
                     <constraint firstItem="mEV-EZ-nvX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="fok-Jl-MNS"/>
-                    <constraint firstItem="Try-V5-biF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="nTB-HZ-zuK"/>
+                    <constraint firstItem="Try-V5-biF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="nTB-HZ-zuK"/>
                     <constraint firstItem="mEV-EZ-nvX" firstAttribute="width" secondItem="Try-V5-biF" secondAttribute="width" id="o1g-9O-k3V"/>
                 </constraints>
             </tableViewCellContentView>

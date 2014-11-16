@@ -20,6 +20,28 @@
     // Do any additional setup after loading the view.
     [self.navigationItem setTitle:NSLocalizedString(@"about.view.title", @"ODS")];
     
+    if (!IS_IPAD) {
+//        UIScreen *mainScreen = [UIScreen mainScreen];
+//        [self.scrollView setContentSize:CGSizeMake(mainScreen.bounds.size.width, 430)];
+        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                          attribute:NSLayoutAttributeLeading
+                                                                          relatedBy:0
+                                                                             toItem:self.view
+                                                                          attribute:NSLayoutAttributeLeft
+                                                                         multiplier:1.0
+                                                                           constant:0];
+        [self.view addConstraint:leftConstraint];
+        
+        NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                           attribute:NSLayoutAttributeTrailing
+                                                                           relatedBy:0
+                                                                              toItem:self.view
+                                                                           attribute:NSLayoutAttributeRight
+                                                                          multiplier:1.0
+                                                                            constant:0];
+        [self.view addConstraint:rightConstraint];
+    }
+    
     NSString *versionLabel = [NSString stringWithFormat:@"Ver %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
     [self.buildTimeLabel setText:versionLabel];
     //set notification for update logo

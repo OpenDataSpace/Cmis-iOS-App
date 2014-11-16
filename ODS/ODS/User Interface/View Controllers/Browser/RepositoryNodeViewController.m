@@ -1128,7 +1128,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 
 - (void)showChooseMoveTarget
 {
-    ChooserFolderViewController *chooseFolder = [[ChooserFolderViewController alloc] initWithAccountUUID:self.selectedAccountUUID];
+    ChooserFolderViewController *chooseFolder = [[ChooserFolderViewController alloc] initWithAccountUUID:self.selectedAccountUUID sourceFolder:self.folder selectedItems:itemsToMove_];
     AccountInfo *accountInfo = [[AccountManager sharedManager] accountInfoForUUID:self.selectedAccountUUID];
     chooseFolder.viewTitle = [accountInfo vendor];
     chooseFolder.itemType = kMoveTargetTypeRepo;

@@ -12,6 +12,8 @@
 @property (nonatomic, weak) IBOutlet UILabel *buildTimeLabel;
 @property (nonatomic, weak) IBOutlet UIButton *ziaLogoButton;
 @property (nonatomic, weak) IBOutlet UIButton *smallZiaButton;
+@property (nonatomic, weak) IBOutlet UIScrollView   *scrollView;
+@property (nonatomic, weak) IBOutlet UIView *contentView;
 
 - (IBAction)buttonPressed:(id)sender;
 @end

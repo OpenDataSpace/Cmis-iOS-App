@@ -573,12 +573,15 @@
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EJB-EV-EQH">
                                 <rect key="frame" x="88" y="161" width="629" height="162"/>
                                 <subviews>
-                                    <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="DeJ-PP-86c" userLabel="aboutZiaText" colorLabel="IBBuiltInLabel-Red">
+                                    <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="DeJ-PP-86c" userLabel="aboutZiaText" colorLabel="IBBuiltInLabel-Red">
                                         <rect key="frame" x="20" y="19" width="589" height="85"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <accessibility key="accessibilityConfiguration">
                                             <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
                                         </accessibility>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="85" id="z26-Ku-WCM"/>
+                                        </constraints>
                                         <string key="text">Copyright (C) 2011-2012 Zia Consulting, Inc. 
 Copyright (C) 2011-2012  Alfresco, Inc.
 Copyright(C) 2013-2014 The Open DataSpace Project.</string>
