@@ -153,7 +153,7 @@ static NSString * const kPreviewModelIdentifier = @"PreviewModelIdentifier";
     [self.tableHeaders addObject:NSLocalizedString(@"metadata.group.header.general", @"General")];
     
     //name
-    CustomTableViewCell *cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+    CustomTableViewCell *cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
     [cell.textLabel setText:NSLocalizedString(@"cmis:name", @"Name")];
     [cell.detailTextLabel setText:_cmisObject.name];
     [basicGroup addObject:cell];
