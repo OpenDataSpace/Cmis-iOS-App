@@ -170,6 +170,8 @@ static NSString * const kPreviewModelIdentifier = @"PreviewModelIdentifier";
     if (_cmisObject.creationDate) {
         cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
         [cell.textLabel setText:NSLocalizedString(@"cmis:creationDate", @"creationDate")];
+        [cell.detailTextLabel setAdjustsFontSizeToFitWidth:YES];
+        [cell.detailTextLabel setMinimumScaleFactor:.5];
         [cell.detailTextLabel setText:formatDateTimeFromDate(_cmisObject.creationDate)];
         [basicGroup addObject:cell];
     }
@@ -186,6 +188,8 @@ static NSString * const kPreviewModelIdentifier = @"PreviewModelIdentifier";
     if (_cmisObject.lastModificationDate) {
         cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
         [cell.textLabel setText:NSLocalizedString(@"cmis:lastModificationDate", @"lastModificationDate")];
+        [cell.detailTextLabel setAdjustsFontSizeToFitWidth:YES];
+        [cell.detailTextLabel setMinimumScaleFactor:.5];
         [cell.detailTextLabel setText:formatDateTimeFromDate(_cmisObject.lastModificationDate)];
         [basicGroup addObject:cell];
     }
