@@ -18,6 +18,7 @@ NSInteger const kMoveCounterTag =  8;
 
 @interface MoveQueueProgressBar () {
     NSMutableArray *_movedItems;
+    NSInteger       _itemsTotal;
 }
 @property (nonatomic, assign) BOOL  isCancel;
 @property (nonatomic, strong) CMISRequest *currentRequest;
@@ -48,6 +49,7 @@ NSInteger const kMoveCounterTag =  8;
         self.isCancel = NO;
         _movedItems = [NSMutableArray array];
         _sourceFolderId = nil;
+        _itemsTotal = [itemsToMove count];
         [self loadMoveView];
     }
     
@@ -61,30 +63,35 @@ NSInteger const kMoveCounterTag =  8;
                                                    delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"cancelButton", @"Cancel")
                                           otherButtonTitles:nil];
-    alert.message = [NSString stringWithFormat: @"%@%@", alert.message, @"\n\n\n\n"];
+    //alert.message = [NSString stringWithFormat: @"%@%@", alert.message, @"\n\n\n\n"];
     self.progressAlert = alert;
+    
+    //create a view to contain the progress view and label
+    UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 270.0f, 40.0f)];
+    [self.progressAlert setValue:containerView forKey:@"accessoryView"];
 	
-	// create a progress bar and put it in the alert
-	UIProgressView *progress = [[UIProgressView alloc] initWithFrame:CGRectMake(30.0f, 80.0f, 225.0f, 90.0f)];
+	// create a progress bar and put it in the containerView
+	UIProgressView *progress = [[UIProgressView alloc] initWithFrame:CGRectMake(10.0f, 10.0f, 250.0f, 10.0f)];
     self.progressView = progress;
     [progress setProgressViewStyle:UIProgressViewStyleBar];
-	[self.progressAlert addSubview:self.progressView];
+	[containerView addSubview:self.progressView];
 	
-	// create a label, and add that to the alert, too
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30.0f, 90.0f, 225.0f, 40.0f)];
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor whiteColor];
+	// create a label, and add that to the containerView, too
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 20.0f, 270.0f, 20.0f)];
+    label.textColor = [UIColor grayColor];
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:13.0f];
     label.text = @"x files left";
     label.tag = kMoveCounterTag;
-    [self.progressAlert addSubview:label];
+    [containerView addSubview:label];
+    
+    self.containerView = containerView;
 
 }
 
 - (void) updateProgressView
 {
-    UILabel *label = (UILabel *)[self.progressAlert viewWithTag:kMoveCounterTag];
+    UILabel *label = (UILabel *)[self.containerView viewWithTag:kMoveCounterTag];
     if([self.itemsToMove count] == 1)
     {
         label.text = [NSString stringWithFormat:NSLocalizedString(@"moveprogress.file-left", @"1 item left"),
@@ -95,6 +102,8 @@ NSInteger const kMoveCounterTag =  8;
         label.text = [NSString stringWithFormat:NSLocalizedString(@"moveprogress.files-left", @"x items left"),
                       [self.itemsToMove count]];
     }
+    float progress = (float)[_movedItems count]/_itemsTotal;
+    [self.progressView setProgress:progress animated:YES];
 }
 
 - (void)startMoving {
@@ -113,7 +122,12 @@ NSInteger const kMoveCounterTag =  8;
         self.currentRequest = [item moveFromFolderWithId:_sourceFolderId toFolderWithId:self.targetFolder.identifier completionBlock:^(CMISObject* item, NSError *error) {
             if (error != nil) {
                 ODSLogError(@"move folder item error:%@", error);
+                [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
                 [CMISUtility handleCMISRequestError:error];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.delegate moveQueue:self completedMoves:_movedItems];
+                });
+                return ;
             }else {
                 [self saveMovedItems];
             }

@@ -124,6 +124,11 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
     [self startHUD];
     __block CMISSessionParameters *params = getSessionParametersWithAccountInfo(acctInfo, nil);
     
+    NSString *lastAcctUUID = [IpadSupport getCurrentDetailViewControllerAccountUUID];
+    if (IS_IPAD && (lastAcctUUID && ![lastAcctUUID isEqualToCaseInsensitiveString:acctInfo.uuid])) {
+        [IpadSupport clearDetailController];
+    }
+    
     [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
         [self stopHUD];
         if (error != nil) {

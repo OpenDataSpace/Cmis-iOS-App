@@ -132,10 +132,6 @@
                             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
                             [CMISUtility handleCMISRequestError:error];
                         }else {
-                            if (IS_IPAD)
-                            {
-                                [IpadSupport clearDetailController];
-                            }
                             RepositoryNodeViewController *repoNodeController = [[RepositoryNodeViewController alloc] initWithStyle:UITableViewStylePlain];
                             [repoNodeController setFolder:rootFolder];
                             [repoNodeController setPagedFolders:results];

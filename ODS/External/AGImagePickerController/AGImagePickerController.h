@@ -83,6 +83,8 @@ shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerController
 
 @property (nonatomic, assign) BOOL userIsDenied;
 
+@property (nonatomic, copy) NSString *selectionMediaType;
+
 + (ALAssetsLibrary *)defaultAssetsLibrary;
 
 + (AGImagePickerController *)sharedInstance:(id)delegate;

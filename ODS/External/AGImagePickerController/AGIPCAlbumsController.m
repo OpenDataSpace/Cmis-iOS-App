@@ -165,7 +165,12 @@
     }
     
     ALAssetsGroup *group = (self.assetsGroups)[indexPath.row];
-    [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+    if ([[self.imagePickerController selectionMediaType] isEqualToCaseInsensitiveString:@"photo"]) {
+        [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+    }else {
+        [group setAssetsFilter:[ALAssetsFilter allVideos]];
+    }
+    
     NSUInteger numberOfAssets = group.numberOfAssets;
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@", [group valueForProperty:ALAssetsGroupPropertyName]];

@@ -55,8 +55,11 @@
                                        fromFolder:sourceFolderId
                                          toFolder:targetFolderId
                                   completionBlock:^(CMISObjectData *objectData, NSError *error) {
-                                      
-                                      [self.session.objectConverter convertObject:objectData completionBlock:completionBlock];
+                                      if (objectData == nil) {
+                                          completionBlock(nil, error);
+                                      }else {
+                                          [self.session.objectConverter convertObject:objectData completionBlock:completionBlock];
+                                      }
                                   }];
 }
 

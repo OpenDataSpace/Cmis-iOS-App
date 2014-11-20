@@ -201,10 +201,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
         }else {
-            if (IS_IPAD)
-            {
-                [IpadSupport clearDetailController];
-            }
             RepositoryNodeViewController *repoNodeController = [[RepositoryNodeViewController alloc] initWithStyle:UITableViewStylePlain];
             [repoNodeController setFolder:folder];
             [repoNodeController setPagedFolders:results];
@@ -495,7 +491,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
                                     delegate:self
                                     cancelButtonTitle:nil
                                     destructiveButtonTitle:nil
-                                    otherButtonTitles: NSLocalizedString(@"add.actionsheet.choose-photo", @"Choose Photo from Library"), NSLocalizedString(@"add.actionsheet.upload-document", @"Upload Document"), nil];
+                                    otherButtonTitles: NSLocalizedString(@"add.actionsheet.choose-photo", @"Choose Photo from Library"), NSLocalizedString(@"add.actionsheet.choose-video", @"Choose Video from Library"),NSLocalizedString(@"add.actionsheet.upload-document", @"Upload Document"), nil];
             
             [sheet setCancelButtonIndex:[sheet addButtonWithTitle:NSLocalizedString(@"add.actionsheet.cancel", @"Cancel")]];
             if (IS_IPAD)
@@ -534,78 +530,11 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 {
     if ([buttonLabel isEqualToString:NSLocalizedString(@"add.actionsheet.choose-photo", @"Choose Photo from Library")])
     {
-        __block RepositoryNodeViewController *blockSelf = self;
-        
-        AGImagePickerController *imagePickerController = [[AGImagePickerController alloc] initWithFailureBlock:^(NSError *error)
-        {
-          ODSLogDebug(@"Fail. Error: %@", error);
-          
-          if (error == nil)
-          {
-              ODSLogDebug(@"User has cancelled.");
-              [blockSelf dismissModalViewControllerHelper];
-          }
-          else
-          {
-              // We need to wait for the view controller to appear first.
-              double delayInSeconds = 0.5;
-              dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-              dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                  [blockSelf dismissModalViewControllerHelper:NO];
-                  //Fallback in the UIIMagePickerController if the AssetsLibrary is not accessible
-                  UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-                  [picker setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-                  [picker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-                  [picker setMediaTypes:[UIImagePickerController availableMediaTypesForSourceType:picker.sourceType]];
-                  [picker setDelegate:blockSelf];
-                  
-                  [blockSelf presentModalViewControllerHelper:picker animated:NO];
-                  
-              });
-          }
-          
-        } andSuccessBlock:^(NSArray *info) {
-          [blockSelf startHUD];
-          ODSLogDebug(@"User finished picking %d library assets", info.count);
-          //It is always NO because we will show the UploadForm next
-          //Only affects iPhone, in the iPad the popover dismiss is always animated
-          [blockSelf dismissModalViewControllerHelper:NO];
-          
-          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-              if([info count] == 1)
-              {
-                  ALAsset *asset = [info lastObject];
-                  UploadInfo *uploadInfo = [blockSelf uploadInfoFromAsset:asset];
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                      [blockSelf loadUploadSingleItemForm:uploadInfo];
-                      [blockSelf stopHUD];
-                  });
-              } 
-              else if([info count] > 1)
-              {
-                  NSMutableArray *uploadItems = [NSMutableArray arrayWithCapacity:[info count]];
-                  for (ALAsset *asset in info)
-                  {
-                      @autoreleasepool
-                      {
-                          UploadInfo *uploadInfo = [blockSelf uploadInfoFromAsset:asset];
-                          [uploadItems addObject:uploadInfo];
-                      }
-                  }
-                  
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                      [blockSelf loadUploadMultiItemsForm:uploadItems andUploadType:UploadFormTypeLibrary];
-                      [blockSelf stopHUD];
-                  });
-              }
-          });
-          
-        }];
-        
-        [imagePickerController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-        dispatch_async(dispatch_get_main_queue(), ^ {
-            [self presentModalViewControllerHelper:imagePickerController];
-        });
+        [self showChooseMediaWithType:@"photo"];
+    }
+    else if ([buttonLabel isEqualToString:NSLocalizedString(@"add.actionsheet.choose-video", @"Choose Video from Library")])
+    {
+        [self showChooseMediaWithType:@"video"];
     }
     else if([buttonLabel isEqualToString:NSLocalizedString(@"add.actionsheet.upload-document", @"Upload Document from Saved Docs")]) 
     {
@@ -1142,6 +1071,82 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     [IpadSupport pushDetailController:metadataViewController withNavigation:self.navigationController andSender:self];
 }
 
+- (void) showChooseMediaWithType:(NSString*) type {
+    __block RepositoryNodeViewController *blockSelf = self;
+    
+    AGImagePickerController *imagePickerController = [[AGImagePickerController alloc] initWithFailureBlock:^(NSError *error)
+                                                      {
+                                                          ODSLogDebug(@"Fail. Error: %@", error);
+                                                          
+                                                          if (error == nil)
+                                                          {
+                                                              ODSLogDebug(@"User has cancelled.");
+                                                              [blockSelf dismissModalViewControllerHelper];
+                                                          }
+                                                          else
+                                                          {
+                                                              // We need to wait for the view controller to appear first.
+                                                              double delayInSeconds = 0.5;
+                                                              dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                                                              dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                                  [blockSelf dismissModalViewControllerHelper:NO];
+                                                                  //Fallback in the UIIMagePickerController if the AssetsLibrary is not accessible
+                                                                  UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                                                                  [picker setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+                                                                  [picker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+                                                                  [picker setMediaTypes:[UIImagePickerController availableMediaTypesForSourceType:picker.sourceType]];
+                                                                  [picker setDelegate:blockSelf];
+                                                                  
+                                                                  [blockSelf presentModalViewControllerHelper:picker animated:NO];
+                                                                  
+                                                              });
+                                                          }
+                                                          
+                                                      } andSuccessBlock:^(NSArray *info) {
+                                                          [blockSelf startHUD];
+                                                          ODSLogDebug(@"User finished picking %d library assets", info.count);
+                                                          //It is always NO because we will show the UploadForm next
+                                                          //Only affects iPhone, in the iPad the popover dismiss is always animated
+                                                          [blockSelf dismissModalViewControllerHelper:NO];
+                                                          
+                                                          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                              if([info count] == 1)
+                                                              {
+                                                                  ALAsset *asset = [info lastObject];
+                                                                  UploadInfo *uploadInfo = [blockSelf uploadInfoFromAsset:asset];
+                                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                                      [blockSelf loadUploadSingleItemForm:uploadInfo];
+                                                                      [blockSelf stopHUD];
+                                                                  });
+                                                              } 
+                                                              else if([info count] > 1)
+                                                              {
+                                                                  NSMutableArray *uploadItems = [NSMutableArray arrayWithCapacity:[info count]];
+                                                                  for (ALAsset *asset in info)
+                                                                  {
+                                                                      @autoreleasepool
+                                                                      {
+                                                                          UploadInfo *uploadInfo = [blockSelf uploadInfoFromAsset:asset];
+                                                                          [uploadItems addObject:uploadInfo];
+                                                                      }
+                                                                  }
+                                                                  
+                                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                                      [blockSelf loadUploadMultiItemsForm:uploadItems andUploadType:UploadFormTypeLibrary];
+                                                                      [blockSelf stopHUD];
+                                                                  });
+                                                              }
+                                                          });
+                                                          
+                                                      }];
+    
+    [imagePickerController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    [imagePickerController setSelectionMediaType:type];
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        [self presentModalViewControllerHelper:imagePickerController];
+    });
+}
+
 #pragma mark - UIAlertView Delegate 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -1244,6 +1249,11 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     
     [self reloadDataSource];
     
+    [self setEditing:NO];
+}
+
+- (void)moveQueueWasFailed:(MoveQueueProgressBar *)moveQueueProgressBar error:(NSError*) error {
+    [self reloadDataSource];
     [self setEditing:NO];
 }
 

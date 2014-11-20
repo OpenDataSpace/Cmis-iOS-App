@@ -82,7 +82,11 @@
         if (_assetsGroup != theAssetsGroup)
         {
             _assetsGroup = theAssetsGroup;
-            [_assetsGroup setAssetsFilter:[ALAssetsFilter allPhotos]];
+            if ([[self.imagePickerController selectionMediaType] isEqualToCaseInsensitiveString:@"photo"]) {
+                [_assetsGroup setAssetsFilter:[ALAssetsFilter allPhotos]];
+            }else {
+                [_assetsGroup setAssetsFilter:[ALAssetsFilter allVideos]];
+            }
 
             // modified by springox(20140510)
             //[self reloadData];

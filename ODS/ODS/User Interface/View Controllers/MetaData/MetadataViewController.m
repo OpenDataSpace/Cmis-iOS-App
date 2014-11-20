@@ -15,6 +15,7 @@
 
 #import "CMISRenditionData.h"
 #import "CMISRendition.h"
+#import "CMISDocument.h"
 
 #define PREVIEW_CELL_HEIGHT        200.0
 
@@ -157,6 +158,15 @@ static NSString * const kPreviewModelIdentifier = @"PreviewModelIdentifier";
     [cell.textLabel setText:NSLocalizedString(@"cmis:name", @"Name")];
     [cell.detailTextLabel setText:_cmisObject.name];
     [basicGroup addObject:cell];
+    
+    //size of file
+    if (!isCMISFolder(_cmisObject)) {
+        CMISDocument *doc = (CMISDocument*) _cmisObject;
+        cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
+        [cell.textLabel setText:NSLocalizedString(@"cmis:contentStreamLength", @"File Size")];
+        [cell.detailTextLabel setText:[NSByteCountFormatter stringFromByteCount:doc.contentStreamLength countStyle:NSByteCountFormatterCountStyleFile]];
+        [basicGroup addObject:cell];
+    }
     
     //create by
     if (_cmisObject.createdBy) {

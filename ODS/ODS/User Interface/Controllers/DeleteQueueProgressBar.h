@@ -34,6 +34,7 @@
 
 @interface DeleteQueueProgressBar : NSObject <UIAlertViewDelegate>
 
+@property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) NSMutableArray *itemsToDelete;
 @property (nonatomic, strong) NSMutableArray *deletedItems;
 @property (nonatomic, strong) UIAlertView *progressAlert;

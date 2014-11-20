@@ -51,14 +51,23 @@
                                                    delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"cancelButton", @"Cancel")
                                           otherButtonTitles:nil];
-    alert.message = [NSString stringWithFormat: @"%@%@", alert.message, @"\n\n\n\n"];
+    //alert.message = [NSString stringWithFormat: @"%@%@", alert.message, @"\n\n\n\n"];
     self.progressAlert = alert;
     
+    //create a view to contain the ActivityIndicatorView
+    UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 270.0f, 40.0f)];
+    //[containerView setBackgroundColor:[UIColor blackColor]];
+    [self.progressAlert setValue:containerView forKey:@"accessoryView"];
     
-    // create a progress bar and put it in the alert
+    // create a progress bar and put it in the containerView
     UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [progress setFrame:CGRectMake(123, 10, 20, 20)];
+    [progress setHidden:NO];
+    [progress setHidesWhenStopped:NO];
+    [progress startAnimating];
+    
     self.progressView = progress;
-    [self.progressAlert addSubview:self.progressView];
+    [containerView addSubview:self.progressView];
 }
 
 #pragma mark - public methods
@@ -69,6 +78,7 @@
         if (error) {  //TODO:add tips
             ODSLogError(@"%@", error);
             [CMISUtility handleCMISRequestError:error];
+            [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
         }else {
             if (self.delegate && [self.delegate respondsToSelector:@selector(renameQueue:completedRename:)])
             {

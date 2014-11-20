@@ -249,6 +249,7 @@
 "add.actionsheet.cancel" = "Cancel";
 
 "add.actionsheet.choose-photo" = "Choose Photo from Library";
+"add.actionsheet.choose-video" = "Choose Video from Library";
 "add.actionsheet.upload-document" = "Upload Document";
 
 /* Create Folder View */
@@ -325,6 +326,7 @@
 "cm:author" = "Author";
 "cmis:versionLabel" = "Version Label";
 "cmis:thumbnail" = "PREVIEW";
+"cmis:contentStreamLength" = "File Size";
 
 /* Button Captions */
 "cancelButton" = "Cancel";

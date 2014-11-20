@@ -122,23 +122,35 @@
 
 /* Handle CMIS request error message */
 + (void) handleCMISRequestError:(NSError*) theError {
-    dispatch_main_sync_safe(^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([theError.domain isEqualToString:kCMISErrorDomainName])
         {
-//            if (theError.code == kCMISErrorCodePermissionDenied)
-//            {
-//                NSString *authenticationFailureMessageForAccount = NSLocalizedString(@"authenticationFailureMessageForAccount", @"Please check your username and password in the iPhone settings for ODS");
-//                displayErrorMessageWithTitle(authenticationFailureMessageForAccount, NSLocalizedString(@"authenticationFailureTitle", @"Authentication Failure Title Text 'Authentication Failure'"));
-//            }else
-            {
-                displayErrorMessage([theError localizedFailureReason]);
-            }
+            ODSLogDebug(@"error message:%@", [theError localizedFailureReason]);
+            displayErrorMessage([theError localizedFailureReason]);
         }
         else
         {
             ODSLogDebug(@"%@", theError);
         }
     });
+//    dispatch_main_sync_safe(^{
+//        if ([theError.domain isEqualToString:kCMISErrorDomainName])
+//        {
+////            if (theError.code == kCMISErrorCodePermissionDenied)
+////            {
+////                NSString *authenticationFailureMessageForAccount = NSLocalizedString(@"authenticationFailureMessageForAccount", @"Please check your username and password in the iPhone settings for ODS");
+////                displayErrorMessageWithTitle(authenticationFailureMessageForAccount, NSLocalizedString(@"authenticationFailureTitle", @"Authentication Failure Title Text 'Authentication Failure'"));
+////            }else
+//            {
+//                ODSLogDebug(@"error message:%@", [theError localizedFailureReason]);
+//                displayErrorMessage([theError localizedFailureReason]);
+//            }
+//        }
+//        else
+//        {
+//            ODSLogDebug(@"%@", theError);
+//        }
+//    });
 }
 
 @end

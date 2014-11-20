@@ -324,11 +324,16 @@ NSInteger const kGetCommentsCountTag = 6;
     // For the ipad toolbar we don't have the flexible space as the first element of the toolbar items
 	NSInteger actionButtonIndex = IS_IPAD ? 0 : 1;
     self.actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(performAction:)];
+    
     self.actionSheetSenderControl = self.actionButton;
     [self buildActionMenu];
     //[updatedItemsArray insertObject:[self iconSpacer] atIndex:actionButtonIndex];
     //spacersCount++;
     [updatedItemsArray insertObject:self.actionButton atIndex:actionButtonIndex];
+    if (IS_IPAD) {
+        UIBarButtonItem *clearButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(clearPreviewContent)];
+        [updatedItemsArray addObject:clearButton];
+    }
     
     [[self documentToolbar] setItems:updatedItemsArray];
     
@@ -514,6 +519,9 @@ NSInteger const kGetCommentsCountTag = 6;
 }
 
 #pragma mark - Action Selectors
+- (void)clearPreviewContent {
+    [IpadSupport clearDetailController];
+}
 
 - (void)emailDocumentAsAttachment
 {

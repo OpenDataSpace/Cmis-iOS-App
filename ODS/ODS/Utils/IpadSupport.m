@@ -13,6 +13,8 @@
 #import "ModalViewControllerProtocol.h"
 #import "PlaceholderViewController.h"
 #import "NSNotificationCenter+CustomNotification.h"
+#import "DocumentViewController.h"
+#import "MetadataViewController.h"
 
 @implementation IpadSupport
 
@@ -24,7 +26,7 @@ DetailNavigationController *detailController;
     {
         if (detailController.fullScreenModalController != nil)
         {
-            //[detailController performCloseAction:nil];
+            [detailController performCloseAction:nil];
         }
         else
         {
@@ -122,16 +124,32 @@ DetailNavigationController *detailController;
     NSString *objectID = nil;
     id viewController = [detailController.childViewControllers lastObject];
     
-//    if ([viewController isKindOfClass:[DocumentViewController class]])
-//    {
-//        objectID = [((DocumentViewController *)viewController) cmisObjectId];
-//    }
-//    else if ([viewController isKindOfClass:[MetaDataTableViewController class]])
-//    {
-//        objectID = [((MetaDataTableViewController *)viewController) cmisObjectId];
-//    }
+    if ([viewController isKindOfClass:[DocumentViewController class]])
+    {
+        objectID = [((DocumentViewController *)viewController) cmisObjectId];
+    }
+    else if ([viewController isKindOfClass:[MetadataViewController class]])
+    {
+        objectID = [[((MetadataViewController *)viewController) cmisObject] identifier];
+    }
     
     return objectID;
+}
+
++ (NSString *)getCurrentDetailViewControllerAccountUUID {
+    NSString *acctUUID = nil;
+    id viewController = [detailController.childViewControllers lastObject];
+    
+    if ([viewController isKindOfClass:[DocumentViewController class]])
+    {
+        acctUUID = [((DocumentViewController *)viewController) selectedAccountUUID];
+    }
+    else if ([viewController isKindOfClass:[MetadataViewController class]])
+    {
+        acctUUID = [((MetadataViewController *)viewController) selectedAccountUUID];
+    }
+    
+    return acctUUID;
 }
 
 + (NSURL *)getCurrentDetailViewControllerFileURL

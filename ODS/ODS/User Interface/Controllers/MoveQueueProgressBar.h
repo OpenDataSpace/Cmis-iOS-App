@@ -23,7 +23,8 @@
 @interface MoveQueueProgressBar : NSObject <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *itemsToMove;
-@property (nonatomic, strong) UIAlertView *progressAlert;
+@property (nonatomic, strong) UIAlertView    *progressAlert;
+@property (nonatomic, strong) UIView         *containerView;
 @property (nonatomic, assign) id<MoveQueueDelegate> delegate;
 @property (nonatomic, copy) NSString *progressTitle;
 @property (nonatomic, strong) UIProgressView *progressView;

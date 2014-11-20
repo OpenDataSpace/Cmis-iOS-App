@@ -28,7 +28,9 @@
 
 NSInteger const kDeleteCounterTag =  6;
 
-@interface DeleteQueueProgressBar ()
+@interface DeleteQueueProgressBar (){
+    NSInteger _itemsTotal;
+}
 
 @property (nonatomic, assign) BOOL  isCancel;
 @property (nonatomic, strong) CMISRequest *currentRequest;
@@ -66,6 +68,7 @@ NSInteger const kDeleteCounterTag =  6;
         self.delegate = del;
         self.progressTitle = message;
         _deletedItems = [NSMutableArray array];
+        _itemsTotal = [itemsToDelete count];
         self.isCancel = NO;
         self.currentRequest = nil;
         [self loadDeleteView];
@@ -83,29 +86,34 @@ NSInteger const kDeleteCounterTag =  6;
                                                    delegate:self
                                           cancelButtonTitle:NSLocalizedString(@"cancelButton", @"Cancel")
                                           otherButtonTitles:nil];
-    alert.message = [NSString stringWithFormat: @"%@%@", alert.message, @"\n\n\n\n"];
+    //alert.message = [NSString stringWithFormat: @"%@%@", alert.message, @"\n\n\n\n"];
     self.progressAlert = alert;
-	
-	// create a progress bar and put it in the alert
-	UIProgressView *progress = [[UIProgressView alloc] initWithFrame:CGRectMake(30.0f, 80.0f, 225.0f, 90.0f)];
+    
+    //create a view to contain the progress view and label
+    UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 270.0f, 40.0f)];
+    [self.progressAlert setValue:containerView forKey:@"accessoryView"];
+    
+    // create a progress bar and put it in the containerView
+    UIProgressView *progress = [[UIProgressView alloc] initWithFrame:CGRectMake(10.0f, 10.0f, 250.0f, 10.0f)];
     self.progressView = progress;
     [progress setProgressViewStyle:UIProgressViewStyleBar];
-	[self.progressAlert addSubview:self.progressView];
-	
-	// create a label, and add that to the alert, too
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30.0f, 90.0f, 225.0f, 40.0f)];
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor whiteColor];
+    [containerView addSubview:self.progressView];
+    
+    // create a label, and add that to the containerView, too
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 20.0f, 270.0f, 20.0f)];
+    label.textColor = [UIColor grayColor];
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:13.0f];
     label.text = @"x files left";
     label.tag = kDeleteCounterTag;
-    [self.progressAlert addSubview:label];
+    [containerView addSubview:label];
+    
+    self.containerView = containerView;
 }
 
 - (void) updateProgressView
 {
-    UILabel *label = (UILabel *)[self.progressAlert viewWithTag:kDeleteCounterTag];
+    UILabel *label = (UILabel *)[self.containerView viewWithTag:kDeleteCounterTag];
     if([self.itemsToDelete count] == 1)
     {
         label.text = [NSString stringWithFormat:NSLocalizedString(@"deleteprogress.file-left", @"1 item left"), 
@@ -116,6 +124,9 @@ NSInteger const kDeleteCounterTag =  6;
         label.text = [NSString stringWithFormat:NSLocalizedString(@"deleteprogress.files-left", @"x items left"), 
                       [self.itemsToDelete count]];
     }
+
+    float progress = (float)[_deletedItems count]/_itemsTotal;
+    [self.progressView setProgress:progress animated:YES];
 }
 
 #pragma mark - public methods
@@ -139,6 +150,11 @@ NSInteger const kDeleteCounterTag =  6;
                 if (error != nil) {
                     ODSLogError(@"delete folder item error:%@", error);
                     [CMISUtility handleCMISRequestError:error];
+                    [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.delegate deleteQueue:self completedDeletes:_deletedItems];
+                    });
+                    return ;
                 }else {
                     [self saveDeletedItems];
                 }
