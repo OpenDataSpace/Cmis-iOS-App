@@ -77,8 +77,10 @@
         [_progressAlert dismissWithClickedButtonIndex:1 animated:NO];
         if (error) {  //TODO:add tips
             ODSLogError(@"%@", error);
-            [CMISUtility handleCMISRequestError:error];
-            [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
+                [CMISUtility handleCMISRequestError:error];
+            });
         }else {
             if (self.delegate && [self.delegate respondsToSelector:@selector(renameQueue:completedRename:)])
             {

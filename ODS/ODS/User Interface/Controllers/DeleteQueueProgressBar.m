@@ -149,9 +149,9 @@ NSInteger const kDeleteCounterTag =  6;
             self.currentRequest = [folder deleteTreeWithDeleteAllVersions:YES unfileObjects:CMISDelete continueOnFailure:NO completionBlock:^(NSArray *failedObjects, NSError *error) {
                 if (error != nil) {
                     ODSLogError(@"delete folder item error:%@", error);
-                    [CMISUtility handleCMISRequestError:error];
-                    [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
+                        [CMISUtility handleCMISRequestError:error];                        
                         [self.delegate deleteQueue:self completedDeletes:_deletedItems];
                     });
                     return ;

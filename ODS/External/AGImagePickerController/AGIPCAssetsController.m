@@ -129,8 +129,8 @@
     if (self)
     {
         _assets = [[NSMutableArray alloc] init];
-        self.assetsGroup = assetsGroup;
         self.imagePickerController = imagePickerController;
+        self.assetsGroup = assetsGroup;
         self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Loading", nil, [NSBundle mainBundle], @"Loading...", nil);
         self.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
         

@@ -122,9 +122,9 @@ NSInteger const kMoveCounterTag =  8;
         self.currentRequest = [item moveFromFolderWithId:_sourceFolderId toFolderWithId:self.targetFolder.identifier completionBlock:^(CMISObject* item, NSError *error) {
             if (error != nil) {
                 ODSLogError(@"move folder item error:%@", error);
-                [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
-                [CMISUtility handleCMISRequestError:error];
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    [_progressAlert dismissWithClickedButtonIndex:_progressAlert.cancelButtonIndex animated:NO];
+                    [CMISUtility handleCMISRequestError:error];
                     [self.delegate moveQueue:self completedMoves:_movedItems];
                 });
                 return ;
