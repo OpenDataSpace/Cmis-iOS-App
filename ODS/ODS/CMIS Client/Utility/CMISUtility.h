@@ -32,4 +32,5 @@
 
 /* Handle CMIS request error message */
 + (void) handleCMISRequestError:(NSError*) theError;
++ (void) handleCMISRequestError:(NSError*) theError isAuthentication:(BOOL) isAuthentication;
 @end

@@ -24,9 +24,13 @@ NSInteger const kDismissFailedUploadPrompt = 3;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.navigationItem setTitle:NSLocalizedString(@"manage.uploads.view.title", @"Uploads")];
-    [self createUploadCells];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadQueueChanged:) name:kNotificationUploadQueueChanged object:nil];
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self createUploadCells];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -37,7 +41,12 @@ NSInteger const kDismissFailedUploadPrompt = 3;
 #pragma mark -
 #pragma mark UITableView Delegate & Datasource
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[[UploadsManager sharedManager] allUploads] count];
+    if (self.tableSections) {
+        NSArray *uploads = [self.tableSections objectAtIndex:section];
+        return [uploads count];
+    }
+    return 0;
+    //return [[[UploadsManager sharedManager] allUploads] count];
 }
 
 - (UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

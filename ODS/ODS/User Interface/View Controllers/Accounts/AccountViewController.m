@@ -14,6 +14,7 @@
 #import "AccountManager.h"
 
 #import "CMISSession.h"
+#import "CMISErrors.h"
 
 @interface AccountViewController ()
 @property (nonatomic, strong) NSMutableArray *fieldArray;
@@ -307,17 +308,19 @@
     //try to connect server
     __block CMISSessionParameters *params = getSessionParametersWithAccountInfo(self.acctInfo, nil);
     [self startHUD];
-    [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
-        [self stopHUD];
-        if (error != nil) {
-            ODSLogError(@"%@", error);
-            [CMISUtility handleCMISRequestError:error];
-        }else {
-            [[AccountManager sharedManager] saveAccountInfo:self.acctInfo];
-            dispatch_main_sync_safe(^{
-                [self dismissViewcontroller];
-            });
-        }
+    [CMISSession connectWithSessionParameters:params completionBlock:^(CMISSession *session, NSError *error) {
+        [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
+            [self stopHUD];
+            if (error != nil) {
+                ODSLogError(@"%@", error);
+                [CMISUtility handleCMISRequestError:error isAuthentication:YES];
+            }else {
+                [[AccountManager sharedManager] saveAccountInfo:self.acctInfo];
+                dispatch_main_sync_safe(^{
+                    [self dismissViewcontroller];
+                });
+            }
+        }];        
     }];
 }
 

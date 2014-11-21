@@ -122,11 +122,23 @@
 
 /* Handle CMIS request error message */
 + (void) handleCMISRequestError:(NSError*) theError {
+    [CMISUtility handleCMISRequestError:theError isAuthentication:NO];
+}
+
++ (void) handleCMISRequestError:(NSError*) theError  isAuthentication:(BOOL) isAuthentication{
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([theError.domain isEqualToString:kCMISErrorDomainName])
         {
             ODSLogDebug(@"error message:%@", [theError localizedFailureReason]);
-            displayErrorMessage([theError localizedFailureReason]);
+            if (isAuthentication) {
+                if (theError.code == kCMISErrorCodePermissionDenied) {
+                    displayErrorMessageWithTitle(NSLocalizedString(@"authenticationFailureMessageForAccount", @""),NSLocalizedString(@"authenticationFailureTitle", @"Authentication Failure Title Text 'Authentication Failure'"));
+                }else {
+                    displayErrorMessage([theError localizedFailureReason]);
+                }
+            }else {
+                displayErrorMessage([theError localizedFailureReason]);
+            }
         }
         else
         {
