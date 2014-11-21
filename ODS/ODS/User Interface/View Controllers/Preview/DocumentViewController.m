@@ -521,6 +521,7 @@ NSInteger const kGetCommentsCountTag = 6;
 #pragma mark - Action Selectors
 - (void)clearPreviewContent {
     [IpadSupport clearDetailController];
+    [IpadSupport showMasterPopover];
 }
 
 - (void)emailDocumentAsAttachment

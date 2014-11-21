@@ -177,7 +177,7 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
                 [self previewItem:fileObj];
             }
             
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            //[tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
     }else if(![tableView isEditing]) {  //don't load more items when editing
         [self loadMoreItems];

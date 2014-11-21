@@ -150,6 +150,10 @@ static CGFloat masterViewControllerWidth = 320.0;
 
 #pragma mark - Split view
 
+- (void)splitViewController:(UISplitViewController *)svc willChangeToDisplayMode:(UISplitViewControllerDisplayMode)displayMode {
+    NSLog(@"willChangeToDisplayMode");
+}
+
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
 {
     barButtonItem.title = NSLocalizedString(@"popover.button.title", @"ODS");
@@ -265,9 +269,13 @@ static CGFloat masterViewControllerWidth = 320.0;
 - (void)showMasterPopoverController
 {
     @try {
-        if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation) && self.masterPopoverController && self.masterPopoverBarButton)
-        {
-            [self.masterPopoverBarButton.target performSelector:self.masterPopoverBarButton.action];
+//        if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation) && self.splitViewController.popoverPresentationController && self.masterPopoverBarButton)
+//        {
+//            [self.masterPopoverBarButton.target performSelector:self.masterPopoverBarButton.action];
+//        }
+        [self expandDetailView:NO animated:YES];
+        if (self.detailViewController && IS_IPAD) {
+            [self.detailViewController.navigationItem setLeftBarButtonItem:nil];
         }
     }
     @catch (NSException *exception) {
