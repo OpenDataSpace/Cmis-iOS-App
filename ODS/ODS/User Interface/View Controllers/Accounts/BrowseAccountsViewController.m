@@ -22,7 +22,6 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
 @interface BrowseAccountsViewController () {
     NSArray     *activeAccounts;
 }
-
 @end
 
 @implementation BrowseAccountsViewController
@@ -120,11 +119,8 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
 
 #pragma mark -
 #pragma mark Load Repositories
-- (void) loadRepositoriesWithAccount:(AccountInfo*) acctInfo {
-    [self loadRepositoriesWithAccount:acctInfo isReAuthentication:NO];
-}
 
-- (void) loadRepositoriesWithAccount:(AccountInfo*) acctInfo isReAuthentication:(BOOL) isReAuthentication {
+- (void) loadRepositoriesWithAccount:(AccountInfo*) acctInfo {
     [self startHUD];
     __block CMISSessionParameters *params = getSessionParametersWithAccountInfo(acctInfo, nil);
     
@@ -133,45 +129,24 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
         [IpadSupport clearDetailController];
     }
     
-    if (isReAuthentication) {  //force to do authentication
-        [CMISSession connectWithSessionParameters:params completionBlock:^(CMISSession *session, NSError *error) {
-            [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
-                [self stopHUD];
-                if (error != nil) {
-                    ODSLogError(@"%@", error);
-                    [CMISUtility handleCMISRequestError:error isAuthentication:isReAuthentication];
-                }else {
-                    RepositoriesViewController *repositoryController = [[RepositoriesViewController alloc] initWithStyle:UITableViewStylePlain];
-                    [repositoryController setSelectedAccountUUID:[acctInfo uuid]];
-                    [repositoryController setViewTitle:[acctInfo vendor]];
-                    [repositoryController setRepositories:[CMISUtility filterRepositories:repos]];
-                    [repositoryController setSessionParameters:params];
-                    //set account uuid for logo manager
-                    [[LogoManager shareManager] setCurrentActiveAccount:[acctInfo uuid]];
-                    [[LogoManager shareManager] setLogoInfo:repos accountUUID:acctInfo.uuid];
-                    [self.navigationController pushViewController:repositoryController animated:YES];
-                }
-            }];
-        }];
-    }else {
-        [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
-            [self stopHUD];
-            if (error != nil) {
-                ODSLogError(@"%@", error);
-                [CMISUtility handleCMISRequestError:error isAuthentication:YES];
-            }else {
-                RepositoriesViewController *repositoryController = [[RepositoriesViewController alloc] initWithStyle:UITableViewStylePlain];
-                [repositoryController setSelectedAccountUUID:[acctInfo uuid]];
-                [repositoryController setViewTitle:[acctInfo vendor]];
-                [repositoryController setRepositories:[CMISUtility filterRepositories:repos]];
-                [repositoryController setSessionParameters:params];
-                //set account uuid for logo manager
-                [[LogoManager shareManager] setCurrentActiveAccount:[acctInfo uuid]];
-                [[LogoManager shareManager] setLogoInfo:repos accountUUID:acctInfo.uuid];
-                [self.navigationController pushViewController:repositoryController animated:YES];
-            }
-        }];
-    }
+    [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
+        [self stopHUD];
+        if (error != nil) {
+            ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error isAuthentication:YES];
+        }else {
+            RepositoriesViewController *repositoryController = [[RepositoriesViewController alloc] initWithStyle:UITableViewStylePlain];
+            [repositoryController setSelectedAccountUUID:[acctInfo uuid]];
+            [repositoryController setViewTitle:[acctInfo vendor]];
+            [repositoryController setRepositories:[CMISUtility filterRepositories:repos]];
+            [repositoryController setSessionParameters:params];
+            //set account uuid for logo manager
+            [[LogoManager shareManager] setCurrentActiveAccount:[acctInfo uuid]];
+            [[LogoManager shareManager] setLogoInfo:repos accountUUID:acctInfo.uuid];
+            [self.navigationController pushViewController:repositoryController animated:YES];
+        }
+    }];
+    
 }
 
 #pragma mark -
@@ -186,7 +161,7 @@ static NSString * const kBrowseAccountsCellIdentifier = @"BrowseAccountsCellIden
     NSString *uuidToBrowse = [[notification userInfo] objectForKey:@"accountUUID"];
     AccountInfo *accountInfo = [[AccountManager sharedManager] accountInfoForUUID:uuidToBrowse];
     [self.navigationController popToRootViewControllerAnimated:NO];
-    [self loadRepositoriesWithAccount:accountInfo isReAuthentication:YES];
+    [self loadRepositoriesWithAccount:accountInfo];
     
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {  //to fix ios6 have no such property
         [self tabBarController].tabBar.translucent = NO;

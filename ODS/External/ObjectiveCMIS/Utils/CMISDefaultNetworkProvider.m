@@ -311,11 +311,12 @@ completionBlock:(void (^)(CMISHttpResponse *httpResponse, NSError *error))comple
     CMISLogDebug(@"HTTP %@: %@", httpMethod, [url absoluteString]);
     
     // turn off cookies if configured to do so
-    id sendCookies = [session objectForKey:kCMISSessionParameterSendCookies];
-    if (sendCookies && ![sendCookies boolValue])
-    {
-        request.HTTPShouldHandleCookies = NO;
-    }
+//    id sendCookies = [session objectForKey:kCMISSessionParameterSendCookies];
+//    if (sendCookies && ![sendCookies boolValue])
+//    {
+//        request.HTTPShouldHandleCookies = NO;
+//    }
+    request.HTTPShouldHandleCookies = NO; //force to turn off cokies
     
     return request;
 }

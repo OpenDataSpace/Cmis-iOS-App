@@ -18,9 +18,12 @@
 
 @interface AccountViewController ()
 @property (nonatomic, strong) NSMutableArray *fieldArray;
+@property (nonatomic, strong) AccountInfo   *tempAcctInfo;
 @end
 
 @implementation AccountViewController
+@synthesize tempAcctInfo = _tempAcctInfo;
+@synthesize acctInfo = _acctInfo;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,9 +35,21 @@
     [saveBarItem setEnabled:NO];
     [self.navigationItem setRightBarButtonItem:saveBarItem];
     
-    if (self.isNew) {
+     _tempAcctInfo = [[AccountInfo alloc] init];
+    if (!self.isNew) {
         //new a account
-        self.acctInfo = [[AccountInfo alloc] init];
+        _tempAcctInfo = [[AccountInfo alloc] init];
+        _tempAcctInfo.vendor = _acctInfo.vendor;
+        _tempAcctInfo.description = _acctInfo.description;
+        _tempAcctInfo.protocol = _acctInfo.protocol;
+        _tempAcctInfo.hostname = _acctInfo.hostname;
+        _tempAcctInfo.port = _acctInfo.port;
+        _tempAcctInfo.serviceDocumentRequestPath = _acctInfo.serviceDocumentRequestPath;
+        _tempAcctInfo.username = _acctInfo.username;
+        _tempAcctInfo.password = _acctInfo.password;
+        _tempAcctInfo.accountStatus = _acctInfo.accountStatus;
+        _tempAcctInfo.isDefaultAccount = _acctInfo.isDefaultAccount;
+        _tempAcctInfo.cmisType = _acctInfo.cmisType;
     }
     
     [self createAccountComponents];
@@ -95,7 +110,7 @@
             CheckMarkViewController *checkMarkController = [[CheckMarkViewController alloc] initWithStyle:UITableViewStyleGrouped];
             [checkMarkController setCheckMarkDelegate:self];
             [checkMarkController setOptions:[checkMarkCell checkOptions]];
-            [checkMarkController setSelectedIndex:[[self.acctInfo cmisType] integerValue]];
+            [checkMarkController setSelectedIndex:[[_tempAcctInfo cmisType] integerValue]];
             [checkMarkController setViewTitle:checkMarkCell.textLabel.text];
             [checkMarkController setCheckMarkCell:checkMarkCell];
             
@@ -130,8 +145,8 @@
     TextFieldTableViewCell *cellUser = (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
     [cellUser.lblTitle setText:NSLocalizedString(@"accountdetails.fields.username", @"Username")];
     [cellUser.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.required", @"required")];
-    if ([self.acctInfo username] != nil && [[self.acctInfo username] length] > 0) {
-        [cellUser.textField setText:[self.acctInfo username]];
+    if ([_tempAcctInfo username] != nil && [[_tempAcctInfo username] length] > 0) {
+        [cellUser.textField setText:[_tempAcctInfo username]];
     }
     [cellUser setModelIdentifier:kServerUsername];
     [cellUser.textField setDelegate:self];
@@ -143,8 +158,8 @@
     [cellPassword.lblTitle setText:NSLocalizedString(@"accountdetails.fields.password", @"Password")];
     [cellPassword.textField setSecureTextEntry:YES];
     [cellPassword.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.required", @"required")];
-    if ([self.acctInfo password] != nil && [[self.acctInfo password] length] > 0) {
-        [cellPassword.textField setText:[self.acctInfo password]];
+    if ([_tempAcctInfo password] != nil && [[_tempAcctInfo password] length] > 0) {
+        [cellPassword.textField setText:[_tempAcctInfo password]];
     }
     [cellPassword setModelIdentifier:kServerPassword];
     [cellPassword.textField setDelegate:self];
@@ -155,8 +170,8 @@
     TextFieldTableViewCell *cellServer = (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
     [cellServer.lblTitle setText:NSLocalizedString(@"accountdetails.fields.hostname", @"Server Address")];
     [cellServer.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.required", @"required")];
-    if ([self.acctInfo hostname] != nil && [[self.acctInfo hostname] length] > 0) {
-        [cellServer.textField setText:[self.acctInfo hostname]];
+    if ([_tempAcctInfo hostname] != nil && [[_tempAcctInfo hostname] length] > 0) {
+        [cellServer.textField setText:[_tempAcctInfo hostname]];
     }
     [cellServer setModelIdentifier:kServerHostName];
     [cellServer.textField setDelegate:self];
@@ -167,8 +182,8 @@
     TextFieldTableViewCell *cellDesc = (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
     [cellDesc.lblTitle setText:NSLocalizedString(@"accountdetails.fields.description", @"Description")];
     [cellDesc.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.serverdescription", @"CMIS Provider")];
-    if ([self.acctInfo vendor] != nil && [[self.acctInfo vendor] length] > 0) {
-        [cellDesc.textField setText:[self.acctInfo vendor]];
+    if ([_tempAcctInfo vendor] != nil && [[_tempAcctInfo vendor] length] > 0) {
+        [cellDesc.textField setText:[_tempAcctInfo vendor]];
     }
     [cellDesc setModelIdentifier:kServerVendor];
     [cellDesc.textField setDelegate:self];
@@ -178,7 +193,7 @@
     
     UISwitchTableViewCell *cellProtocol = (UISwitchTableViewCell*)[self createTableViewCellFromNib:@"UISwitchTableViewCell"];
     [cellProtocol.labelTitle setText:NSLocalizedString(@"accountdetails.fields.protocol", @"HTTPS")];
-    [cellProtocol.switchButton setOn:[self.acctInfo.protocol isEqualToCaseInsensitiveString:kFDHTTPS_Protocol]];
+    [cellProtocol.switchButton setOn:[_tempAcctInfo.protocol isEqualToCaseInsensitiveString:kFDHTTPS_Protocol]];
     [cellProtocol.switchButton addTarget:self action:@selector(processSwitchButtonAction:) forControlEvents:UIControlEventValueChanged];
     [cellProtocol setModelIdentifier:kServerProtocol];
     [self.tableSections addObject:[NSArray arrayWithObjects:cellUser, cellPassword, cellServer, cellDesc, cellProtocol, nil]];
@@ -189,7 +204,7 @@
     TextFieldTableViewCell *cellPort = (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
     [cellPort.lblTitle setText:NSLocalizedString(@"accountdetails.fields.port", @"Port")];
     [cellPort.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.required", @"required")];
-    [cellPort.textField setText:[self.acctInfo port]];
+    [cellPort.textField setText:[_tempAcctInfo port]];
     [cellPort setModelIdentifier:kServerPort];
     [cellPort.textField setDelegate:self];
     [cellPort.textField addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventEditingChanged];
@@ -203,12 +218,12 @@
     [cellCmisProtocol setModelIdentifier:kServerCMISProtocol];
     [cellCmisProtocol.textLabel setText:NSLocalizedString(@"accountdetails.fields.serviceprotocol", @"CMIS Protocol")];
     [cellCmisProtocol setCheckOptions:protocolOptions];
-    [cellCmisProtocol setSelectedIndex:[[self.acctInfo cmisType] integerValue]];
+    [cellCmisProtocol setSelectedIndex:[[_tempAcctInfo cmisType] integerValue]];
     
     TextFieldTableViewCell *cellServiceDoc = (TextFieldTableViewCell*)[self createTableViewCellFromNib:@"TextFieldTableViewCell"];
     [cellServiceDoc.lblTitle setText:NSLocalizedString(@"accountdetails.fields.servicedoc", @"Service Document")];
     [cellServiceDoc.textField setPlaceholder:NSLocalizedString(@"accountdetails.placeholder.required", @"required")];
-    [cellServiceDoc.textField setText:[self.acctInfo serviceDocumentRequestPath]];
+    [cellServiceDoc.textField setText:[_tempAcctInfo serviceDocumentRequestPath]];
     [cellServiceDoc setModelIdentifier:kServerServiceDocumentRequestPath];
     [cellServiceDoc.textField setDelegate:self];
     [cellServiceDoc.textField addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventEditingChanged];
@@ -228,12 +243,12 @@
     BOOL vendorValid = YES;
     
     
-    NSString *username = [self.acctInfo username];
-    NSString *password = [self.acctInfo password];
-    NSString *hostname = [self.acctInfo hostname];
-    NSString *port = [self.acctInfo port];
-    NSString *serviceDoc = [self.acctInfo serviceDocumentRequestPath];
-    NSString *vendor = [self.acctInfo vendor];
+    NSString *username = [_tempAcctInfo username];
+    NSString *password = [_tempAcctInfo password];
+    NSString *hostname = [_tempAcctInfo hostname];
+    NSString *port = [_tempAcctInfo port];
+    NSString *serviceDoc = [_tempAcctInfo serviceDocumentRequestPath];
+    NSString *vendor = [_tempAcctInfo vendor];
     
     NSRange hostnameRange = [hostname rangeOfString:@"^[a-zA-Z0-9_\\-\\.]+$" options:NSRegularExpressionSearch];
     usernameValid = ![username isNotEmpty];
@@ -249,17 +264,17 @@
 
 - (void) saveTextFieldValue:(TextFieldTableViewCell*) cell {
     if ([[cell modelIdentifier] isEqualToCaseInsensitiveString:kServerUsername]) {
-        [self.acctInfo setUsername:[cell.textField text]];
+        [_tempAcctInfo setUsername:[cell.textField text]];
     }else if ([[cell modelIdentifier] isEqualToCaseInsensitiveString:kServerPassword]) {
-        [self.acctInfo setPassword:[cell.textField text]];
+        [_tempAcctInfo setPassword:[cell.textField text]];
     }else if ([[cell modelIdentifier] isEqualToCaseInsensitiveString:kServerHostName]) {
-        [self.acctInfo setHostname:[cell.textField text]];
+        [_tempAcctInfo setHostname:[cell.textField text]];
     }else if ([[cell modelIdentifier] isEqualToCaseInsensitiveString:kServerPort]) {
-        [self.acctInfo setPort:[cell.textField text]];
+        [_tempAcctInfo setPort:[cell.textField text]];
     }else if ([[cell modelIdentifier] isEqualToCaseInsensitiveString:kServerServiceDocumentRequestPath]) {
-        [self.acctInfo setServiceDocumentRequestPath:[cell.textField text]];
+        [_tempAcctInfo setServiceDocumentRequestPath:[cell.textField text]];
     }else if ([[cell modelIdentifier] isEqualToCaseInsensitiveString:kServerVendor]) {
-        [self.acctInfo setVendor:[cell.textField text]];
+        [_tempAcctInfo setVendor:[cell.textField text]];
     }else {
         ODSLogDebug(@"is a not valid mode identifier:%@", [cell modelIdentifier]);
     }
@@ -304,24 +319,42 @@
 #pragma mark -
 #pragma mark Actions of Bar Item
 
+- (void) saveAccount {
+    if (self.isNew) {
+        [[AccountManager sharedManager] saveAccountInfo:_tempAcctInfo];
+    }else {
+        _acctInfo.vendor = _tempAcctInfo.vendor;
+        _acctInfo.description = _tempAcctInfo.description;
+        _acctInfo.protocol = _tempAcctInfo.protocol;
+        _acctInfo.hostname = _tempAcctInfo.hostname;
+        _acctInfo.port = _tempAcctInfo.port;
+        _acctInfo.serviceDocumentRequestPath = _tempAcctInfo.serviceDocumentRequestPath;
+        _acctInfo.username = _tempAcctInfo.username;
+        _acctInfo.password = _tempAcctInfo.password;
+        _acctInfo.accountStatus = _tempAcctInfo.accountStatus;
+        _acctInfo.isDefaultAccount = _tempAcctInfo.isDefaultAccount;
+        _acctInfo.cmisType = _tempAcctInfo.cmisType;
+        [[AccountManager sharedManager] saveAccountInfo:_acctInfo];
+    }
+}
+
 - (void) processSaveButtonAction:(id) sender {
     //try to connect server
-    __block CMISSessionParameters *params = getSessionParametersWithAccountInfo(self.acctInfo, nil);
+    __block CMISSessionParameters *params = getSessionParametersWithAccountInfo(_tempAcctInfo, nil);
     [self startHUD];
-    [CMISSession connectWithSessionParameters:params completionBlock:^(CMISSession *session, NSError *error) {
-        [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
-            [self stopHUD];
-            if (error != nil) {
-                ODSLogError(@"%@", error);
-                [CMISUtility handleCMISRequestError:error isAuthentication:YES];
-            }else {
-                [[AccountManager sharedManager] saveAccountInfo:self.acctInfo];
-                dispatch_main_sync_safe(^{
-                    [self dismissViewcontroller];
-                });
-            }
-        }];        
-    }];
+    
+    [CMISSession arrayOfRepositories:params completionBlock:^(NSArray *repos, NSError *error){
+        [self stopHUD];
+        if (error != nil) {
+            ODSLogError(@"%@", error);
+            [CMISUtility handleCMISRequestError:error isAuthentication:YES];
+        }else {
+            [self saveAccount];
+            dispatch_main_sync_safe(^{
+                [self dismissViewcontroller];
+            });
+        }
+    }]; 
 }
 
 - (void) processCancelButtonAction:(id) sender {
@@ -331,20 +364,20 @@
 - (void) processSwitchButtonAction:(id) sender {
     UISwitch *switchButton = (UISwitch*) sender;
     
-    [self.acctInfo setProtocol:[switchButton isOn]?kFDHTTPS_Protocol:kFDHTTP_Protocol];
-    [self.acctInfo setPort:[switchButton isOn]?kFDHTTPS_DefaultPort:kFDHTTP_DefaultPort];
+    [_tempAcctInfo setProtocol:[switchButton isOn]?kFDHTTPS_Protocol:kFDHTTP_Protocol];
+    [_tempAcctInfo setPort:[switchButton isOn]?kFDHTTPS_DefaultPort:kFDHTTP_DefaultPort];
     TextFieldTableViewCell *cellPort = (TextFieldTableViewCell*)[self findeCellByModeIdentifier:kServerPort];
-    [cellPort.textField setText:[self.acctInfo port]];
+    [cellPort.textField setText:[_tempAcctInfo port]];
     [self.navigationItem.rightBarButtonItem setEnabled:[self validateAccountSettings]];
 }
 
 - (void) selectCheckMarkOption:(NSInteger) index withCell:(CheckMarkTableViewCell*) cell {
     [cell setSelectedIndex:index];
-    [self.acctInfo setCmisType:[NSNumber numberWithInteger:index]];
-    [self.acctInfo setServiceDocumentRequestPath:[CMISUtility defaultCmisDocumentServicePathWithType:index]];
+    [_tempAcctInfo setCmisType:[NSNumber numberWithInteger:index]];
+    [_tempAcctInfo setServiceDocumentRequestPath:[CMISUtility defaultCmisDocumentServicePathWithType:index]];
     
     TextFieldTableViewCell *cellServiceDoc = (TextFieldTableViewCell*)[self findeCellByModeIdentifier:kServerServiceDocumentRequestPath];
-    [cellServiceDoc.textField setText:[self.acctInfo serviceDocumentRequestPath]];
+    [cellServiceDoc.textField setText:[_tempAcctInfo serviceDocumentRequestPath]];
     [self.navigationItem.rightBarButtonItem setEnabled:[self validateAccountSettings]];
 }
 @end
