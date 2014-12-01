@@ -60,8 +60,11 @@
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:downLink];
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:downLink];
                           downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment value:(includePathSegment ? @"true" : @"false") urlString:downLink];
-                          downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
-                          downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                          if ([maxItems integerValue] > 0) {
+                              downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
+                              downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                          }
+                  
                   
                           // execute the request
                           [self.bindingSession.networkProvider invokeGET:[NSURL URLWithString:downLink]
@@ -130,8 +133,10 @@
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:downLink];
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:downLink];
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment value:(includePathSegment ? @"true" : @"false") urlString:downLink];
-                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
-                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                  if ([maxItems integerValue] > 0) {
+                      downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
+                      downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                  }
                   
                   // execute the request
                   [self.bindingSession.networkProvider invokeGET:[NSURL URLWithString:downLink]
@@ -260,8 +265,10 @@
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:downLink];
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:downLink];
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment value:(includePathSegment ? @"true" : @"false") urlString:downLink];
-                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
-                  downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                  if ([maxItems integerValue] > 0) {
+                      downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:downLink];
+                      downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:downLink];
+                  }
                   downLink = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterDepth value:[depth stringValue] urlString:downLink];
                   
                   // execute the request

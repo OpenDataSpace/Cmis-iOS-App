@@ -274,7 +274,9 @@ static CGFloat masterViewControllerWidth = 320.0;
 //            [self.masterPopoverBarButton.target performSelector:self.masterPopoverBarButton.action];
 //        }
         [self expandDetailView:NO animated:YES];
-        if (self.detailViewController && IS_IPAD) {
+        if (self.detailViewController && (IS_IPAD &&
+                                          ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
+                                           [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight))) {
             [self.detailViewController.navigationItem setLeftBarButtonItem:nil];
         }
     }

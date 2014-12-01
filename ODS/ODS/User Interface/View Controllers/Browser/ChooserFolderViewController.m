@@ -181,12 +181,12 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
                 }else {
                     self.parentItem = folder;
                     [folder retrieveChildrenWithOperationContext:[CMISOperationContext defaultOperationContext] completionBlock:^(CMISPagedResult* results, NSError *error) {
+                        [self stopHUD];
                         if (error) {
                             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
-                            [self stopHUD];
                             [CMISUtility handleCMISRequestError:error];
                         }else {
-                            [self loadMorePages:results];
+                            [self saveResult:results.resultArray];
                         }
                     }];
                 }
@@ -198,35 +198,36 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
 - (void) loadFolders:(CMISFolder*) folder {
     [self startHUD];
     [folder retrieveChildrenWithOperationContext:[CMISOperationContext defaultOperationContext] completionBlock:^(CMISPagedResult* results, NSError *error) {
+        [self stopHUD];
         if (error) {
             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);
-            [self stopHUD];
             [CMISUtility handleCMISRequestError:error];
         }else {
-            [self loadMorePages:results];
+            //[self loadMorePages:results];
+            [self saveResult:results.resultArray];
         }
     }];
 }
 
-- (void) loadMorePages:(CMISPagedResult*) pagedResult {
-    [self saveResult:pagedResult.resultArray];
-    if (!pagedResult.hasMoreItems) {
-        [self stopHUD];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.doneBtn setEnabled:![self isSourceFolder:_parentItem]];
-            [self.tableView reloadData];
-        });
-        return;
-    }
-    
-    [pagedResult fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
-        if (error) {
-            [self stopHUD];
-        }else {
-            [self loadMorePages:results];
-        }
-    }];
-}
+//- (void) loadMorePages:(CMISPagedResult*) pagedResult {
+//    [self saveResult:pagedResult.resultArray];
+//    if (!pagedResult.hasMoreItems) {
+//        [self stopHUD];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.doneBtn setEnabled:![self isSourceFolder:_parentItem]];
+//            [self.tableView reloadData];
+//        });
+//        return;
+//    }
+//    
+//    [pagedResult fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
+//        if (error) {
+//            [self stopHUD];
+//        }else {
+//            [self loadMorePages:results];
+//        }
+//    }];
+//}
 
 - (void) saveResult:(NSArray*) items {
     if (self.folderItems == nil) {

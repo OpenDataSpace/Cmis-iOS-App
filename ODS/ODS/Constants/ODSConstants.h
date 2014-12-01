@@ -79,7 +79,8 @@ extern CGFloat const kDefaultTableCellHeight;
 extern NSString * const kPreferenceApplicationFirstRun;
 
 
-NSString * const kNoAccountsCellIdentifier;
+extern NSString * const kNoAccountsCellIdentifier;
+extern NSString * const kNoUploadsCellIdentifier;
 
 @interface ODSConstants : NSObject
 

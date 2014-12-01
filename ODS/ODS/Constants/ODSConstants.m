@@ -81,6 +81,7 @@ NSString * const kPreferenceApplicationFirstRun = @"FirstRun";
 
 
 NSString * const kNoAccountsCellIdentifier = @"NoAccountsCellIdentifier";
+NSString * const kNoUploadsCellIdentifier = @"NoUploadsCellIdentifier";
 
 @implementation ODSConstants
 

@@ -26,7 +26,6 @@
 "no.document.selected.text" = "No Document Selected";
 
 /* Documents View */
-"load.more.cell.title" = "Load More...";
 "relative.date.just-now" = "just now";
 "relative.date.less-than-a-minute-ago" = "less than a minute ago";
 "relative.date.one-minute-ago" = "1 minute ago";
@@ -277,6 +276,7 @@
 "uploadview.tablecell.media.count" = "%d medias";
 "uploadview.tablecell.document.count" = "%d documents";
 "upload.finished" = "Upload finished";
+"no.uploads.title" = "No Uploads";
 
 "audiorecord.play" = "Play";
 "audiorecord.stop" = "Stop";

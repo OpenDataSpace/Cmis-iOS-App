@@ -45,8 +45,10 @@
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment boolValue:includePathSegment urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    if ([maxItems integerValue] > 0) {
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    }
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISBrowserJSONParameterSuccinct value:kCMISParameterValueTrue urlString:objectUrl];
     
     CMISRequest *cmisRequest = [[CMISRequest alloc] init];
@@ -93,8 +95,10 @@
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment boolValue:includePathSegment urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    if ([maxItems integerValue] > 0) {
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    }
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISBrowserJSONParameterSuccinct value:kCMISParameterValueTrue urlString:objectUrl];
     
     CMISRequest *cmisRequest = [[CMISRequest alloc] init];
@@ -181,8 +185,10 @@
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludeRelationships value:[CMISEnums stringForIncludeRelationShip:relationships] urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterIncludePathSegment boolValue:includePathSegment urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    if ([maxItems integerValue] > 0) {
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems numberValue:maxItems urlString:objectUrl];
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount numberValue:skipCount urlString:objectUrl];
+    }
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterDepth numberValue:depth urlString:objectUrl];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISBrowserJSONParameterSuccinct value:kCMISParameterValueTrue urlString:objectUrl];
     

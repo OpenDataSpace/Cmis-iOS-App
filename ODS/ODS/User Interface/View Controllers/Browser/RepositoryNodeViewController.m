@@ -43,13 +43,10 @@ NSString * const kMultiSelectDownload = @"downloadAction";
 NSString * const kMultiSelectDelete = @"deleteAction";
 NSString * const kMultiSelectMove = @"moveAction";
 
-static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
-
 @interface RepositoryNodeViewController () {
     NSMutableArray *itemsToDelete_;
     NSMutableArray *itemsToMove_;
 }
-@property (nonatomic, strong) CustomTableViewCell *loadMoreCell;
 @property (nonatomic, strong) CMISRequest   *currentPreviewRequest;
 @end
 
@@ -57,8 +54,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 @synthesize moveQueueProgressBar = _moveQueueProgressBar;
 @synthesize folderItems = _folderItems;
 @synthesize pagedFolders = _pagedFolders;
-
-@synthesize loadMoreCell = _loadMoreCell;
 
 - (void) dealloc {
     if (self.popover) {
@@ -108,12 +103,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     [self.multiSelectToolbar addActionButtonNamed:kMultiSelectDelete withLabelKey:@"multiselect.button.delete" atIndex:1];
     [self.multiSelectToolbar addActionButtonNamed:kMultiSelectMove withLabelKey:@"multiselect.button.move" atIndex:2];
     
-    _loadMoreCell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [_loadMoreCell.textLabel setTextAlignment:NSTextAlignmentCenter];
-    [_loadMoreCell.textLabel setFont:[UIFont boldSystemFontOfSize:17.0]];
-    [_loadMoreCell.textLabel setText:NSLocalizedString(@"load.more.cell.title", @"Load More...")];
-    [_loadMoreCell setShouldIndentWhileEditing:YES];
-    
     [self savePagedResult:_pagedFolders];
 }
 
@@ -129,9 +118,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
 {
     // Return the number of rows in the section.
     if (self.folderItems) {
-        if (_pagedFolders.hasMoreItems) {
-            return [self.folderItems count] + 1;
-        }
         return [self.folderItems count];
     }
     
@@ -156,8 +142,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
         }
         
         return cell;
-    }else {
-        return _loadMoreCell;
     }
     
     return nil;
@@ -179,8 +163,6 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
             
             //[tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
-    }else if(![tableView isEditing]) {  //don't load more items when editing
-        [self loadMoreItems];
     }
 }
 
@@ -277,20 +259,20 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     }];
 }
 
-- (void) loadMoreItems {
-    if (!self.pagedFolders.hasMoreItems) {
-        return;
-    }
-    [self startHUD];
-    [self.pagedFolders fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
-        [self stopHUD];
-        if (error) {
-            ODSLogError(@"fetchNextPageWithCompletionBlock:%@", error);
-        }else {
-            [self savePagedResult:results];
-        }
-    }];
-}
+//- (void) loadMoreItems {
+//    if (!self.pagedFolders.hasMoreItems) {
+//        return;
+//    }
+//    [self startHUD];
+//    [self.pagedFolders fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
+//        [self stopHUD];
+//        if (error) {
+//            ODSLogError(@"fetchNextPageWithCompletionBlock:%@", error);
+//        }else {
+//            [self savePagedResult:results];
+//        }
+//    }];
+//}
 
 - (void) savePagedResult:(CMISPagedResult*) pagedResults {
     if (self.folderItems == nil) {
@@ -631,14 +613,12 @@ static NSString * const kLoadMoreCellIdentifier = @"LoadMoreCellIdentifier";
     
     if (editing)
     {
-        [_loadMoreCell setSelectionStyle:UITableViewCellSelectionStyleNone];
         [self.multiSelectToolbar didEnterMultiSelectMode];
         [self loadRightBarForEditMode:YES];
         [[self refreshControl] removeFromSuperview];
     }
     else
     {
-        [_loadMoreCell setSelectionStyle:UITableViewCellSelectionStyleDefault];
         [self.multiSelectToolbar didLeaveMultiSelectMode];
         [self loadRightBarItem];
         [self.view addSubview:[self refreshControl]];

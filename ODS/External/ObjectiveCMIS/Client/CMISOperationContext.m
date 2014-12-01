@@ -33,7 +33,7 @@
     defaultContext.renditionFilterString = nil;
     defaultContext.orderBy = nil;
     defaultContext.includePathSegments = NO;
-    defaultContext.maxItemsPerPage = 100;
+    defaultContext.maxItemsPerPage = 0; //set to zero to get all files of the folder
     defaultContext.skipCount = 0;
     defaultContext.depth = 1;  //get descendants should be set to be at least 2 or -1.
     

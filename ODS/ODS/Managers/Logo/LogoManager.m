@@ -160,7 +160,7 @@ NSString * const kNotificationUpdateLogos = @"NOTIFICATION_UPDATE_LOGOS";
                 }else {
                     CMISOperationContext *opContext = [CMISOperationContext defaultOperationContext];
                     opContext.depth = -1;
-                    opContext.maxItemsPerPage = 1000;
+                    //opContext.maxItemsPerPage = 1000;
                     [folder retrieveDescendantsWithOperationContext:opContext completionBlock:^(CMISPagedResult* results, NSError *error) {
                         if (error) {
                             ODSLogError(@"retrieveChildrenWithCompletionBlock:%@", error);

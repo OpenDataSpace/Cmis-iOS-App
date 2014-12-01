@@ -688,8 +688,10 @@
 {
     NSString *objectUrl = [self retrieveObjectUrlForObjectWithId:objectId selector:kCMISBrowserJSONSelectorRenditions];
     objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterRenditionFilter value:renditionFilter urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:objectUrl];
-    objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:objectUrl];
+    if ([maxItems integerValue] > 0) {
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterMaxItems value:[maxItems stringValue] urlString:objectUrl];
+        objectUrl = [CMISURLUtil urlStringByAppendingParameter:kCMISParameterSkipCount value:[skipCount stringValue] urlString:objectUrl];
+    }
     
     CMISRequest *cmisRequest = [[CMISRequest alloc] init];
     

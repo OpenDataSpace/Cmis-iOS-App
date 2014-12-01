@@ -24,7 +24,7 @@ NSInteger const kDismissFailedUploadPrompt = 3;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.navigationItem setTitle:NSLocalizedString(@"manage.uploads.view.title", @"Uploads")];
-    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kNoUploadsCellIdentifier];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadQueueChanged:) name:kNotificationUploadQueueChanged object:nil];
 }
 
@@ -41,25 +41,40 @@ NSInteger const kDismissFailedUploadPrompt = 3;
 #pragma mark -
 #pragma mark UITableView Delegate & Datasource
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    NSArray *uploads = nil;
     if (self.tableSections) {
-        NSArray *uploads = [self.tableSections objectAtIndex:section];
+        uploads = [self.tableSections objectAtIndex:section];
+    }
+    if ([uploads count] > 0) {
         return [uploads count];
     }
-    return 0;
+    return 1;
     //return [[[UploadsManager sharedManager] allUploads] count];
 }
 
 - (UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *uploads = nil;
     if (self.tableSections) {
-        NSArray *uploads = [self.tableSections objectAtIndex:indexPath.section];
+        uploads = [self.tableSections objectAtIndex:indexPath.section];
+    }
+    
+    if ([uploads count] > 0) {
         return [uploads objectAtIndex:indexPath.row];
     }
-    return nil;
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kNoUploadsCellIdentifier];
+        
+    [cell.textLabel setTextAlignment:NSTextAlignmentCenter];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    [cell.textLabel setText:NSLocalizedString(@"no.uploads.title", @"No Uploads")];
+    
+    return cell;
 }
 
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    NSArray *uploads = nil;
     if (self.tableSections) {
-        NSArray *uploads = [self.tableSections objectAtIndex:indexPath.section];
+        uploads = [self.tableSections objectAtIndex:indexPath.section];
         if ([uploads count] > indexPath.row) {
             UploadProgressTableViewCell *cell = [uploads objectAtIndex:indexPath.row];
             UploadInfo *uploadInfo = cell.uploadInfo;
