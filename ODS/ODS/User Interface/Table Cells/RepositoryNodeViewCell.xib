@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -13,31 +14,37 @@
                 <rect key="frame" x="0.0" y="0.0" width="253" height="61"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="folder" translatesAutoresizingMaskIntoConstraints="NO" id="f8h-zb-wYa">
-                        <rect key="frame" x="6" y="6" width="50" height="50"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="folder" translatesAutoresizingMaskIntoConstraints="NO" id="f8h-zb-wYa">
+                        <rect key="frame" x="16" y="16" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="32" id="3JL-bI-DoO"/>
+                            <constraint firstAttribute="width" constant="32" id="adQ-5w-0b2"/>
+                        </constraints>
                     </imageView>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c46-Cd-5j8">
-                        <rect key="frame" x="62" y="7" width="217" height="21"/>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c46-Cd-5j8">
+                        <rect key="frame" x="62" y="15" width="217" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clx-wV-itv">
-                        <rect key="frame" x="62" y="30" width="217" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <rect key="frame" x="62" y="35" width="217" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="KWN-Mo-NkV">
-                        <rect key="frame" x="58" y="40" width="180" height="2"/>
+                        <rect key="frame" x="58" y="46" width="180" height="2"/>
                     </progressView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="c46-Cd-5j8" secondAttribute="trailing" constant="-6" id="8QV-5H-Zxe"/>
-                    <constraint firstAttribute="bottom" secondItem="clx-wV-itv" secondAttribute="bottom" constant="11" id="AdV-yO-gxX"/>
+                    <constraint firstAttribute="bottom" secondItem="clx-wV-itv" secondAttribute="bottom" constant="6" id="AdV-yO-gxX"/>
                     <constraint firstAttribute="trailing" secondItem="KWN-Mo-NkV" secondAttribute="trailing" constant="35" id="Gic-Rk-39f"/>
                     <constraint firstItem="KWN-Mo-NkV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="58" id="dXp-vQ-5cX"/>
-                    <constraint firstItem="c46-Cd-5j8" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="dZ2-4T-VfX"/>
+                    <constraint firstItem="c46-Cd-5j8" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="dZ2-4T-VfX"/>
+                    <constraint firstItem="f8h-zb-wYa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="j9j-4V-Rhp"/>
                     <constraint firstItem="clx-wV-itv" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="62" id="kqr-8d-WVP"/>
+                    <constraint firstItem="f8h-zb-wYa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="pJA-Nn-qsN"/>
                     <constraint firstAttribute="trailing" secondItem="clx-wV-itv" secondAttribute="trailing" constant="-6" id="pkl-Ca-XgW"/>
                     <constraint firstItem="c46-Cd-5j8" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="62" id="ptC-1W-Jk3"/>
                     <constraint firstAttribute="bottom" secondItem="KWN-Mo-NkV" secondAttribute="bottom" constant="20" id="xaQ-Yt-5Cj"/>

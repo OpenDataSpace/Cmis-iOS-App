@@ -209,26 +209,6 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
     }];
 }
 
-//- (void) loadMorePages:(CMISPagedResult*) pagedResult {
-//    [self saveResult:pagedResult.resultArray];
-//    if (!pagedResult.hasMoreItems) {
-//        [self stopHUD];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.doneBtn setEnabled:![self isSourceFolder:_parentItem]];
-//            [self.tableView reloadData];
-//        });
-//        return;
-//    }
-//    
-//    [pagedResult fetchNextPageWithCompletionBlock:^(CMISPagedResult* results, NSError *error) {
-//        if (error) {
-//            [self stopHUD];
-//        }else {
-//            [self loadMorePages:results];
-//        }
-//    }];
-//}
-
 - (void) saveResult:(NSArray*) items {
     if (self.folderItems == nil) {
         self.folderItems = [NSMutableArray array];
@@ -239,6 +219,8 @@ NSString * const  kMoveTargetTypeFolder = @"TYPE_FOLDER";
             [self.folderItems addObject:item];
         }
     }
+    
+    [self.tableView reloadData];
 }
 
 - (BOOL) isSourceFolder:(CMISObject*) object {

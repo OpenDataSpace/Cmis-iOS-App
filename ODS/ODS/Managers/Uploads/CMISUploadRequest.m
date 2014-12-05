@@ -22,6 +22,9 @@
 #import "CMISBrowserBinding.h"
 #import "CMISRequest.h"
 
+#import "CMISOperationContext.h"
+#import "CMISObject.h"
+
 @interface CMISUploadRequest()
 @property (nonatomic, assign) NSUInteger    fileSize;
 @property (nonatomic, strong) CMISSession   *uploadSession;
